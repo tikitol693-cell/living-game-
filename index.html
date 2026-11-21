@@ -7,101 +7,177 @@
 <script src="https://telegram.org"></script>
 <style>
 *{box-sizing:border-box;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
-body{margin:0;padding:12px;background:#0a0b0e;color:#fff;font-family:-apple-system,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:space-between;height:100dvh;overflow:hidden;touch-action:manipulation}
+body{margin:0;padding:14px;background:#0a0b0e;color:#fff;font-family:-apple-system,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:space-between;height:100dvh;overflow:hidden;touch-action:manipulation}
 .top{width:100%;max-width:400px;display:flex;justify-content:space-between;align-items:center}
-.rk{background:#181a20;border:1px solid #00e676;color:#00e676;font-size:11px;font-weight:800;padding:4px 9px;border-radius:20px}
-.tb{background:#181a20;border:1px solid #2c303a;color:#fff;font-size:11px;font-weight:800;padding:5px 9px;border-radius:20px}
-.cs{background:linear-gradient(135deg,#ff9100,#ff3d00);border:none;color:#fff;font-size:11px;font-weight:800;padding:5px 10px;border-radius:20px}
+.rk{background:#181a20;border:1px solid #00e676;color:#00e676;font-size:12px;font-weight:800;padding:5px 10px;border-radius:20px}
+.cs{background:linear-gradient(135deg,#ff9100,#ff3d00);border:none;color:#fff;font-size:12px;font-weight:800;padding:6px 12px;border-radius:20px}
 .cs.off{background:#1c1e24;color:#666}
 .hd{text-align:center;width:100%;max-width:400px}
-.sc{font-size:38px;font-weight:900;margin:2px 0;text-shadow:0 0 18px rgba(0,230,118,.4)}
-.in{font-size:12px;color:#8e929b;margin-bottom:5px}
-.br{width:100%;height:6px;background:#1c1e24;border-radius:6px;overflow:hidden}
-.fl{height:100%;background:linear-gradient(90deg,#00c853,#00e676);width:0%;transition:width .2s}
-.cw{width:100%;max-width:240px;text-align:center}
-.ct{font-size:12px;font-weight:800;color:#ffab00;height:15px;margin-bottom:3px}
-.cf{height:100%;background:linear-gradient(90deg,#ff6d00,#ffd600);width:0%;transition:width .1s}
+.sc{font-size:42px;font-weight:900;margin:4px 0;text-shadow:0 0 20px rgba(0,230,118,.5)}
+.in{font-size:13px;color:#8e929b;margin-bottom:6px}
+.br{width:100%;height:7px;background:#1c1e24;border-radius:7px;overflow:hidden}
+.fl{height:100%;background:linear-gradient(90deg,#00c853,#00e676);width:0%;transition:width .15s}
 .zn{position:relative;display:flex;justify-content:center;align-items:center;flex:1;width:100%}
-.cn{width:185px;height:185px;border-radius:50%;background:radial-gradient(circle,#1db954 0%,#073b19 100%);border:5px solid #00e676;box-shadow:0 0 35px rgba(0,230,118,.4);display:flex;flex-direction:column;justify-content:center;align-items:center;transition:transform .05s;overflow:hidden}
-.cn.tap{transform:scale(.91)}
-.cn.x2{background:radial-gradient(circle,#ff9100 0%,#5e2600 100%)!important;border-color:#ffd600!important;box-shadow:0 0 50px rgba(255,214,0,.85)!important}
-.cn.sk1{background:radial-gradient(circle,#ffd600 0%,#664d00 100%);border-color:#fff176}
-.cn.sk2{background:radial-gradient(circle,#ff1744 0%,#5c0011 100%);border-color:#ff5252}
+.cn{width:195px;height:195px;border-radius:50%;background:radial-gradient(circle,#1db954 0%,#073b19 100%);border:5px solid #00e676;box-shadow:0 0 40px rgba(0,230,118,.45);display:flex;flex-direction:column;justify-content:center;align-items:center;transition:transform .05s;overflow:hidden}
+.cn.tap{transform:scale(.9)}
+.cn.x2{background:radial-gradient(circle,#ff9100 0%,#5e2600 100%);border-color:#ffd600;box-shadow:0 0 55px rgba(255,214,0,.9)}
 .cn img{width:100%;height:100%;object-fit:cover;pointer-events:none}
-.em{font-size:56px;pointer-events:none}.tx{font-size:18px;font-weight:900;margin-top:4px;pointer-events:none}
-.pt{position:absolute;font-size:26px;font-weight:900;color:#fff;pointer-events:none;animation:up .65s ease-out forwards;z-index:10}
-.pt.g{color:#ffd600;font-size:32px}.pt.c{color:#00e676;font-size:35px}
-@keyframes up{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-90px)}}
+.em{font-size:60px;pointer-events:none}
+.tx{font-size:20px;font-weight:900;margin-top:4px;pointer-events:none}
+.pt{position:absolute;font-size:28px;font-weight:900;color:#fff;pointer-events:none;animation:up .6s ease-out forwards;z-index:10}
+.pt.g{color:#ffd600;font-size:34px}
+@keyframes up{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-95px)}}
 .bt{width:100%;max-width:400px}
-.et{display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:3px}
-.eb{width:100%;height:9px;background:#1c1e24;border-radius:10px;overflow:hidden;margin-bottom:8px}
-.ef{height:100%;background:linear-gradient(90deg,#00c853,#69f0ae);width:100%;transition:width .15s}
-.sh{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.bn{background:#15171c;border:1px solid #282b34;border-radius:12px;padding:9px;color:#fff;text-align:left}
-.bn:active{background:#23262f}.bn.off{opacity:.4}
-.t1{font-weight:800;font-size:12px;color:#00e676}.t2{font-size:10px;color:#9aa0a6;margin:2px 0}.t3{font-size:12px;font-weight:800}
-.md{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;justify-content:center;align-items:center;z-index:50;padding:20px}
-.md.on{display:flex}
-.mc{background:#16181f;border:2px solid #00e676;border-radius:18px;padding:18px;width:100%;max-width:320px;text-align:center}
-.mb{width:100%;padding:11px;border-radius:11px;border:1px solid #2c303a;background:#1f222b;color:#fff;font-weight:800;font-size:13px;margin-top:8px}
+.et{display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:4px}
+.eb{width:100%;height:10px;background:#1c1e24;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.ef{height:100%;background:linear-gradient(90deg,#00c853,#69f0ae);width:100%}
+.sh{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bn{background:#15171c;border:1px solid #282b34;border-radius:12px;padding:10px;color:#fff;text-align:left}
+.bn.off{opacity:.4}
+.t1{font-weight:800;font-size:13px;color:#00e676}
+.t2{font-size:11px;color:#9aa0a6;margin:2px 0}
+.t3{font-size:13px;font-weight:800}
 </style>
 </head>
 <body>
-<div class="top"><div class="rk" id="rk">Ур. 1 • Новичок</div><div style="display:flex;gap:5px"><button class="tb" id="bSh">👥</button><button class="tb" id="bSt">⚙️</button><button class="cs" id="bC">🎁 Кейс</button></div></div>
-<div class="hd"><div class="sc" id="sc">0</div><div class="in">Пассив: +<span id="ps">0</span>/с • Тап: +<span id="tv">1</span></div><div class="br"><div class="fl" id="lB"></div></div></div>
-<div class="cw"><div class="ct" id="cT">Тапай быстрее для x2!</div><div class="br"><div class="cf" id="cB"></div></div></div>
-<div class="zn" id="zn"><div class="cn" id="cn"><img src="litvin.jpg" onerror="this.style.display='none';fb.style.display='block'"><div id="fb" style="display:none;text-align:center"><div class="em">🔥⚡</div><div class="tx">ЛИТВИН</div></div></div></div>
+<div class="top">
+  <div class="rk" id="rk">Ур. 1 • Новичок</div>
+  <button class="cs" id="bC">🎁 Кейс</button>
+</div>
+
+<div class="hd">
+  <div class="sc" id="sc">0</div>
+  <div class="in">Пассив: +<span id="ps">0</span>/с • Тап: +<span id="tv">1</span></div>
+  <div class="br"><div class="fl" id="lB"></div></div>
+</div>
+
+<div class="zn" id="zn">
+  <div class="cn" id="cn">
+    <img src="litvin.jpg" onerror="this.style.display='none';document.getElementById('fb').style.display='block'">
+    <div id="fb" style="display:none;text-align:center">
+      <div class="em">🔥⚡</div>
+      <div class="tx">ЛИТВИН</div>
+    </div>
+  </div>
+</div>
+
 <div class="bt">
-<div class="et"><span>⚡ Энергия</span><span><span id="en">500</span> / <span id="me">500</span></span></div>
-<div class="eb"><div class="ef" id="eB"></div></div>
-<div class="sh">
-<button class="bn" id="b1"><div class="t1">🥫 Банка LIT</div><div class="t2">+1 к тапу</div><div class="t3">💰 <span id="p1">50</span></div></button>
-<button class="bn" id="b2"><div class="t1">🔥 Сжечь Акулу</div><div class="t2">+3 в сек</div><div class="t3">💰 <span id="p2">150</span></div></button>
-<button class="bn" id="b3"><div class="t1">🔋 Запас сил</div><div class="t2">+250 энергии</div><div class="t3">💰 <span id="p3">200</span></div></button>
-<button class="bn" id="b4"><div class="t1" style="color:#ffd600">🚀 Полный бак</div><div class="t2">100% энергии</div><div class="t3" id="s4">БЕСПЛАТНО</div></button>
+  <div class="et"><span>⚡ Энергия</span><span><span id="en">500</span> / <span id="me">500</span></span></div>
+  <div class="eb"><div class="ef" id="eB"></div></div>
+  <div class="sh">
+    <button class="bn" id="b1"><div class="t1">🥫 Банка LIT</div><div class="t2">+1 к тапу</div><div class="t3">💰 <span id="p1">50</span></div></button>
+    <button class="bn" id="b2"><div class="t1">🔥 Сжечь Акулу</div><div class="t2">+3 в сек</div><div class="t3">💰 <span id="p2">150</span></div></button>
+    <button class="bn" id="b3"><div class="t1">🔋 Запас сил</div><div class="t2">+250 энергии</div><div class="t3">💰 <span id="p3">200</span></div></button>
+    <button class="bn" id="b4"><div class="t1" style="color:#ffd600">🚀 Полный бак</div><div class="t2">100% энергии</div><div class="t3" id="s4">БЕСПЛАТНО</div></button>
+  </div>
 </div>
-</div>
-<div class="md" id="md"><div class="mc"><div style="font-size:18px;font-weight:900;color:#00e676">⚙️ Настройки</div><button class="mb" id="mVb">📳 Вибрация: ВКЛ</button><button class="mb" id="mSk">🎨 Скин: Зеленый</button><button class="mb" id="mRs" style="color:#ff5252">🗑 Сброс</button><button class="mb" id="mCl" style="background:#00e676;color:#000;border:none">Готово</button></div></div>
+
 <script>
-try{Telegram.WebApp.ready();Telegram.WebApp.expand()}catch(e){}
-const R=[["Ур. 1 • Новичок",0],["Ур. 2 • Суетолог",500],["Ур. 3 • Фанат LIT",2500],["Ур. 4 • Поджигатель",10000],["Ур. 5 • Хозяин Акулы",50000],["Ур. 6 • Легенда",200000]],SK=["Зеленый","Золотой","Красный"];
-let s={sc:0,tt:0,tp:1,ps:0,en:500,me:500,p1:50,p2:150,p3:200,rf:0,cs:0,vb:1,sk:0};
-try{let d=localStorage.getItem('litV8');if(d)s=Object.assign(s,JSON.parse(d))}catch(e){}
-let cb=0,x2=false,$=id=>document.getElementById(id),cn=$('cn'),zn=$('zn');
-const sv=()=>{try{localStorage.setItem('litV8',JSON.stringify(s))}catch(e){}},fm=n=>Math.floor(n).toLocaleString('ru-RU');
-function pop(t,x,y,c){let r=zn.getBoundingClientRect(),e=document.createElement('div');e.className='pt '+(c||'');e.innerText=t;e.style.left=(x-r.left-25)+'px';e.style.top=(y-r.top-20)+'px';zn.appendChild(e);setTimeout(()=>e.remove(),650)}
-function ui(){
-$('sc').innerText=fm(s.sc);$('ps').innerText=fm(s.ps);$('tv').innerText=s.tp*(x2?2:1);$('en').innerText=Math.floor(s.en);$('me').innerText=s.me;
-$('p1').innerText=fm(s.p1);$('p2').innerText=fm(s.p2);$('p3').innerText=fm(s.p3);$('eB').style.width=(s.en/s.me*100)+'%';
-$('b1').classList.toggle('off',s.sc<s.p1);$('b2').classList.toggle('off',s.sc<s.p2);$('b3').classList.toggle('off',s.sc<s.p3);
-$('b4').classList.toggle('off',s.rf>0);$('s4').innerText=s.rf>0?'Ждать: '+s.rf+'с':'БЕСПЛАТНО';
-$('bC').classList.toggle('off',s.cs>0);$('bC').innerText=s.cs>0?'🎁 '+s.cs+'с':'🎁 Кейс';
-$('cB').style.width=cb+'%';cn.className='cn'+(s.sk?' sk'+s.sk:'')+(x2?' x2':'');
-$('cT').innerText=x2?'🔥 КОНДИЦИИ x2! 🔥':(cb>10?'Разгон: '+Math.floor(cb)+'%':'Тапай быстрее для x2!');
-$('mVb').innerText='📳 Вибрация: '+(s.vb?'ВКЛ':'ВЫКЛ');$('mSk').innerText='🎨 Скин: '+SK[s.sk];
-let i=0;for(let k=0;k<R.length;k++)if(s.tt>=R[k][1])i=k;
-$('rk').innerText=R[i][0];let nx=R[i+1];$('lB').style.width=nx?Math.min(100,(s.tt-R[i][1])/(nx[1]-R[i][1])*100)+'%':'100%';
+const tg = window.Telegram && window.Telegram.WebApp;
+if (tg) { tg.ready(); tg.expand(); }
+
+const R = [["Ур. 1 • Новичок",0],["Ур. 2 • Суетолог",500],["Ур. 3 • Фанат LIT",2500],["Ур. 4 • Поджигатель",10000],["Ур. 5 • Хозяин Акулы",50000],["Ур. 6 • Легенда",200000]];
+let s = { sc: 0, tt: 0, tp: 1, ps: 0, en: 500, me: 500, p1: 50, p2: 150, p3: 200, rf: 0, cs: 0 };
+try { const d = localStorage.getItem('litV9'); if (d) s = { ...s, ...JSON.parse(d) }; } catch (e) {}
+
+let combo = 0, x2 = 0, lt = 0;
+const el = id => document.getElementById(id);
+const cn = el('cn'), zn = el('zn');
+const sv = () => { try { localStorage.setItem('litV9', JSON.stringify(s)); } catch (e) {} };
+const fm = n => Math.floor(n).toLocaleString('ru-RU');
+
+function pop(txt, x, y, gold) {
+  const r = zn.getBoundingClientRect(), d = document.createElement('div');
+  d.className = 'pt' + (gold ? ' g' : '');
+  d.innerText = txt;
+  d.style.left = (x - r.left - 25) + 'px';
+  d.style.top = (y - r.top - 25) + 'px';
+  zn.appendChild(d);
+  setTimeout(() => d.remove(), 600);
 }
-function tap(x,y){
-if(s.en<s.tp)return;let cr=Math.random()<.08,g=s.tp*(x2?2:1)*(cr?5:1);
-s.sc+=g;s.tt+=g;s.en-=s.tp;cb=Math.min(100,cb+6);if(cb>=100)x2=true;
-cn.classList.add('tap');setTimeout(()=>cn.classList.remove('tap'),70);
-if(s.vb)try{Telegram.WebApp.HapticFeedback.impactOccurred(cr||x2?'heavy':'medium')}catch(e){}
-pop((cr?'КРИТ +':'+')+fm(g),x,y,cr?'c':(x2?'g':''));ui();sv();
+
+function ui() {
+  el('sc').innerText = fm(s.sc);
+  el('ps').innerText = fm(s.ps);
+  el('tv').innerText = s.tp * (x2 > 0 ? 2 : 1);
+  el('en').innerText = Math.floor(s.en);
+  el('me').innerText = s.me;
+  el('p1').innerText = fm(s.p1);
+  el('p2').innerText = fm(s.p2);
+  el('p3').innerText = fm(s.p3);
+  el('eB').style.width = Math.min(100, s.en / s.me * 100) + '%';
+
+  el('b1').classList.toggle('off', s.sc < s.p1);
+  el('b2').classList.toggle('off', s.sc < s.p2);
+  el('b3').classList.toggle('off', s.sc < s.p3);
+  el('b4').classList.toggle('off', s.rf > 0);
+  el('s4').innerText = s.rf > 0 ? 'Ждать: ' + s.rf + 'с' : 'БЕСПЛАТНО';
+  el('bC').classList.toggle('off', s.cs > 0);
+  el('bC').innerText = s.cs > 0 ? '🎁 ' + s.cs + 'с' : '🎁 Кейс';
+  cn.className = 'cn' + (x2 > 0 ? ' x2' : '');
+
+  let i = 0;
+  for (let k = 0; k < R.length; k++) if (s.tt >= R[k][1]) i = k;
+  el('rk').innerText = R[i][0];
+  const nx = R[i + 1];
+  el('lB').style.width = nx ? Math.min(100, (s.tt - R[i][1]) / (nx[1] - R[i][1]) * 100) + '%' : '100%';
 }
-cn.ontouchstart=e=>{e.preventDefault();for(let t of e.changedTouches)tap(t.clientX,t.clientY)};
-cn.onmousedown=e=>tap(e.clientX,e.clientY);
-$('bSh').onclick=()=>{try{Telegram.WebApp.openTelegramLink('https://t.me('Залетай в тапалку Литвина! 🔥⚡'))}catch(e){}};
-$('bSt').onclick=()=>$('md').classList.add('on');$('mCl').onclick=()=>$('md').classList.remove('on');
-$('mVb').onclick=()=>{s.vb=s.vb?0:1;ui();sv()};$('mSk').onclick=()=>{s.sk=(s.sk+1)%3;ui();sv()};
-$('mRs').onclick=()=>{if(confirm('Сбросить прогресс?')){localStorage.removeItem('litV8');location.reload()}};
-$('bC').onclick=()=>{if(s.cs>0)return;let b=Math.max(100,s.tp*50+s.ps*15);s.sc+=b;s.tt+=b;s.cs=120;let r=zn.getBoundingClientRect();pop('🎁 +'+fm(b),r.left+r.width/2,r.top+60,'c');ui();sv()};
-$('b1').onclick=()=>{if(s.sc>=s.p1){s.sc-=s.p1;s.tp++;s.p1=Math.floor(s.p1*1.65);ui();sv()}};
-$('b2').onclick=()=>{if(s.sc>=s.p2){s.sc-=s.p2;s.ps+=3;s.p2=Math.floor(s.p2*1.7);ui();sv()}};
-$('b3').onclick=()=>{if(s.sc>=s.p3){s.sc-=s.p3;s.me+=250;s.en=s.me;s.p3=Math.floor(s.p3*1.8);ui();sv()}};
-$('b4').onclick=()=>{if(s.rf<=0&&s.en<s.me){s.en=s.me;s.rf=60;ui();sv()}};
-setInterval(()=>{if(cb>0){cb=Math.max(0,cb-(x2?2.5:3.5));if(!cb)x2=false;ui()}},150);
-setInterval(()=>{if(s.ps>0){s.sc+=s.ps;s.tt+=s.ps}if(s.en<s.me)s.en=Math.min(s.me,s.en+3);if(s.rf>0)s.rf--;if(s.cs>0)s.cs--;ui();sv()},1000);
+
+function tap(x, y) {
+  if (s.en < s.tp) return;
+  const crit = Math.random() < 0.08;
+  const gain = s.tp * (x2 > 0 ? 2 : 1) * (crit ? 5 : 1);
+  s.sc += gain;
+  s.tt += gain;
+  s.en -= s.tp;
+
+  combo++;
+  if (combo >= 15 && x2 <= 0) { x2 = 8; combo = 0; }
+
+  cn.classList.add('tap');
+  setTimeout(() => cn.classList.remove('tap'), 65);
+  try { if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred(crit ? 'heavy' : 'light'); } catch (e) {}
+
+  const r = zn.getBoundingClientRect();
+  pop((crit ? '⚡+' : '+') + fm(gain), x || r.left + r.width / 2, y || r.top + r.height / 2, crit || x2 > 0);
+  ui();
+}
+
+cn.addEventListener('touchstart', e => {
+  e.preventDefault();
+  lt = Date.now();
+  for (let i = 0; i < e.changedTouches.length; i++) tap(e.changedTouches[i].clientX, e.changedTouches[i].clientY);
+}, { passive: false });
+
+cn.addEventListener('mousedown', e => {
+  if (Date.now() - lt < 500) return;
+  tap(e.clientX, e.clientY);
+});
+
+el('b1').onclick = () => { if (s.sc >= s.p1) { s.sc -= s.p1; s.tp++; s.p1 = Math.ceil(s.p1 * 1.5); sv(); ui(); } };
+el('b2').onclick = () => { if (s.sc >= s.p2) { s.sc -= s.p2; s.ps += 3; s.p2 = Math.ceil(s.p2 * 1.6); sv(); ui(); } };
+el('b3').onclick = () => { if (s.sc >= s.p3) { s.sc -= s.p3; s.me += 250; s.en += 250; s.p3 = Math.ceil(s.p3 * 1.5); sv(); ui(); } };
+el('b4').onclick = () => { if (!s.rf) { s.en = s.me; s.rf = 60; sv(); ui(); } };
+el('bC').onclick = () => {
+  if (!s.cs) {
+    const rw = Math.max(50, s.ps * 15 + s.tp * 25);
+    s.sc += rw; s.tt += rw; s.cs = 120;
+    const r = zn.getBoundingClientRect();
+    pop('🎁+' + fm(rw), r.left + r.width / 2, r.top + r.height / 3, true);
+    sv(); ui();
+  }
+};
+
+setInterval(() => {
+  if (s.ps) { s.sc += s.ps; s.tt += s.ps; }
+  if (s.en < s.me) s.en = Math.min(s.me, s.en + 2);
+  if (s.rf > 0) s.rf--;
+  if (s.cs > 0) s.cs--;
+  if (x2 > 0) x2--;
+  if (combo > 0) combo = Math.max(0, combo - 2);
+  sv(); ui();
+}, 1000);
+
 ui();
 </script>
 </body>
