@@ -1,168 +1,103 @@
-html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Litvin Tap</title>
 <script src="https://telegram.org"></script>
 <style>
-* { box-sizing: border-box; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
-body {
-  margin: 0; padding: 12px 14px; background: #090a0c; color: #fff;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-  height: 100vh; overflow: hidden; touch-action: manipulation;
-}
-.top { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; }
-.badge { background: #17191d; border: 1px solid #00e676; color: #00e676; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 20px; }
-.gift { background: linear-gradient(135deg, #ff9100, #ff3d00); border: none; color: #fff; font-size: 11px; font-weight: 800; padding: 5px 11px; border-radius: 20px; }
-.gift.off { background: #1c1e22; color: #777; }
-.head { text-align: center; width: 100%; max-width: 400px; }
-.bal { font-size: 40px; font-weight: 900; margin: 2px 0; text-shadow: 0 0 20px rgba(0,230,118,0.35); }
-.inc { font-size: 12px; color: #8e929b; margin-bottom: 6px; }
-.bar { width: 100%; height: 6px; background: #1c1e22; border-radius: 6px; overflow: hidden; }
-.fill { height: 100%; background: linear-gradient(90deg, #00c853, #00e676); width: 0%; transition: width 0.2s; }
-.c-wrap { width: 100%; max-width: 250px; text-align: center; }
-.c-txt { font-size: 12px; font-weight: 800; color: #ffab00; height: 15px; margin-bottom: 3px; }
-.c-fill { height: 100%; background: linear-gradient(90deg, #ff6d00, #ffd600); width: 0%; transition: width 0.1s; }
-.zone { position: relative; display: flex; justify-content: center; align-items: center; flex: 1; width: 100%; }
-.coin {
-  width: 195px; height: 195px; border-radius: 50%;
-  background: radial-gradient(circle, #1db954 0%, #073b19 100%);
-  border: 5px solid #00e676; box-shadow: 0 0 35px rgba(0,230,118,0.4);
-  display: flex; flex-direction: column; justify-content: center; align-items: center;
-  transition: transform 0.05s; position: relative; z-index: 2;
-}
-.coin.tap { transform: scale(0.91); }
-.coin.x2 { background: radial-gradient(circle, #ff9100 0%, #5e2600 100%); border-color: #ffd600; box-shadow: 0 0 50px rgba(255,214,0,0.85); }
-.emo { font-size: 58px; pointer-events: none; }
-.ctxt { font-size: 18px; font-weight: 900; margin-top: 4px; pointer-events: none; }
-.can { position: absolute; font-size: 42px; z-index: 5; filter: drop-shadow(0 0 12px #ffd600); }
-.flt { position: absolute; font-size: 26px; font-weight: 900; color: #fff; pointer-events: none; animation: up 0.65s ease-out forwards; z-index: 10; }
-.flt.gold { color: #ffd600; font-size: 32px; }
-.flt.crit { color: #00e676; font-size: 35px; }
-@keyframes up { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-90px); } }
-.bot { width: 100%; max-width: 400px; }
-.e-txt { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; margin-bottom: 3px; }
-.e-bar { width: 100%; height: 9px; background: #1c1e22; border-radius: 10px; overflow: hidden; margin-bottom: 8px; }
-.e-fill { height: 100%; background: linear-gradient(90deg, #00c853, #69f0ae); width: 100%; transition: width 0.15s; }
-.shop { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
-.btn { background: #15171b; border: 1px solid #282b32; border-radius: 12px; padding: 9px; color: #fff; text-align: left; }
-.btn:active { background: #23262d; }
-.btn.off { opacity: 0.4; }
-.bt { font-weight: 800; font-size: 12px; color: #00e676; }
-.bd { font-size: 10px; color: #9aa0a6; margin: 2px 0; }
-.bc { font-size: 12px; font-weight: 800; }
+*{box-sizing:border-box;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+body{margin:0;padding:12px;background:#0a0b0e;color:#fff;font-family:-apple-system,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:space-between;height:100dvh;overflow:hidden;touch-action:manipulation}
+.top{width:100%;max-width:400px;display:flex;justify-content:space-between;align-items:center}
+.rk{background:#181a20;border:1px solid #00e676;color:#00e676;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px}
+.cs{background:linear-gradient(135deg,#ff9100,#ff3d00);border:none;color:#fff;font-size:11px;font-weight:800;padding:5px 11px;border-radius:20px}
+.cs.off{background:#1c1e24;color:#666}
+.hd{text-align:center;width:100%;max-width:400px}
+.sc{font-size:38px;font-weight:900;margin:2px 0;text-shadow:0 0 18px rgba(0,230,118,.4)}
+.in{font-size:12px;color:#8e929b;margin-bottom:5px}
+.br{width:100%;height:6px;background:#1c1e24;border-radius:6px;overflow:hidden}
+.fl{height:100%;background:linear-gradient(90deg,#00c853,#00e676);width:0%;transition:width .2s}
+.cw{width:100%;max-width:240px;text-align:center}
+.ct{font-size:12px;font-weight:800;color:#ffab00;height:15px;margin-bottom:3px}
+.cf{height:100%;background:linear-gradient(90deg,#ff6d00,#ffd600);width:0%;transition:width .1s}
+.zn{position:relative;display:flex;justify-content:center;align-items:center;flex:1;width:100%}
+.cn{width:185px;height:185px;border-radius:50%;background:radial-gradient(circle,#1db954 0%,#073b19 100%);border:5px solid #00e676;box-shadow:0 0 35px rgba(0,230,118,.4);display:flex;flex-direction:column;justify-content:center;align-items:center;transition:transform .05s}
+.cn.tap{transform:scale(.91)}
+.cn.x2{background:radial-gradient(circle,#ff9100 0%,#5e2600 100%);border-color:#ffd600;box-shadow:0 0 50px rgba(255,214,0,.85)}
+.em{font-size:56px;pointer-events:none}
+.tx{font-size:18px;font-weight:900;margin-top:4px;pointer-events:none}
+.pt{position:absolute;font-size:26px;font-weight:900;color:#fff;pointer-events:none;animation:up .65s ease-out forwards;z-index:10}
+.pt.g{color:#ffd600;font-size:32px}.pt.c{color:#00e676;font-size:35px}
+@keyframes up{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-90px)}}
+.bt{width:100%;max-width:400px}
+.et{display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:3px}
+.eb{width:100%;height:9px;background:#1c1e24;border-radius:10px;overflow:hidden;margin-bottom:8px}
+.ef{height:100%;background:linear-gradient(90deg,#00c853,#69f0ae);width:100%;transition:width .15s}
+.sh{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.bn{background:#15171c;border:1px solid #282b34;border-radius:12px;padding:9px;color:#fff;text-align:left}
+.bn:active{background:#23262f}.bn.off{opacity:.4}
+.t1{font-weight:800;font-size:12px;color:#00e676}
+.t2{font-size:10px;color:#9aa0a6;margin:2px 0}
+.t3{font-size:12px;font-weight:800}
 </style>
 </head>
 <body>
-<div class="top">
-  <div class="badge" id="rk">Ур. 1 • Новичок</div>
-  <button class="gift" id="bCase">🎁 Кейс LIT</button>
+<div class="top"><div class="rk" id="rk">Ур. 1 • Новичок</div><button class="cs" id="bC">🎁 Кейс LIT</button></div>
+<div class="hd"><div class="sc" id="sc">0</div><div class="in">Пассив: +<span id="ps">0</span>/с • Тап: +<span id="tv">1</span></div><div class="br"><div class="fl" id="lB"></div></div></div>
+<div class="cw"><div class="ct" id="cT">Тапай быстрее для x2!</div><div class="br"><div class="cf" id="cB"></div></div></div>
+<div class="zn" id="zn"><div class="cn" id="cn"><div class="em">🔥⚡</div><div class="tx">ЛИТВИН</div></div></div>
+<div class="bt">
+<div class="et"><span>⚡ Энергия</span><span><span id="en">500</span> / <span id="me">500</span></span></div>
+<div class="eb"><div class="ef" id="eB"></div></div>
+<div class="sh">
+<button class="bn" id="b1"><div class="t1">🥫 Банка LIT</div><div class="t2">+1 к тапу</div><div class="t3">💰 <span id="p1">50</span></div></button>
+<button class="bn" id="b2"><div class="t1">🔥 Сжечь Акулу</div><div class="t2">+3 в сек</div><div class="t3">💰 <span id="p2">150</span></div></button>
+<button class="bn" id="b3"><div class="t1">🔋 Запас сил</div><div class="t2">+250 энергии</div><div class="t3">💰 <span id="p3">200</span></div></button>
+<button class="bn" id="b4"><div class="t1" style="color:#ffd600">🚀 Полный бак</div><div class="t2">100% энергии</div><div class="t3" id="s4">БЕСПЛАТНО</div></button>
 </div>
-<div class="head">
-  <div class="bal" id="sc">0</div>
-  <div class="inc">Пассив: +<span id="ps">0</span>/сек • Тап: +<span id="tv">1</span></div>
-  <div class="bar"><div class="fill" id="lBar"></div></div>
-</div>
-<div class="c-wrap">
-  <div class="c-txt" id="cTxt">Тапай быстрее для x2!</div>
-  <div class="bar"><div class="c-fill" id="cBar"></div></div>
-</div>
-<div class="zone" id="zn">
-  <div class="coin" id="cn">
-    <div class="emo">🔥⚡</div>
-    <div class="ctxt">ЛИТВИН</div>
-  </div>
-</div>
-<div class="bot">
-  <div class="e-txt"><span>⚡ Энергия</span><span><span id="en">500</span> / <span id="me">500</span></span></div>
-  <div class="e-bar"><div class="e-fill" id="eBar"></div></div>
-  <div class="shop">
-    <button class="btn" id="bTap"><div class="bt">🥫 Банка LIT</div><div class="bd">+1 к силе тапа</div><div class="bc">💰 <span id="cTap">50</span></div></button>
-    <button class="btn" id="bAut"><div class="bt">🔥 Сжечь Акулу</div><div class="bd">+3 в секунду</div><div class="bc">💰 <span id="cAut">150</span></div></button>
-    <button class="btn" id="bEng"><div class="bt">🔋 Запас сил</div><div class="bd">+250 энергии</div><div class="bc">💰 <span id="cEng">200</span></div></button>
-    <button class="btn" id="bRef"><div class="bt" style="color:#ffd600">🚀 Полный бак</div><div class="bd">100% энергии</div><div class="bc" id="sRef">БЕСПЛАТНО</div></button>
-  </div>
 </div>
 <script>
-try { Telegram.WebApp.ready(); Telegram.WebApp.expand(); } catch (e) {}
-const R = [{n:"Ур. 1 • Новичок",m:0},{n:"Ур. 2 • Суетолог",m:500},{n:"Ур. 3 • Фанат LIT",m:2500},{n:"Ур. 4 • Поджигатель",m:10000},{n:"Ур. 5 • Хозяин Акулы",m:50000},{n:"Ур. 6 • Легенда",m:200000}];
-let s = {sc:0, tot:0, tp:1, ps:0, en:500, me:500, cTap:50, cAut:150, cEng:200, rf:0, cs:0};
-try { const d = localStorage.getItem('litV5'); if (d) s = Object.assign(s, JSON.parse(d)); } catch (e) {}
-let cmb = 0, x2 = false;
-const cn = document.getElementById('cn'), zn = document.getElementById('zn');
-const save = () => { try { localStorage.setItem('litV5', JSON.stringify(s)); } catch (e) {} };
-const fmt = n => Math.floor(n).toLocaleString('ru-RU');
-function pop(t, x, y, c) {
-  const r = zn.getBoundingClientRect(), el = document.createElement('div');
-  el.className = 'flt ' + (c || ''); el.innerText = t;
-  el.style.left = (x - r.left - 25) + 'px'; el.style.top = (y - r.top - 20) + 'px';
-  zn.appendChild(el); setTimeout(() => el.remove(), 650);
+try{Telegram.WebApp.ready();Telegram.WebApp.expand()}catch(e){}
+const R=[["Ур. 1 • Новичок",0],["Ур. 2 • Суетолог",500],["Ур. 3 • Фанат LIT",2500],["Ур. 4 • Поджигатель",10000],["Ур. 5 • Хозяин Акулы",50000],["Ур. 6 • Легенда",200000]];
+let s={sc:0,tt:0,tp:1,ps:0,en:500,me:500,p1:50,p2:150,p3:200,rf:0,cs:0};
+try{let d=localStorage.getItem('litV6');if(d)s=Object.assign(s,JSON.parse(d))}catch(e){}
+let cb=0,x2=false;
+const cn=document.getElementById('cn'),zn=document.getElementById('zn'),$=id=>document.getElementById(id);
+const sv=()=>{try{localStorage.setItem('litV6',JSON.stringify(s))}catch(e){}};
+const fm=n=>Math.floor(n).toLocaleString('ru-RU');
+function pop(t,x,y,c){let r=zn.getBoundingClientRect(),e=document.createElement('div');e.className='pt '+(c||'');e.innerText=t;e.style.left=(x-r.left-25)+'px';e.style.top=(y-r.top-20)+'px';zn.appendChild(e);setTimeout(()=>e.remove(),650)}
+function ui(){
+$('sc').innerText=fm(s.sc);$('ps').innerText=fm(s.ps);$('tv').innerText=s.tp*(x2?2:1);
+$('en').innerText=Math.floor(s.en);$('me').innerText=s.me;
+$('p1').innerText=fm(s.p1);$('p2').innerText=fm(s.p2);$('p3').innerText=fm(s.p3);
+$('eB').style.width=(s.en/s.me*100)+'%';
+$('b1').classList.toggle('off',s.sc<s.p1);$('b2').classList.toggle('off',s.sc<s.p2);$('b3').classList.toggle('off',s.sc<s.p3);
+$('b4').classList.toggle('off',s.rf>0);$('s4').innerText=s.rf>0?'Ждать: '+s.rf+'с':'БЕСПЛАТНО';
+$('bC').classList.toggle('off',s.cs>0);$('bC').innerText=s.cs>0?'🎁 '+s.cs+'с':'🎁 Кейс LIT';
+$('cB').style.width=cb+'%';cn.classList.toggle('x2',x2);
+$('cT').innerText=x2?'🔥 КОНДИЦИИ x2! 🔥':(cb>10?'Разгон: '+Math.floor(cb)+'%':'Тапай быстрее для x2!');
+let i=0;for(let k=0;k<R.length;k++)if(s.tt>=R[k][1])i=k;
+$('rk').innerText=R[i][0];let nx=R[i+1];
+$('lB').style.width=nx?Math.min(100,(s.tt-R[i][1])/(nx[1]-R[i][1])*100)+'%':'100%';
 }
-function ui() {
-  document.getElementById('sc').innerText = fmt(s.sc);
-  document.getElementById('ps').innerText = fmt(s.ps);
-  document.getElementById('tv').innerText = s.tp * (x2 ? 2 : 1);
-  document.getElementById('en').innerText = Math.floor(s.en);
-  document.getElementById('me').innerText = s.me;
-  document.getElementById('cTap').innerText = fmt(s.cTap);
-  document.getElementById('cAut').innerText = fmt(s.cAut);
-  document.getElementById('cEng').innerText = fmt(s.cEng);
-  document.getElementById('eBar').style.width = (s.en / s.me * 100) + '%';
-  document.getElementById('bTap').classList.toggle('off', s.sc < s.cTap);
-  document.getElementById('bAut').classList.toggle('off', s.sc < s.cAut);
-  document.getElementById('bEng').classList.toggle('off', s.sc < s.cEng);
-  document.getElementById('bRef').classList.toggle('off', s.rf > 0);
-  document.getElementById('sRef').innerText = s.rf > 0 ? 'Ждать: ' + s.rf + 'с' : 'БЕСПЛАТНО';
-  const bc = document.getElementById('bCase');
-  bc.classList.toggle('off', s.cs > 0);
-  bc.innerText = s.cs > 0 ? '🎁 ' + s.cs + 'с' : '🎁 Кейс LIT';
-  document.getElementById('cBar').style.width = cmb + '%';
-  cn.classList.toggle('x2', x2);
-  document.getElementById('cTxt').innerText = x2 ? '🔥 КОНДИЦИИ x2! 🔥' : (cmb > 10 ? 'Разгон: ' + Math.floor(cmb) + '%' : 'Тапай быстрее для x2!');
-  let i = 0; for (let k = 0; k < R.length; k++) if (s.tot >= R[k].m) i = k;
-  document.getElementById('rk').innerText = R[i].n;
-  const nx = R[i + 1];
-  document.getElementById('lBar').style.width = nx ? Math.min(100, (s.tot - R[i].m) / (nx.m - R[i].m) * 100) + '%' : '100%';
+function tap(x,y){
+if(s.en<s.tp)return;
+let cr=Math.random()<.08,g=s.tp*(x2?2:1)*(cr?5:1);
+s.sc+=g;s.tt+=g;s.en-=s.tp;cb=Math.min(100,cb+6);if(cb>=100)x2=true;
+cn.classList.add('tap');setTimeout(()=>cn.classList.remove('tap'),70);
+try{Telegram.WebApp.HapticFeedback.impactOccurred(cr||x2?'heavy':'medium')}catch(e){}
+pop((cr?'КРИТ +':'+')+fm(g),x,y,cr?'c':(x2?'g':''));ui();sv();
 }
-function tap(x, y) {
-  if (s.en < s.tp) return;
-  const cr = Math.random() < 0.08, g = s.tp * (x2 ? 2 : 1) * (cr ? 5 : 1);
-  s.sc += g; s.tot += g; s.en -= s.tp;
-  cmb = Math.min(100, cmb + 6); if (cmb >= 100) x2 = true;
-  cn.classList.add('tap'); setTimeout(() => cn.classList.remove('tap'), 70);
-  try { Telegram.WebApp.HapticFeedback.impactOccurred(cr || x2 ? 'heavy' : 'medium'); } catch (e) {}
-  pop((cr ? 'КРИТ +' : '+') + fmt(g), x, y, cr ? 'crit' : (x2 ? 'gold' : ''));
-  ui(); save();
-}
-cn.addEventListener('touchstart', e => { e.preventDefault(); for (let t of e.changedTouches) tap(t.clientX, t.clientY); }, {passive: false});
-cn.addEventListener('mousedown', e => tap(e.clientX, e.clientY));
-document.getElementById('bCase').onclick = () => {
-  if (s.cs > 0) return;
-  const b = Math.max(100, s.tp * 50 + s.ps * 15); s.sc += b; s.tot += b; s.cs = 120;
-  const r = zn.getBoundingClientRect(); pop('🎁 +' + fmt(b), r.left + r.width / 2, r.top + 60, 'crit'); ui(); save();
-};
-document.getElementById('bTap').onclick = () => { if (s.sc >= s.cTap) { s.sc -= s.cTap; s.tp += 1; s.cTap = Math.floor(s.cTap * 1.65); ui(); save(); } };
-document.getElementById('bAut').onclick = () => { if (s.sc >= s.cAut) { s.sc -= s.cAut; s.ps += 3; s.cAut = Math.floor(s.cAut * 1.7); ui(); save(); } };
-document.getElementById('bEng').onclick = () => { if (s.sc >= s.cEng) { s.sc -= s.cEng; s.me += 250; s.en = s.me; s.cEng = Math.floor(s.cEng * 1.8); ui(); save(); } };
-document.getElementById('bRef').onclick = () => { if (s.rf <= 0 && s.en < s.me) { s.en = s.me; s.rf = 60; ui(); save(); } };
-setInterval(() => {
-  if (document.querySelector('.can')) return;
-  const c = document.createElement('div'); c.className = 'can'; c.innerText = '🥫✨';
-  c.style.left = (15 + Math.random() * 65) + '%'; c.style.top = (15 + Math.random() * 60) + '%';
-  zn.appendChild(c);
-Используйте код с осторожностью.
-const tk = e => { e.preventDefault(); e.stopPropagation(); const p = Math.max(75, s.tp * 35 + s.ps * 10); s.sc += p; s.tot += p; const r = c.getBoundingClientRect(); pop('⚡ +' + fmt(p), r.left, r.top, 'crit'); c.remove(); ui(); save(); };
-c.addEventListener('touchstart', tk, {passive: false}); c.onclick = tk;
-setTimeout(() => c.remove(), 4500);
-}, 25000);
-setInterval(() => { if (cmb > 0) { cmb = Math.max(0, cmb - (x2 ? 2.5 : 3.5)); if (!cmb) x2 = false; ui(); } }, 150);
-setInterval(() => {
-if (s.ps > 0) { s.sc += s.ps; s.tot += s.ps; }
-if (s.en < s.me) s.en = Math.min(s.me, s.en + 3);
-if (s.rf > 0) s.rf--; if (s.cs > 0) s.cs--;
-ui(); save();
-}, 1000);
+cn.ontouchstart=e=>{e.preventDefault();for(let t of e.changedTouches)tap(t.clientX,t.clientY)};
+cn.onmousedown=e=>tap(e.clientX,e.clientY);
+$('bC').onclick=()=>{if(s.cs>0)return;let b=Math.max(100,s.tp*50+s.ps*15);s.sc+=b;s.tt+=b;s.cs=120;let r=zn.getBoundingClientRect();pop('🎁 +'+fm(b),r.left+r.width/2,r.top+60,'c');ui();sv()};
+$('b1').onclick=()=>{if(s.sc>=s.p1){s.sc-=s.p1;s.tp++;s.p1=Math.floor(s.p1*1.65);ui();sv()}};
+$('b2').onclick=()=>{if(s.sc>=s.p2){s.sc-=s.p2;s.ps+=3;s.p2=Math.floor(s.p2*1.7);ui();sv()}};
+$('b3').onclick=()=>{if(s.sc>=s.p3){s.sc-=s.p3;s.me+=250;s.en=s.me;s.p3=Math.floor(s.p3*1.8);ui();sv()}};
+$('b4').onclick=()=>{if(s.rf<=0&&s.en<s.me){s.en=s.me;s.rf=60;ui();sv()}};
+setInterval(()=>{if(cb>0){cb=Math.max(0,cb-(x2?2.5:3.5));if(!cb)x2=false;ui()}},150);
+setInterval(()=>{if(s.ps>0){s.sc+=s.ps;s.tt+=s.ps}if(s.en<s.me)s.en=Math.min(s.me,s.en+3);if(s.rf>0)s.rf--;if(s.cs>0)s.cs--;ui();sv()},1000);
 ui();
+</script>
+</body>
+</html>
