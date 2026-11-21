@@ -1,207 +1,145 @@
+html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Litvin Tap</title>
-    <script src="https://telegram.org"></script>
-    <style>
-        * {
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-touch-callout: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-        body {
-            margin: 0; padding: 20px; background: #0f0f0f; color: #fff;
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-            height: 100vh; overflow: hidden; touch-action: manipulation;
-        }
-        .header { text-align: center; margin-top: 10px; }
-        .balance-title { font-size: 14px; color: #888; text-transform: uppercase; letter-spacing: 1px; }
-        .balance { font-size: 46px; font-weight: 900; color: #00e676; margin: 5px 0; }
-        .income { font-size: 14px; color: #aaa; }
-
-        .tap-zone { position: relative; display: flex; justify-content: center; align-items: center; }
-        .coin {
-            width: 220px; height: 220px; border-radius: 50%;
-            background: radial-gradient(circle, #1db954 0%, #0a4d22 100%);
-            border: 6px solid #00e676; box-shadow: 0 0 40px rgba(0, 230, 118, 0.4);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            cursor: pointer; transition: transform 0.06s ease;
-        }
-        .coin.tapped { transform: scale(0.92); }
-        .coin-emoji { font-size: 65px; pointer-events: none; }
-        .coin-text { font-size: 20px; font-weight: 900; margin-top: 5px; letter-spacing: 1px; pointer-events: none; }
-
-        .floating {
-            position: absolute; font-size: 30px; font-weight: 900; color: #fff;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-            pointer-events: none; animation: floatUp 0.7s ease-out forwards; z-index: 10;
-        }
-        @keyframes floatUp {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-100px) scale(1.2); }
-        }
-
-        .bottom { width: 100%; max-width: 400px; }
-        .energy-box { margin-bottom: 15px; }
-        .energy-text { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 5px; }
-        .bar-bg { width: 100%; height: 12px; background: #222; border-radius: 10px; overflow: hidden; }
-        .bar-fill { height: 100%; background: linear-gradient(90deg, #00c853, #69f0ae); width: 100%; transition: width 0.15s; }
-
-        .shop { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn {
-            background: #1c1c1e; border: 1px solid #333; border-radius: 14px;
-            padding: 12px; color: #fff; text-align: left; cursor: pointer;
-        }
-        .btn:active { background: #2c2c2e; transform: scale(0.97); }
-        .btn-title { font-weight: bold; font-size: 14px; color: #00e676; }
-        .btn-desc { font-size: 12px; color: #aaa; margin: 4px 0; }
-        .btn-cost { font-size: 13px; font-weight: bold; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Litvin Tap Ultra</title>
+<script src="https://telegram.org"></script>
+<style>
+*{box-sizing:border-box;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+body{margin:0;padding:12px 14px;background:#090a0c;color:#fff;font-family:-apple-system,BlinkMacSystemFont,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:space-between;height:100vh;overflow:hidden;touch-action:manipulation}
+.top-bar{width:100%;max-width:400px;display:flex;justify-content:space-between;align-items:center}
+.rank-badge{background:#17191d;border:1px solid #00e676;color:#00e676;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;text-transform:uppercase}
+.gift-btn{background:linear-gradient(135deg,#ff9100,#ff3d00);border:none;color:#fff;font-size:11px;font-weight:800;padding:5px 10px;border-radius:20px;cursor:pointer;box-shadow:0 0 12px rgba(255,61,0,0.4)}
+.gift-btn.disabled{background:#1c1e22;color:#777;box-shadow:none}
+.header{text-align:center;width:100%;max-width:400px}
+.balance{font-size:40px;font-weight:900;color:#fff;margin:2px 0;text-shadow:0 0 20px rgba(0,230,118,0.35)}
+.income{font-size:12px;color:#8e929b;margin-bottom:6px}
+.level-bar-bg{width:100%;height:6px;background:#1c1e22;border-radius:6px;overflow:hidden}
+.level-bar-fill{height:100%;background:linear-gradient(90deg,#00c853,#00e676);width:0%;transition:width 0.3s}
+.combo-wrap{width:100%;max-width:260px;text-align:center;margin-top:4px}
+.combo-label{font-size:12px;font-weight:800;color:#ffab00;height:15px}
+.combo-bg{width:100%;height:6px;background:#1c1e22;border-radius:6px;overflow:hidden;margin-top:3px}
+.combo-fill{height:100%;background:linear-gradient(90deg,#ff6d00,#ffd600);width:0%;transition:width 0.1s}
+.tap-zone{position:relative;display:flex;justify-content:center;align-items:center;flex:1;width:100%}
+.coin{width:195px;height:195px;border-radius:50%;background:radial-gradient(circle,#1db954 0%,#073b19 100%);border:5px solid #00e676;box-shadow:0 0 35px rgba(0,230,118,0.4);display:flex;flex-direction:column;justify-content:center;align-items:center;cursor:pointer;transition:transform 0.05s ease,box-shadow 0.2s,border-color 0.2s;position:relative;z-index:2}
+.coin.tapped{transform:scale(0.91)}
+.coin.fever{background:radial-gradient(circle,#ff9100 0%,#5e2600 100%);border-color:#ffd600;box-shadow:0 0 55px rgba(255,214,0,0.85)}
+.coin-emoji{font-size:60px;pointer-events:none}
+.coin-text{font-size:18px;font-weight:900;margin-top:4px;letter-spacing:1px;pointer-events:none}
+.golden-can{position:absolute;font-size:42px;z-index:5;cursor:pointer;animation:pulseCan 0.7s infinite alternate;filter:drop-shadow(0 0 12px #ffd600)}
+@keyframes pulseCan{0%{transform:scale(0.95)}100%{transform:scale(1.18)}}
+.floating{position:absolute;font-size:26px;font-weight:900;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,0.9);pointer-events:none;animation:floatUp 0.65s ease-out forwards;z-index:10}
+.floating.crit{color:#ffd600;font-size:32px}
+.floating.mega{color:#00e676;font-size:35px}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-95px) scale(1.25)}}
+.bottom{width:100%;max-width:400px}
+.energy-box{margin-bottom:8px}
+.energy-text{display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:3px}
+.bar-bg{width:100%;height:9px;background:#1c1e22;border-radius:10px;overflow:hidden}
+.bar-fill{height:100%;background:linear-gradient(90deg,#00c853,#69f0ae);width:100%;transition:width 0.15s}
+.shop{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.btn{background:#15171b;border:1px solid #282b32;border-radius:12px;padding:9px;color:#fff;text-align:left;cursor:pointer}
+.btn:active{background:#23262d;transform:scale(0.97)}
+.btn.disabled{opacity:0.4}
+.btn-title{font-weight:800;font-size:12px;color:#00e676}
+.btn-desc{font-size:10px;color:#9aa0a6;margin:2px 0}
+.btn-cost{font-size:12px;font-weight:800;color:#fff}
+.btn-boost .btn-title{color:#ffd600}
+</style>
 </head>
 <body>
-
-    <div class="header">
-        <div class="balance-title">Баланс LIT ENERGY</div>
-        <div class="balance" id="score">0</div>
-        <div class="income">Пассивный доход: +<span id="passive">0</span>/сек</div>
+<div class="top-bar">
+    <div class="rank-badge" id="rankName">Ур. 1 • Новичок</div>
+    <button class="gift-btn" id="btnCase">🎁 Кейс LIT</button>
+</div>
+<div class="header">
+    <div class="balance" id="score">0</div>
+    <div class="income">Пассив: +<span id="passive">0</span>/сек • Тап: +<span id="tapVal">1</span></div>
+    <div class="level-bar-bg"><div class="level-bar-fill" id="levelBar"></div></div>
+</div>
+<div class="combo-wrap">
+    <div class="combo-label" id="comboText">Тапай быстрее для x2!</div>
+    <div class="combo-bg"><div class="combo-fill" id="comboBar"></div></div>
+</div>
+<div class="tap-zone" id="tapZone">
+    <div class="coin" id="coin">
+        <div class="coin-emoji">🔥⚡</div>
+        <div class="coin-text">ЛИТВИН</div>
     </div>
-
-    <div class="tap-zone" id="tapZone">
-        <div class="coin" id="coin">
-            <div class="coin-emoji">🔥⚡</div>
-            <div class="coin-text">ЛИТВИН</div>
-        </div>
+</div>
+<div class="bottom">
+    <div class="energy-box">
+        <div class="energy-text"><span>⚡ Энергия</span><span><span id="energy">500</span> / <span id="maxEnergy">500</span></span></div>
+        <div class="bar-bg"><div class="bar-fill" id="energyBar"></div></div>
     </div>
-
-    <div class="bottom">
-        <div class="energy-box">
-            <div class="energy-text">
-                <span>⚡ Энергия</span>
-                <span><span id="energy">500</span> / <span id="maxEnergy">500</span></span>
-            </div>
-            <div class="bar-bg"><div class="bar-fill" id="energyBar"></div></div>
-        </div>
-
-        <div class="shop">
-            <button class="btn" id="btnTap">
-                <div class="btn-title">🥫 Банка LIT</div>
-                <div class="btn-desc">+1 к силе тапа</div>
-                <div class="btn-cost">Цена: <span id="tapCost">50</span></div>
-            </button>
-            <button class="btn" id="btnAuto">
-                <div class="btn-title">🔥 Сжечь Акулу</div>
-                <div class="btn-desc">+2 в секунду</div>
-                <div class="btn-cost">Цена: <span id="autoCost">150</span></div>
-            </button>
-        </div>
+    <div class="shop">
+        <button class="btn" id="btnTap"><div class="btn-title">🥫 Банка LIT</div><div class="btn-desc">+1 к силе тапа</div><div class="btn-cost">💰 <span id="tapCost">50</span></div></button>
+        <button class="btn" id="btnAuto"><div class="btn-title">🔥 Сжечь Акулу</div><div class="btn-desc">+3 в секунду</div><div class="btn-cost">💰 <span id="autoCost">150</span></div></button>
+        <button class="btn" id="btnEnergy"><div class="btn-title">🔋 Запас сил</div><div class="btn-desc">+250 макс. энергии</div><div class="btn-cost">💰 <span id="energyCost">200</span></div></button>
+        <button class="btn btn-boost" id="btnRefill"><div class="btn-title">🚀 Полный бак</div><div class="btn-desc">100% энергии сразу</div><div class="btn-cost" id="refillStatus">БЕСПЛАТНО</div></button>
     </div>
-
-    <script>
-        try {
-            if (window.Telegram && window.Telegram.WebApp) {
-                window.Telegram.WebApp.ready();
-                window.Telegram.WebApp.expand();
-            }
-        } catch (e) {}
-
-        let state = {
-            score: 0, tapPower: 1, passive: 0,
-            energy: 500, maxEnergy: 500,
-            tapCost: 50, autoCost: 150
-        };
-
-        try {
-            const saved = localStorage.getItem('litvinSaveV2');
-            if (saved) state = Object.assign(state, JSON.parse(saved));
-        } catch (e) {}
-
-        function save() {
-            try { localStorage.setItem('litvinSaveV2', JSON.stringify(state)); } catch (e) {}
-        }
-
-        function updateUI() {
-            document.getElementById('score').innerText = Math.floor(state.score);
-            document.getElementById('passive').innerText = state.passive;
-            document.getElementById('energy').innerText = Math.floor(state.energy);
-            document.getElementById('maxEnergy').innerText = state.maxEnergy;
-            document.getElementById('tapCost').innerText = state.tapCost;
-            document.getElementById('autoCost').innerText = state.autoCost;
-            document.getElementById('energyBar').style.width = Math.max(0, Math.min(100, (state.energy / state.maxEnergy * 100))) + '%';
-        }
-
-        const coin = document.getElementById('coin');
-        const tapZone = document.getElementById('tapZone');
-
-        function handleTap(clientX, clientY) {
-            if (state.energy >= state.tapPower) {
-                state.score += state.tapPower;
-                state.energy -= state.tapPower;
-
-                coin.classList.add('tapped');
-                setTimeout(() => coin.classList.remove('tapped'), 80);
-
-                try {
-                    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
-                        window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-                    }
-                } catch (e) {}
-
-                const rect = tapZone.getBoundingClientRect();
-                const plus = document.createElement('div');
-                plus.className = 'floating';
-                plus.innerText = '+' + state.tapPower;
-                plus.style.left = (clientX - rect.left - 15) + 'px';
-                plus.style.top = (clientY - rect.top - 20) + 'px';
-                tapZone.appendChild(plus);
-                setTimeout(() => plus.remove(), 700);
-
-                updateUI();
-                save();
-            }
-        }
-
-        coin.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            for (let i = 0; i < e.changedTouches.length; i++) {
-                const t = e.changedTouches[i];
-                handleTap(t.clientX, t.clientY);
-            }
-        }, { passive: false });
-
-        coin.addEventListener('mousedown', function(e) {
-            handleTap(e.clientX, e.clientY);
-        });
-
-        document.getElementById('btnTap').addEventListener('click', function() {
-            if (state.score >= state.tapCost) {
-                state.score -= state.tapCost;
-                state.tapPower += 1;
-                state.tapCost = Math.floor(state.tapCost * 1.6);
-                updateUI(); save();
-            }
-        });
-
-        document.getElementById('btnAuto').addEventListener('click', function() {
-            if (state.score >= state.autoCost) {
-                state.score -= state.autoCost;
-                state.passive += 2;
-                state.autoCost = Math.floor(state.autoCost * 1.7);
-                updateUI(); save();
-            }
-        });
-
-        setInterval(function() {
-            if (state.passive > 0) state.score += state.passive;
-            if (state.energy < state.maxEnergy) state.energy = Math.min(state.maxEnergy, state.energy + 2);
-            updateUI(); save();
-        }, 1000);
-
-        updateUI();
-    </script>
-</body>
-</html>
+</div>
+<script>
+try{if(window.Telegram&&window.Telegram.WebApp){window.Telegram.WebApp.ready();window.Telegram.WebApp.expand()}}catch(e){}
+const RANKS=[{name:"Ур. 1 • Новичок",min:0},{name:"Ур. 2 • Суетолог",min:500},{name:"Ур. 3 • Фанат LIT ENERGY",min:2500},{name:"Ур. 4 • Поджигатель",min:10000},{name:"Ур. 5 • Хозяин Акулы",min:50000},{name:"Ур. 6 • Легенда Кондиций",min:200000}];
+let state={score:0,totalEarned:0,tapPower:1,passive:0,energy:500,maxEnergy:500,tapCost:50,autoCost:150,energyCost:200,refillCooldown:0,caseCooldown:0,lastVisit:Date.now()};
+try{const s=localStorage.getItem('litvinSaveUltra');if(s)state=Object.assign(state,JSON.parse(s))}catch(e){}
+const secPassed=Math.min(10800,Math.floor((Date.now()-(state.lastVisit||Date.now()))/1000));
+if(secPassed>5){if(state.passive>0){const e=secPassed*state.passive;state.score+=e;state.totalEarned+=e}state.energy=Math.min(state.maxEnergy,state.energy+secPassed*3);if(state.refillCooldown>0)state.refillCooldown=Math.max(0,state.refillCooldown-secPassed);if(state.caseCooldown>0)state.caseCooldown=Math.max(0,state.caseCooldown-secPassed)}
+let combo=0,feverMode=false;
+const coin=document.getElementById('coin'),tapZone=document.getElementById('tapZone');
+function save(){state.lastVisit=Date.now();try{localStorage.setItem('litvinSaveUltra',JSON.stringify(state))}catch(e){}}
+function fmt(n){n=Math.floor(n);if(n>=1e6)return(n/1e6).toFixed(2)+'M';if(n>=1e4)return(n/1e3).toFixed(1)+'K';return n.toLocaleString('ru-RU')}
+function pop(txt,x,y,cls){const r=tapZone.getBoundingClientRect(),el=document.createElement('div');el.className='floating '+(cls||'');el.innerText=txt;el.style.left=(x-r.left-25)+'px';el.style.top=(y-r.top-20)+'px';tapZone.appendChild(el);setTimeout(()=>el.remove(),650)}
+function updateUI(){
+    document.getElementById('score').innerText=fmt(state.score);
+    document.getElementById('passive').innerText=fmt(state.passive);
+    document.getElementById('tapVal').innerText=state.tapPower*(feverMode?2:1);
+    document.getElementById('energy').innerText=Math.floor(state.energy);
+    document.getElementById('maxEnergy').innerText=state.maxEnergy;
+    document.getElementById('tapCost').innerText=fmt(state.tapCost);
+    document.getElementById('autoCost').innerText=fmt(state.autoCost);
+    document.getElementById('energyCost').innerText=fmt(state.energyCost);
+    document.getElementById('energyBar').style.width=Math.max(0,Math.min(100,(state.energy/state.maxEnergy*100)))+'%';
+    document.getElementById('btnTap').classList.toggle('disabled',state.score<state.tapCost);
+    document.getElementById('btnAuto').classList.toggle('disabled',state.score<state.autoCost);
+    document.getElementById('btnEnergy').classList.toggle('disabled',state.score<state.energyCost);
+    const rf=document.getElementById('btnRefill'),rs=document.getElementById('refillStatus');
+    rf.classList.toggle('disabled',state.refillCooldown>0);
+    rs.innerText=state.refillCooldown>0?'Ждать: '+state.refillCooldown+'с':'БЕСПЛАТНО';
+    const bc=document.getElementById('btnCase');
+    bc.classList.toggle('disabled',state.caseCooldown>0);
+    bc.innerText=state.caseCooldown>0?'🎁 '+state.caseCooldown+'с':'🎁 Кейс LIT';
+    document.getElementById('comboBar').style.width=combo+'%';
+    coin.classList.toggle('fever',feverMode);
+    document.getElementById('comboText').innerText=feverMode?'🔥 КОНДИЦИИ x2 АКТИВНЫ! 🔥':(combo>10?'Разгон: '+Math.floor(combo)+'%':'Тапай быстрее для x2!');
+    let idx=0;for(let i=0;i<RANKS.length;i++)if(state.totalEarned>=RANKS[i].min)idx=i;
+    document.getElementById('rankName').innerText=RANKS[idx].name;
+    const nxt=RANKS[idx+1];
+    document.getElementById('levelBar').style.width=nxt?Math.min(100,((state.totalEarned-RANKS[idx].min)/(nxt.min-RANKS[idx].min))*100)+'%':'100%';
+}
+function handleTap(x,y){
+    if(state.energy>=state.tapPower){
+Используйте код с осторожностью.
+const crit=Math.random()<0.08,gain=state.tapPower*(feverMode?2:1)(crit?5:1);
+state.score+=gain;state.totalEarned+=gain;state.energy-=state.tapPower;
+combo=Math.min(100,combo+6);if(combo>=100)feverMode=true;
+coin.classList.add('tapped');setTimeout(()=>coin.classList.remove('tapped'),70);
+try{if(window.Telegram&&window.Telegram.WebApp&&window.Telegram.WebApp.HapticFeedback)window.Telegram.WebApp.HapticFeedback.impactOccurred(crit||feverMode?'heavy':'medium')}catch(e){}
+pop((crit?'КРИТ +':'+')+fmt(gain),x,y,crit?'mega':(feverMode?'crit':''));
+updateUI();save();
+}
+}
+coin.addEventListener('touchstart',e=>{e.preventDefault();for(let i=0;i<e.changedTouches.length;i++)handleTap(e.changedTouches[i].clientX,e.changedTouches[i].clientY)},{passive:false});
+coin.addEventListener('mousedown',e=>handleTap(e.clientX,e.clientY));
+document.getElementById('btnCase').onclick=()=>{if(state.caseCooldown<=0){const b=Math.max(100,state.tapPower50+state.passive15);state.score+=b;state.totalEarned+=b;state.caseCooldown=120;const r=tapZone.getBoundingClientRect();pop('🎁 +'+fmt(b),r.left+r.width/2,r.top+60,'mega');updateUI();save()}};
+document.getElementById('btnTap').onclick=()=>{if(state.score>=state.tapCost){state.score-=state.tapCost;state.tapPower+=1;state.tapCost=Math.floor(state.tapCost1.65);updateUI();save()}};
+document.getElementById('btnAuto').onclick=()=>{if(state.score>=state.autoCost){state.score-=state.autoCost;state.passive+=3;state.autoCost=Math.floor(state.autoCost1.7);updateUI();save()}};
+document.getElementById('btnEnergy').onclick=()=>{if(state.score>=state.energyCost){state.score-=state.energyCost;state.maxEnergy+=250;state.energy=state.maxEnergy;state.energyCost=Math.floor(state.energyCost1.8);updateUI();save()}};
+document.getElementById('btnRefill').onclick=()=>{if(state.refillCooldown<=0&&state.energy<state.maxEnergy){state.energy=state.maxEnergy;state.refillCooldown=60;updateUI();save()}};
+setInterval(()=>{if(document.querySelector('.golden-can'))return;const c=document.createElement('div');c.className='golden-can';c.innerText='🥫✨';c.style.left=(15+Math.random()65)+'%';c.style.top=(15+Math.random()60)+'%';tapZone.appendChild(c);const take=e=>{e.preventDefault();e.stopPropagation();const p=Math.max(75,state.tapPower35+state.passive10);state.score+=p;state.totalEarned+=p;const r=c.getBoundingClientRect();pop('⚡ +'+fmt(p),r.left,r.top,'mega');c.remove();updateUI();save()};c.addEventListener('touchstart',take,{passive:false});c.onclick=take;setTimeout(()=>{if(c.parentNode)c.remove()},4500)},25000);
+setInterval(()=>{if(combo>0){combo=Math.max(0,combo-(feverMode?2.5:3.5));if(combo===0)feverMode=false;updateUI()}},150);
+setInterval(()=>{if(state.passive>0){state.score+=state.passive;state.totalEarned+=state.passive}if(state.energy<state.maxEnergy)state.energy=Math.min(state.maxEnergy,state.energy+3);if(state.refillCooldown>0)state.refillCooldown-=1;if(state.caseCooldown>0)state.caseCooldown-=1;updateUI();save()},1000);
+updateUI();
