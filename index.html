@@ -1,4 +1,3 @@
-html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -77,7 +76,7 @@ html
       <button class="mbtn mel" id="mMel" onclick="setChar('mel')">💸 МЕЛЛСТРОЙ</button>
     </div>
     <div class="zone">
-      <div class="coin" id="coin">
+      <div class="coin" id="coin" onclick="clickCoin(event)">
         <div class="em" id="cEm">🐆🔥</div>
         <div class="tt" id="cTt">ТАНЦУЙ<br>ПАНТЕРА</div>
         <div class="ts" id="cTs">Литвин: Поджог Акулы</div>
@@ -115,17 +114,16 @@ html
       </div>
     </div>
   </div>
-
   <script>
     const tg = window.Telegram && window.Telegram.WebApp;
     if (tg) { try { tg.expand(); tg.ready(); } catch (e) {} }
 
     const uid = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || 'local';
-    const KEY = 'lit_mel_final_' + uid;
+    const KEY = 'lit_mel_ok_' + uid;
 
-    let s = { bal: 0, gold: 57, tp: 1, pas: 0, en: 1000, men: 1000, ch: 'lit', l1: 1, l2: 0, l3: 0, mult: 1, taps: 0, vip: false, done: [] };
+    let s = { bal: 0, gold: 57, tp: 1, pas: 0, en: 1000, men: 1000, ch: 'lit', l1: 1, l2: 0, l3: 0, mult: 1, taps: 0, vip: false, done: '' };
     try {
-      const saved = localStorage.getItem(KEY) || localStorage.getItem('litvin_mell_arseniy_v3_' + uid);
+      const saved = localStorage.getItem(KEY) || localStorage.getItem('lit_mel_final_' + uid);
       if (saved) s = Object.assign(s, JSON.parse(saved));
     } catch (e) {}
 
@@ -157,143 +155,164 @@ html
 
     function updateChar() {
       const coin = document.getElementById('coin');
-coin.className = 'coin' + (s.ch === 'mel' ? ' mel' : '') + (s.vip ? ' vip' : '');
-document.getElementById('mLit').classList.toggle('on', s.ch === 'lit');
-document.getElementById('mMel').classList.toggle('on', s.ch === 'mel');
-if (s.ch === 'mel') {
-document.getElementById('cEm').textContent = '💸🎰';
-document.getElementById('cTt').innerHTML = 'ЧТО ЗА БИЗНЕС
-СУКА?!';
-document.getElementById('cTs').textContent = 'Меллстрой: Шанс крита x3';
-} else {
-document.getElementById('cEm').textContent = '🐆🔥';
-document.getElementById('cTt').innerHTML = 'ТАНЦУЙ
-ПАНТЕРА';
-document.getElementById('cTs').textContent = 'Литвин: Поджог Акулы';
-}
-}
-const coinEl = document.getElementById('coin');
-function doTap(x, y) {
-if (s.en < 1 && !s.vip) return;
-const base = s.tp * s.mult;
-const crit = s.vip || (s.ch === 'mel' && Math.random() < 0.25);
-const add = crit ? base * 3 : base;
-s.bal += add;
-s.taps += 1;
-if (!s.vip) s.en = Math.max(0, s.en - 1);
-coinEl.classList.add('tap');
-setTimeout(() => coinEl.classList.remove('tap'), 60);
-const p = document.createElement('div');
-p.className = 'pop';
-p.textContent = (crit ? '👑 +' : '+') + add.toLocaleString('ru-RU');
-p.style.left = (x - 20) + 'px';
-p.style.top = (y - 25) + 'px';
-if (crit) p.style.color = '#ffcc00';
-document.body.appendChild(p);
-setTimeout(() => p.remove(), 700);
-render(); save();
-}
-coinEl.addEventListener('pointerdown', (e) => {
-e.preventDefault();
-doTap(e.clientX, e.clientY);
-});
-const p1 = () => Math.floor(100 * Math.pow(1.6, s.l1 - 1));
-const p2 = () => Math.floor(250 * Math.pow(1.7, s.l2));
-const p3 = () => Math.floor(500 * Math.pow(1.8, s.l3));
-function buy(t) {
-if (t === 'lit') { if (s.bal < p1()) return msg('Мало монет!'); s.bal -= p1(); s.l1++; s.tp += 5; }
-if (t === 'mel') { if (s.bal < p2()) return msg('Мало монет!'); s.bal -= p2(); s.l2++; s.pas += 15; }
-if (t === 'aut') { if (s.bal < p3()) return msg('Мало монет!'); s.bal -= p3(); s.l3++; }
-render(); save();
-}
-function refill() { s.en = s.men; render(); save(); msg('🚀 Полный бак! Энергия 100%.'); }
-const quests = [
-{ id: 'q1', t: '🎁 Ежедневный бонус', r: 5000, g: 10, ok: () => true },
-{ id: 'q2', t: '🔥 Сделать 50 тапов', r: 15000, g: 25, ok: () => s.taps >= 50 },
-{ id: 'q3', t: '📢 Подписаться на канал', r: 25000, g: 50, ok: () => true },
-{ id: 'q4', t: '🤝 Пригласить друга', r: 50000, g: 100, ok: () => true }
-];
-function renderQuests() {
-document.getElementById('qList').innerHTML = quests.map(q => {
-const d = s.done.includes(q.id);
-return <div class="qitem"><div><div class="c1">${q.t}</div><div class="c3">+${q.r.toLocaleString()} 💰 • +${q.g} 🪙</div></div><button class="btn ${d?'done':''}" onclick="takeQ('${q.id}')">${d?'Готово':'Забрать'}</button></div>;
-}).join('');
-}
-function takeQ(id) {
-if (s.done.includes(id)) return;
-const q = quests.find(x => x.id === id);
-if (!q.ok()) return msg('Сначала выполни условие!');
-s.done.push(id); s.bal += q.r; s.gold += q.g;
-renderQuests(); render(); save(); msg('Награда получена!');
-}
-function spin() {
-if (s.bal < 500) return msg('Нужно 500 монет!');
-s.bal -= 500;
-if (s.vip || Math.random() > 0.45) {
-const list =;
-const m = s.vip ? 10 : list[Math.floor(Math.random() * list.length)];
-const win = 500 * m;
-s.bal += win; s.gold += 5;
-msg(🎰 ЗАНОС x${m}! Выигрыш: +${win.toLocaleString()} 💰 и +5 🪙!);
-} else { msg('💨 Мимо! Крути ещё.'); }
-render(); save();
-}
-let mOn = false, mBank = 0, bombs = [];
-function drawGrid() {
-const g = document.getElementById('mGrid'); g.innerHTML = '';
-for (let i = 0; i < 12; i++) {
-const c = document.createElement('div'); c.className = 'mcell'; c.textContent = '?';
-c.onclick = () => hitCell(i, c); g.appendChild(c);
-}
-}
-function toggleMines() {
-if (!mOn) {
-if (s.bal < 1000) return msg('Нужно 1 000 монет!');
-s.bal -= 1000; mOn = true; mBank = 1000;
-bombs = s.vip ? [] : [Math.floor(Math.random() * 6), 6 + Math.floor(Math.random() * 6)];
-document.getElementById('mBtn').textContent = 'ЗАБРАТЬ 1000';
-drawGrid(); render(); save();
-} else {
-s.bal += mBank; mOn = false;
-document.getElementById('mBtn').textContent = 'ИГРАТЬ (1000)';
-msg(💰 Забрано ${mBank.toLocaleString()} монет!);
-render(); save();
-}
-}
-function hitCell(i, c) {
-if (!mOn || c.dataset.o) return;
-c.dataset.o = '1';
-if (bombs.includes(i)) {
-c.textContent = '💥'; c.style.background = '#7f1d1d'; mOn = false;
-document.getElementById('mBtn').textContent = 'ИГРАТЬ (1000)';
-msg('💥 БАБАХ! Акула сгорела.');
-} else {
-c.textContent = '💎'; c.style.background = '#065f46'; mBank += 1500;
-document.getElementById('mBtn').textContent = 'ЗАБРАТЬ ' + mBank;
-}
-}
-function render() {
-document.getElementById('bal').textContent = Math.floor(s.bal).toLocaleString('ru-RU');
-document.getElementById('gold').textContent = s.gold.toLocaleString('ru-RU');
-const auto = s.l3 * s.tp * s.mult;
-document.getElementById('pas').textContent = '+' + (s.pas + auto).toLocaleString('ru-RU') + '/с';
-document.getElementById('tapVal').textContent = '+' + (s.tp * s.mult).toLocaleString('ru-RU');
-document.getElementById('taps').textContent = s.taps;
-document.getElementById('lvl').textContent = Math.max(1, Math.floor(Math.log10(Math.max(10, s.bal))));
-document.getElementById('vipTag').textContent = s.vip ? '👑 VIP' : '';
-if (s.vip) { const b = document.getElementById('vipBtn'); b.textContent = '👑 VIP Арсения (ВКЛ)'; b.classList.add('on'); }
-document.getElementById('en').textContent = s.vip ? '∞' : Math.floor(s.en);
-document.getElementById('men').textContent = s.vip ? '∞' : s.men;
-document.getElementById('efill').style.width = s.vip ? '100%' : (s.en / s.men * 100) + '%';
-document.getElementById('pLit').textContent = p1().toLocaleString('ru-RU');
-document.getElementById('pMel').textContent = p2().toLocaleString('ru-RU');
-document.getElementById('pAut').textContent = p3().toLocaleString('ru-RU');
-}
-setInterval(() => {
-const auto = s.l3 * s.tp * s.mult;
-if (s.pas + auto > 0) s.bal += (s.pas + auto);
-if (s.en < s.men) s.en = Math.min(s.men, s.en + 3);
-render(); save();
-}, 1000);
-drawGrid(); updateChar(); render();
+      coin.className = 'coin' + (s.ch === 'mel' ? ' mel' : '') + (s.vip ? ' vip' : '');
+      document.getElementById('mLit').classList.toggle('on', s.ch === 'lit');
+      document.getElementById('mMel').classList.toggle('on', s.ch === 'mel');
+      if (s.ch === 'mel') {
+        document.getElementById('cEm').textContent = '💸🎰';
+        document.getElementById('cTt').innerHTML = 'ЧТО ЗА БИЗНЕС<br>СУКА?!';
+        document.getElementById('cTs').textContent = 'Меллстрой: Шанс крита x3';
+      } else {
+        document.getElementById('cEm').textContent = '🐆🔥';
+        document.getElementById('cTt').innerHTML = 'ТАНЦУЙ<br>ПАНТЕРА';
+        document.getElementById('cTs').textContent = 'Литвин: Поджог Акулы';
+      }
+    }
 
+    const coinEl = document.getElementById('coin');
+    function doTap(x, y) {
+      if (s.en < 1 && !s.vip) return;
+      const base = s.tp * s.mult;
+      const crit = s.vip || (s.ch === 'mel' && Math.random() < 0.25);
+      const add = crit ? base * 3 : base;
+
+      s.bal += add;
+      s.taps += 1;
+      if (!s.vip) s.en = Math.max(0, s.en - 1);
+
+      coinEl.classList.add('tap');
+      setTimeout(() => coinEl.classList.remove('tap'), 60);
+
+      const p = document.createElement('div');
+      p.className = 'pop';
+      p.textContent = (crit ? '👑 +' : '+') + add.toLocaleString('ru-RU');
+      p.style.left = ((x || 180) - 20) + 'px';
+      p.style.top = ((y || 320) - 25) + 'px';
+      if (crit) p.style.color = '#ffcc00';
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 700);
+
+      render(); save();
+    }
+
+    function clickCoin(e) { doTap(e.clientX, e.clientY); }
+    coinEl.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      for (let i = 0; i < e.changedTouches.length; i++) doTap(e.changedTouches[i].clientX, e.changedTouches[i].clientY);
+    }, { passive: false });
+    const p1 = () => Math.floor(100 * Math.pow(1.6, s.l1 - 1));
+    const p2 = () => Math.floor(250 * Math.pow(1.7, s.l2));
+    const p3 = () => Math.floor(500 * Math.pow(1.8, s.l3));
+
+    function buy(t) {
+      if (t === 'lit') { if (s.bal < p1()) return msg('Мало монет!'); s.bal -= p1(); s.l1++; s.tp += 5; }
+      if (t === 'mel') { if (s.bal < p2()) return msg('Мало монет!'); s.bal -= p2(); s.l2++; s.pas += 15; }
+      if (t === 'aut') { if (s.bal < p3()) return msg('Мало монет!'); s.bal -= p3(); s.l3++; }
+      render(); save();
+    }
+
+    function refill() { s.en = s.men; render(); save(); msg('🚀 Полный бак! Энергия 100%.'); }
+
+    const quests = [
+      { id: 'q1', t: '🎁 Ежедневный бонус', r: 5000, g: 10, ok: () => true },
+      { id: 'q2', t: '🔥 Сделать 50 тапов', r: 15000, g: 25, ok: () => s.taps >= 50 },
+      { id: 'q3', t: '📢 Подписаться на канал', r: 25000, g: 50, ok: () => true },
+      { id: 'q4', t: '🤝 Пригласить друга', r: 50000, g: 100, ok: () => true }
+    ];
+
+    function renderQuests() {
+      const doneStr = String(s.done || '');
+      document.getElementById('qList').innerHTML = quests.map(q => {
+        const d = doneStr.includes(q.id);
+        return `<div class="qitem"><div><div class="c1">${q.t}</div><div class="c3">+${q.r.toLocaleString()} 💰 • +${q.g} 🪙</div></div><button class="btn ${d?'done':''}" onclick="takeQ('${q.id}')">${d?'Готово':'Забрать'}</button></div>`;
+      }).join('');
+    }
+
+    function takeQ(id) {
+      const doneStr = String(s.done || '');
+      if (doneStr.includes(id)) return;
+      const q = quests.find(x => x.id === id);
+      if (!q.ok()) return msg('Сначала выполни условие!');
+      s.done = doneStr + ',' + id; s.bal += q.r; s.gold += q.g;
+      renderQuests(); render(); save(); msg('Награда получена!');
+    }
+
+    function spin() {
+      if (s.bal < 500) return msg('Нужно 500 монет!');
+      s.bal -= 500;
+      if (s.vip || Math.random() > 0.45) {
+        const m = s.vip ? 10 : (Math.floor(Math.random() * 4) + 2);
+        const win = 500 * m;
+        s.bal += win; s.gold += 5;
+        msg(`🎰 ЗАНОС x${m}! Выигрыш: +${win.toLocaleString()} 💰 и +5 🪙!`);
+      } else { msg('💨 Мимо! Крути ещё.'); }
+      render(); save();
+    }
+
+    let mOn = false, mBank = 0, b1 = -1, b2 = -1;
+    function drawGrid() {
+      const g = document.getElementById('mGrid'); g.innerHTML = '';
+      for (let i = 0; i < 12; i++) {
+        const c = document.createElement('div'); c.className = 'mcell'; c.textContent = '?';
+        c.onclick = () => hitCell(i, c); g.appendChild(c);
+      }
+    }
+
+    function toggleMines() {
+      if (!mOn) {
+        if (s.bal < 1000) return msg('Нужно 1 000 монет!');
+        s.bal -= 1000; mOn = true; mBank = 1000;
+        b1 = s.vip ? -1 : Math.floor(Math.random() * 6);
+        b2 = s.vip ? -1 : 6 + Math.floor(Math.random() * 6);
+        document.getElementById('mBtn').textContent = 'ЗАБРАТЬ 1000';
+        drawGrid(); render(); save();
+      } else {
+        s.bal += mBank; mOn = false;
+        document.getElementById('mBtn').textContent = 'ИГРАТЬ (1000)';
+        msg(`💰 Забрано ${mBank.toLocaleString()} монет!`);
+        render(); save();
+      }
+    }
+
+    function hitCell(i, c) {
+      if (!mOn || c.dataset.o) return;
+      c.dataset.o = '1';
+      if (i === b1 || i === b2) {
+        c.textContent = '💥'; c.style.background = '#7f1d1d'; mOn = false;
+        document.getElementById('mBtn').textContent = 'ИГРАТЬ (1000)';
+        msg('💥 БАБАХ! Акула сгорела.');
+      } else {
+        c.textContent = '💎'; c.style.background = '#065f46'; mBank += 1500;
+        document.getElementById('mBtn').textContent = 'ЗАБРАТЬ ' + mBank;
+      }
+    }
+
+    function render() {
+      document.getElementById('bal').textContent = Math.floor(s.bal).toLocaleString('ru-RU');
+      document.getElementById('gold').textContent = s.gold.toLocaleString('ru-RU');
+      const auto = s.l3 * s.tp * s.mult;
+      document.getElementById('pas').textContent = '+' + (s.pas + auto).toLocaleString('ru-RU') + '/с';
+      document.getElementById('tapVal').textContent = '+' + (s.tp * s.mult).toLocaleString('ru-RU');
+      document.getElementById('taps').textContent = s.taps;
+      document.getElementById('lvl').textContent = Math.max(1, Math.floor(Math.log10(Math.max(10, s.bal))));
+      document.getElementById('vipTag').textContent = s.vip ? '👑 VIP' : '';
+      if (s.vip) { const b = document.getElementById('vipBtn'); b.textContent = '👑 VIP Арсения (ВКЛ)'; b.classList.add('on'); }
+      document.getElementById('en').textContent = s.vip ? '∞' : Math.floor(s.en);
+      document.getElementById('men').textContent = s.vip ? '∞' : s.men;
+      document.getElementById('efill').style.width = s.vip ? '100%' : (s.en / s.men * 100) + '%';
+      document.getElementById('pLit').textContent = p1().toLocaleString('ru-RU');
+      document.getElementById('pMel').textContent = p2().toLocaleString('ru-RU');
+      document.getElementById('pAut').textContent = p3().toLocaleString('ru-RU');
+    }
+
+    setInterval(() => {
+      const auto = s.l3 * s.tp * s.mult;
+      if (s.pas + auto > 0) s.bal += (s.pas + auto);
+      if (s.en < s.men) s.en = Math.min(s.men, s.en + 3);
+      render(); save();
+    }, 1000);
+
+    drawGrid(); updateChar(); render();
+  </script>
+</body>
+</html>
