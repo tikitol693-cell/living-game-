@@ -11,8 +11,8 @@
     .top { display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap; }
     .pill { background: #131722; border: 1px solid #232a3b; border-radius: 99px; padding: 5px 10px; font-size: 11px; font-weight: 800; }
     .gold { color: #ffcc00; border-color: rgba(255,204,0,.4); }
-    .vip-btn { background: linear-gradient(135deg, #f59e0b, #ef4444); color: #fff; border: none; cursor: pointer; box-shadow: 0 0 12px rgba(245,158,11,.5); }
-    .vip-btn.on { background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 0 14px rgba(16,185,129,.6); }
+    .vip-buy { background: linear-gradient(135deg, #a855f7, #ec4899); color: #fff; border: none; cursor: pointer; box-shadow: 0 0 12px rgba(236,72,153,.45); }
+    .vip-buy.on { background: linear-gradient(135deg, #f59e0b, #eab308); color: #000; box-shadow: 0 0 14px rgba(255,204,0,.6); }
     .bal-box { text-align: center; margin: 4px 0; }
     .bal { font-size: 38px; font-weight: 900; }
     .sub { font-size: 11px; color: #8b95a5; }
@@ -29,13 +29,14 @@
     .zone { display: flex; justify-content: center; align-items: center; flex: 1; }
     .coin { width: 195px; height: 195px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #1e293b, #0f172a); border: 5px solid #00ff88; box-shadow: 0 0 30px rgba(0,255,136,.25); display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: transform .05s; }
     .coin.mel { border-color: #ec4899; box-shadow: 0 0 30px rgba(236,72,153,.35); }
-    .coin.vip { border-color: #ffcc00; box-shadow: 0 0 45px rgba(255,204,0,.6); }
+    .coin.vip { border-color: #ffcc00; box-shadow: 0 0 45px rgba(255,204,0,.65); }
     .coin.tap { transform: scale(.91); }
     .em { font-size: 48px; pointer-events: none; }
     .tt { font-size: 15px; font-weight: 900; text-align: center; line-height: 1.15; margin-top: 4px; pointer-events: none; }
     .ts { font-size: 10px; color: #ffcc00; font-weight: 700; margin-top: 3px; pointer-events: none; }
-    .pop { position: fixed; font-size: 24px; font-weight: 900; color: #fff; text-shadow: 0 2px 10px rgba(0,255,136,.8); pointer-events: none; animation: up .7s ease-out forwards; z-index: 99; }
-    @keyframes up { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-85px) scale(1.2); } }
+    .pop { position: fixed; font-size: 24px; font-weight: 900; color: #fff; text-shadow: 0 2px 10px rgba(0,255,136,.8); pointer-events: none; animation: up .75s ease-out forwards; z-index: 99; }
+    .pop.bonus { font-size: 30px; color: #ffcc00; text-shadow: 0 0 16px rgba(255,204,0,.95); }
+    @keyframes up { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-90px) scale(1.25); } }
     .ebar { width: 100%; height: 8px; background: #1e2433; border-radius: 99px; overflow: hidden; margin: 4px 0 8px; }
     .efill { height: 100%; width: 100%; background: linear-gradient(90deg, #00ff88, #00d4ff); }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
@@ -55,7 +56,7 @@
 <body>
   <div class="top">
     <div class="pill gold">🪙 ГОЛДА: <span id="gold">57</span></div>
-    <button class="pill vip-btn" id="vipBtn" onclick="runArseniy()">👑 Подкрутка для Арсения</button>
+    <button class="pill vip-buy" id="vipBtn" onclick="buyVip()">💎 КУПИТЬ VIP (50 000 💰)</button>
     <div class="pill">🏆 Ур. <span id="lvl">1</span> <span id="vipTag"></span></div>
   </div>
 
@@ -79,7 +80,7 @@
       <div class="coin" id="coin" onclick="clickCoin(event)">
         <div class="em" id="cEm">🐆🔥</div>
         <div class="tt" id="cTt">ТАНЦУЙ<br>ПАНТЕРА</div>
-        <div class="ts" id="cTs">Литвин: Поджог Акулы</div>
+        <div class="ts" id="cTs">Шанс бонуски +1 000 💰</div>
       </div>
     </div>
     <div>
@@ -119,28 +120,33 @@
     if (tg) { try { tg.expand(); tg.ready(); } catch (e) {} }
 
     const uid = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || 'local';
-    const KEY = 'lit_mel_ok_' + uid;
+    const KEY = 'lit_mel_bonus_v4_' + uid;
 
     let s = { bal: 0, gold: 57, tp: 1, pas: 0, en: 1000, men: 1000, ch: 'lit', l1: 1, l2: 0, l3: 0, mult: 1, taps: 0, vip: false, done: '' };
     try {
-      const saved = localStorage.getItem(KEY) || localStorage.getItem('lit_mel_final_' + uid);
+      const saved = localStorage.getItem(KEY);
       if (saved) s = Object.assign(s, JSON.parse(saved));
     } catch (e) {}
 
     const save = () => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} };
     const msg = (t) => { if (tg && tg.showAlert) { try { tg.showAlert(t); return; } catch (e) {} } alert(t); };
 
-    function runArseniy() {
-      if (s.vip) return msg('👑 Подкрутка для Арсения уже включена!');
+    // Покупка VIP за 50 000 монет
+    function buyVip() {
+      if (s.vip) {
+        return msg('👑 Твой VIP активен!\nПриколюхи:\n• Множитель тапа x5\n• Повышенный шанс бонусок +1 000 и +5 000 💰\n• +100/с пассивного дохода\n• Повышенный шанс заносов в рулетке');
+      }
+      if (s.bal < 50000) {
+        return msg('💎 VIP стоит 50 000 монет!\nОн даёт: x5 к тапу, частые бонуски по 1 000–5 000 💰, +100/с пассива и золотой статус.');
+      }
+      s.bal -= 50000;
       s.vip = true;
-      s.bal += 10000000;
-      s.gold += 5000;
-      s.mult = 50;
-      s.pas += 5000;
-      s.men = 999999;
-      s.en = 999999;
+      s.mult = 5;
+      s.pas += 100;
+      s.men += 2000;
+      s.en = s.men;
       save(); updateChar(); render();
-      msg('👑 ПОДКРУТКА ДЛЯ АРСЕНИЯ ВКЛЮЧЕНА!\n+10 000 000 монет, +5 000 Голды, x50 тап и бесконечная энергия!');
+      msg('👑 VIP КУПЛЕН!\nАктивированы x5 к тапу, +100/с пассива, +2 000 энергии и частые бонуски!');
     }
 
     function goTab(id, el) {
@@ -161,36 +167,39 @@
       if (s.ch === 'mel') {
         document.getElementById('cEm').textContent = '💸🎰';
         document.getElementById('cTt').innerHTML = 'ЧТО ЗА БИЗНЕС<br>СУКА?!';
-        document.getElementById('cTs').textContent = 'Меллстрой: Шанс крита x3';
+        document.getElementById('cTs').textContent = s.vip ? 'VIP: Частые бонуски +5 000 💰' : 'Шанс бонуски +1 000 💰';
       } else {
         document.getElementById('cEm').textContent = '🐆🔥';
         document.getElementById('cTt').innerHTML = 'ТАНЦУЙ<br>ПАНТЕРА';
-        document.getElementById('cTs').textContent = 'Литвин: Поджог Акулы';
+        document.getElementById('cTs').textContent = s.vip ? 'VIP: Частые бонуски +5 000 💰' : 'Шанс бонуски +1 000 💰';
       }
     }
 
     const coinEl = document.getElementById('coin');
     function doTap(x, y) {
-      if (s.en < 1 && !s.vip) return;
+      if (s.en < 1) return;
       const base = s.tp * s.mult;
-      const crit = s.vip || (s.ch === 'mel' && Math.random() < 0.25);
-      const add = crit ? base * 3 : base;
+
+      // Рандомная бонуска (8% обычно, 18% с VIP)
+      const bonusChance = s.vip ? 0.18 : 0.08;
+      const isBonus = Math.random() < bonusChance;
+      const bonusCash = isBonus ? (s.vip ? 5000 : 1000) : 0;
+      const add = base + bonusCash;
 
       s.bal += add;
       s.taps += 1;
-      if (!s.vip) s.en = Math.max(0, s.en - 1);
+      s.en = Math.max(0, s.en - 1);
 
       coinEl.classList.add('tap');
       setTimeout(() => coinEl.classList.remove('tap'), 60);
 
       const p = document.createElement('div');
-      p.className = 'pop';
-      p.textContent = (crit ? '👑 +' : '+') + add.toLocaleString('ru-RU');
-      p.style.left = ((x || 180) - 20) + 'px';
+      p.className = 'pop' + (isBonus ? ' bonus' : '');
+      p.textContent = isBonus ? `🎁 БОНУС +${add.toLocaleString('ru-RU')}` : `+${add.toLocaleString('ru-RU')}`;
+      p.style.left = ((x || 180) - (isBonus ? 65 : 20)) + 'px';
       p.style.top = ((y || 320) - 25) + 'px';
-      if (crit) p.style.color = '#ffcc00';
       document.body.appendChild(p);
-      setTimeout(() => p.remove(), 700);
+      setTimeout(() => p.remove(), 750);
 
       render(); save();
     }
@@ -240,8 +249,9 @@
     function spin() {
       if (s.bal < 500) return msg('Нужно 500 монет!');
       s.bal -= 500;
-      if (s.vip || Math.random() > 0.45) {
-        const m = s.vip ? 10 : (Math.floor(Math.random() * 4) + 2);
+      const chance = s.vip ? 0.30 : 0.48;
+      if (Math.random() > chance) {
+        const m = Math.floor(Math.random() * 5) + 2;
         const win = 500 * m;
         s.bal += win; s.gold += 5;
         msg(`🎰 ЗАНОС x${m}! Выигрыш: +${win.toLocaleString()} 💰 и +5 🪙!`);
@@ -262,8 +272,8 @@
       if (!mOn) {
         if (s.bal < 1000) return msg('Нужно 1 000 монет!');
         s.bal -= 1000; mOn = true; mBank = 1000;
-        b1 = s.vip ? -1 : Math.floor(Math.random() * 6);
-        b2 = s.vip ? -1 : 6 + Math.floor(Math.random() * 6);
+        b1 = Math.floor(Math.random() * 6);
+        b2 = s.vip ? -1 : (6 + Math.floor(Math.random() * 6));
         document.getElementById('mBtn').textContent = 'ЗАБРАТЬ 1000';
         drawGrid(); render(); save();
       } else {
@@ -296,10 +306,10 @@
       document.getElementById('taps').textContent = s.taps;
       document.getElementById('lvl').textContent = Math.max(1, Math.floor(Math.log10(Math.max(10, s.bal))));
       document.getElementById('vipTag').textContent = s.vip ? '👑 VIP' : '';
-      if (s.vip) { const b = document.getElementById('vipBtn'); b.textContent = '👑 VIP Арсения (ВКЛ)'; b.classList.add('on'); }
-      document.getElementById('en').textContent = s.vip ? '∞' : Math.floor(s.en);
-      document.getElementById('men').textContent = s.vip ? '∞' : s.men;
-      document.getElementById('efill').style.width = s.vip ? '100%' : (s.en / s.men * 100) + '%';
+      if (s.vip) { const b = document.getElementById('vipBtn'); b.textContent = '👑 VIP АКТИВЕН'; b.classList.add('on'); }
+      document.getElementById('en').textContent = Math.floor(s.en);
+      document.getElementById('men').textContent = s.men;
+      document.getElementById('efill').style.width = (s.en / s.men * 100) + '%';
       document.getElementById('pLit').textContent = p1().toLocaleString('ru-RU');
       document.getElementById('pMel').textContent = p2().toLocaleString('ru-RU');
       document.getElementById('pAut').textContent = p3().toLocaleString('ru-RU');
