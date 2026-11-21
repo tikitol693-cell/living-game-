@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Litvin Tap</title>
+    <script src="https://telegram.org"></script>
+    <style>
+        * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
+        body {
+            margin: 0; padding: 20px; background: #0f0f0f; color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+            height: 100vh; overflow: hidden;
+        }
+        .header { text-align: center; margin-top: 10px; }
+        .balance-title { font-size: 14px; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+        .balance { font-size: 46px; font-weight: 900; color: #00e676; margin: 5px 0; }
+        .income { font-size: 14px; color: #aaa; }
+
+        .tap-zone { position: relative; display: flex; justify-content: center; align-items: center; }
+        .coin {
+            width: 220px; height: 220px; border-radius: 50%;
+            background: radial-gradient(circle, #1db954 0%, #0a4d22 100%);
+            border: 6px solid #00e676; box-shadow: 0 0 40px rgba(0, 230, 118, 0.4);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            cursor: pointer; transition: transform 0.08s;
+        }
+        .coin:active { transform: scale(0.93); }
+        .coin-emoji { font-size: 65px; }
+        .coin-text { font-size: 20px; font-weight: 900; margin-top: 5px; letter-spacing: 1px; }
+
+        .floating {
+            position: absolute; font-size: 28px; font-weight: bold; color: #fff;
+            pointer-events: none; animation: floatUp 0.8s ease-out forwards;
+        }
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-90px); }
+        }
+
+        .bottom { width: 100%; max-width: 400px; }
+        .energy-box { margin-bottom: 15px; }
+        .energy-text { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 5px; }
+        .bar-bg { width: 100%; height: 12px; background: #222; border-radius: 10px; overflow: hidden; }
+        .bar-fill { height: 100%; background: linear-gradient(90deg, #00c853, #69f0ae); width: 100%; transition: width 0.2s; }
+
+        .shop { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn {
+            background: #1c1c1e; border: 1px solid #333; border-radius: 14px;
+            padding: 12px; color: #fff; text-align: left; cursor: pointer;
+        }
+        .btn:active { background: #2c2c2e; }
+        .btn-title { font-weight: bold; font-size: 14px; color: #00e676; }
+        .btn-desc { font-size: 12px; color: #aaa; margin: 4px 0; }
+        .btn-cost { font-size: 13px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="balance-title">Баланс LIT ENERGY</div>
+        <div class="balance" id="score">0</div>
+        <div class="income">Пассивный доход: +<span id="passive">0</span>/сек</div>
+    </div>
+
+    <div class="tap-zone" id="tapZone">
+        <div class="coin" id="coin">
+            <div class="coin-emoji">🔥⚡</div>
+            <div class="coin-text">ЛИТВИН</div>
+        </div>
+    </div>
+
+    <div class="bottom">
+        <div class="energy-box">
+            <div class="energy-text">
+                <span>⚡ Энергия</span>
+                <span><span id="energy">500</span> / <span id="maxEnergy">500</span></span>
+            </div>
+            <div class="bar-bg"><div class="bar-fill" id="energyBar"></div></div>
+        </div>
+
+        <div class="shop">
+            <button class="btn" onclick="buyTap()">
+                <div class="btn-title">🥫 Банка LIT</div>
+                <div class="btn-desc">+1 к силе тапа</div>
+                <div class="btn-cost">Цена: <span id="tapCost">50</span></div>
+            </button>
+            <button class="btn" onclick="buyAuto()">
+                <div class="btn-title">🔥 Сжечь Акулу</div>
+                <div class="btn-desc">+2 в секунду</div>
+                <div class="btn-cost">Цена: <span id="autoCost">150</span></div>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        let state = JSON.parse(localStorage.getItem('litvinSave')) || {
+            score: 0, tapPower: 1, passive: 0,
+            energy: 500, maxEnergy: 500,
+            tapCost: 50, autoCost: 150
+        };
+
+        function save() {
+            localStorage.setItem('litvinSave', JSON.stringify(state));
+        }
+
+        function updateUI() {
+            document.getElementById('score').innerText = Math.floor(state.score);
+            document.getElementById('passive').innerText = state.passive;
+            document.getElementById('energy').innerText = Math.floor(state.energy);
+            document.getElementById('maxEnergy').innerText = state.maxEnergy;
+            document.getElementById('tapCost').innerText = state.tapCost;
+            document.getElementById('autoCost').innerText = state.autoCost;
+            document.getElementById('energyBar').style.width = (state.energy / state.maxEnergy * 100) + '%';
+        }
+
+        document.getElementById('coin').addEventListener('pointerdown', (e) => {
+            if (state.energy >= state.tapPower) {
+                state.score += state.tapPower;
+                state.energy -= state.tapPower;
+                if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+
+                const plus = document.createElement('div');
+                plus.className = 'floating';
+                plus.innerText = '+' + state.tapPower;
+                plus.style.left = (e.offsetX + 50) + 'px';
+                plus.style.top = (e.offsetY) + 'px';
+                document.getElementById('tapZone').appendChild(plus);
+                setTimeout(() => plus.remove(), 800);
+
+                updateUI();
+                save();
+            }
+        });
+
+        function buyTap() {
+            if (state.score >= state.tapCost) {
+                state.score -= state.tapCost;
+                state.tapPower += 1;
+                state.tapCost = Math.floor(state.tapCost * 1.6);
+                updateUI(); save();
+            }
+        }
+
+        function buyAuto() {
+            if (state.score >= state.autoCost) {
+                state.score -= state.autoCost;
+                state.passive += 2;
+                state.autoCost = Math.floor(state.autoCost * 1.7);
+                updateUI(); save();
+            }
+        }
+
+        setInterval(() => {
+            if (state.passive > 0) state.score += state.passive;
+            if (state.energy < state.maxEnergy) state.energy = Math.min(state.maxEnergy, state.energy + 2);
+            updateUI(); save();
+        }, 1000);
+
+        updateUI();
+    </script>
+</body>
+</html>
