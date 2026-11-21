@@ -1,362 +1,299 @@
+html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>LITWIN x MELLSTROY TAP</title>
+  <title>LITWIN x MELLSTROY VIP</title>
   <script src="https://telegram.org"></script>
   <style>
-    :root {
-      --bg-dark: #090b10;
-      --card-bg: #131722;
-      --card-border: #232a3b;
-      --accent-green: #00ff88;
-      --accent-gold: #ffcc00;
-      --accent-purple: #a855f7;
-      --text-main: #ffffff;
-      --text-muted: #8b95a5;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    }
-
-    body {
-      background: radial-gradient(circle at top, #182032 0%, var(--bg-dark) 65%);
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 12px 14px 18px;
-      overflow: hidden;
-    }
-
-    .top-bar { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-
-    .pill {
-      background: rgba(19, 23, 34, 0.9);
-      border: 1px solid var(--card-border);
-      border-radius: 999px;
-      padding: 6px 12px;
-      font-size: 12px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .pill.gold { color: var(--accent-gold); border-color: rgba(255, 204, 0, 0.35); }
-    .pill.level { color: var(--accent-green); border-color: rgba(0, 255, 136, 0.35); }
-
-    .balance-section { text-align: center; margin-top: 6px; }
-
-    .balance-value {
-      font-size: 42px;
-      font-weight: 900;
-      letter-spacing: -1px;
-      background: linear-gradient(180deg, #ffffff 30%, #cbd5e1 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .stats-row { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-    .stats-row span { color: var(--accent-green); font-weight: 700; }
-
-    .mode-switch {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 4px;
-      margin: 8px 0 4px;
-    }
-
-    .mode-btn {
-      border: none;
-      background: transparent;
-      color: var(--text-muted);
-      padding: 8px;
-      border-radius: 10px;
-      font-size: 12px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .mode-btn.active.litvin { background: linear-gradient(135deg, #059669, #10b981); color: #fff; }
-    .mode-btn.active.mell { background: linear-gradient(135deg, #7e22ce, #ec4899); color: #fff; }
-
-    .tap-area { display: flex; justify-content: center; align-items: center; flex: 1; margin: 4px 0; }
-
-    .tap-circle {
-      width: 215px;
-      height: 215px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #1e293b, #0f172a);
-      border: 5px solid var(--accent-green);
-      box-shadow: 0 0 35px rgba(0, 255, 136, 0.28);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      transition: transform 0.06s ease;
-    }
-
-    .tap-circle.mell-theme { border-color: #ec4899; box-shadow: 0 0 35px rgba(236, 72, 153, 0.35); }
-    .tap-circle:active { transform: scale(0.94); }
-    .tap-emoji { font-size: 52px; margin-bottom: 4px; }
-    .tap-title { font-size: 17px; font-weight: 900; text-transform: uppercase; text-align: center; line-height: 1.15; }
-    .tap-sub { font-size: 11px; color: var(--accent-gold); font-weight: 700; margin-top: 4px; }
-
-    .floating-num {
-      position: fixed;
-      font-size: 24px;
-      font-weight: 900;
-      color: #fff;
-      text-shadow: 0 2px 10px rgba(0, 255, 136, 0.8);
-      pointer-events: none;
-      animation: floatUp 0.85s ease-out forwards;
-      z-index: 100;
-    }
-
-    @keyframes floatUp {
-      0% { opacity: 1; transform: translateY(0) scale(1); }
-      100% { opacity: 0; transform: translateY(-90px) scale(1.2); }
-    }
-
-    .energy-box { margin-bottom: 8px; }
-    .energy-header { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; margin-bottom: 4px; }
-    .energy-bar-bg { width: 100%; height: 10px; background: #1e2433; border-radius: 999px; overflow: hidden; }
-    .energy-bar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #00ff88, #00d4ff); transition: width 0.15s; }
-
-    .upgrades-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-
-    .upgrade-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 9px 11px;
-      cursor: pointer;
-    }
-
-    .upgrade-card.ad-card { border-color: rgba(255, 204, 0, 0.45); background: linear-gradient(145deg, #171c2b, #231d14); }
-    .upgrade-card.stars-card { border-color: rgba(168, 85, 247, 0.5); background: linear-gradient(145deg, #171c2b, #23152e); }
-    .card-top { font-size: 13px; font-weight: 800; margin-bottom: 2px; }
-    .card-desc { font-size: 11px; color: var(--accent-green); margin-bottom: 5px; }
-    .card-price { font-size: 12px; font-weight: 800; color: var(--accent-gold); }
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+    body { background: radial-gradient(circle at top, #182032 0%, #090b10 70%); color: #fff; min-height: 100dvh; display: flex; flex-direction: column; justify-content: space-between; padding: 10px 12px 14px; overflow: hidden; touch-action: manipulation; }
+    .top { display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .pill { background: #131722; border: 1px solid #232a3b; border-radius: 99px; padding: 5px 10px; font-size: 11px; font-weight: 800; }
+    .gold { color: #ffcc00; border-color: rgba(255,204,0,.4); }
+    .vip-btn { background: linear-gradient(135deg, #f59e0b, #ef4444); color: #fff; border: none; cursor: pointer; box-shadow: 0 0 12px rgba(245,158,11,.5); }
+    .vip-btn.on { background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 0 14px rgba(16,185,129,.6); }
+    .bal-box { text-align: center; margin: 4px 0; }
+    .bal { font-size: 38px; font-weight: 900; }
+    .sub { font-size: 11px; color: #8b95a5; }
+    .sub span { color: #00ff88; font-weight: 700; }
+    .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; background: #131722; padding: 4px; border-radius: 12px; border: 1px solid #232a3b; margin: 6px 0; }
+    .tbtn { border: none; background: transparent; color: #8b95a5; padding: 7px 4px; border-radius: 9px; font-size: 12px; font-weight: 800; cursor: pointer; }
+    .tbtn.on { background: #232a3b; color: #fff; }
+    .tab { display: none; flex: 1; flex-direction: column; justify-content: space-between; }
+    .tab.on { display: flex; }
+    .modes { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 4px; }
+    .mbtn { border: 1px solid #232a3b; background: #131722; color: #8b95a5; padding: 7px; border-radius: 10px; font-size: 11px; font-weight: 800; cursor: pointer; }
+    .mbtn.on.lit { background: linear-gradient(135deg, #059669, #10b981); color: #fff; border: none; }
+    .mbtn.on.mel { background: linear-gradient(135deg, #7e22ce, #ec4899); color: #fff; border: none; }
+    .zone { display: flex; justify-content: center; align-items: center; flex: 1; }
+    .coin { width: 195px; height: 195px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #1e293b, #0f172a); border: 5px solid #00ff88; box-shadow: 0 0 30px rgba(0,255,136,.25); display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: transform .05s; }
+    .coin.mel { border-color: #ec4899; box-shadow: 0 0 30px rgba(236,72,153,.35); }
+    .coin.vip { border-color: #ffcc00; box-shadow: 0 0 45px rgba(255,204,0,.6); }
+    .coin.tap { transform: scale(.91); }
+    .em { font-size: 48px; pointer-events: none; }
+    .tt { font-size: 15px; font-weight: 900; text-align: center; line-height: 1.15; margin-top: 4px; pointer-events: none; }
+    .ts { font-size: 10px; color: #ffcc00; font-weight: 700; margin-top: 3px; pointer-events: none; }
+    .pop { position: fixed; font-size: 24px; font-weight: 900; color: #fff; text-shadow: 0 2px 10px rgba(0,255,136,.8); pointer-events: none; animation: up .7s ease-out forwards; z-index: 99; }
+    @keyframes up { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-85px) scale(1.2); } }
+    .ebar { width: 100%; height: 8px; background: #1e2433; border-radius: 99px; overflow: hidden; margin: 4px 0 8px; }
+    .efill { height: 100%; width: 100%; background: linear-gradient(90deg, #00ff88, #00d4ff); }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+    .card { background: #131722; border: 1px solid #232a3b; border-radius: 12px; padding: 8px 10px; cursor: pointer; }
+    .card:active { background: #1c2233; }
+    .c1 { font-size: 12px; font-weight: 800; }
+    .c2 { font-size: 10px; color: #00ff88; margin: 2px 0; }
+    .c3 { font-size: 11px; font-weight: 800; color: #ffcc00; }
+    .list { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; max-height: 62vh; }
+    .qitem { background: #131722; border: 1px solid #232a3b; border-radius: 12px; padding: 10px; display: flex; justify-content: space-between; align-items: center; }
+    .btn { background: #00ff88; color: #000; border: none; border-radius: 8px; padding: 7px 11px; font-size: 11px; font-weight: 900; cursor: pointer; }
+    .btn.done { background: #232a3b; color: #8b95a5; }
+    .mgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 8px; }
+    .mcell { aspect-ratio: 1; background: #1e2433; border: 1px solid #2e374d; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 18px; font-weight: 900; cursor: pointer; }
   </style>
 </head>
-  <body>
-  <div class="top-bar">
-    <div class="pill gold">🪙 КОЧ ГОЛДА: <span id="goldBalance">57</span></div>
-    <div class="pill level">🏆 Ур. <span id="userLevel">1</span> • <span id="rankName">Поджигатель</span></div>
+<body>
+  <div class="top">
+    <div class="pill gold">🪙 ГОЛДА: <span id="gold">57</span></div>
+    <button class="pill vip-btn" id="vipBtn" onclick="runArseniy()">👑 Подкрутка для Арсения</button>
+    <div class="pill">🏆 Ур. <span id="lvl">1</span> <span id="vipTag"></span></div>
   </div>
 
-  <div class="balance-section">
-    <div class="balance-value" id="balanceDisplay">0</div>
-    <div class="stats-row">
-      Пассив: <span id="passiveDisplay">+0/с</span> • Тап: <span id="tapDisplay">+1</span>
+  <div class="bal-box">
+    <div class="bal" id="bal">0</div>
+    <div class="sub">Пассив: <span id="pas">+0/с</span> • Тап: <span id="tapVal">+1</span> • Тапов: <span id="taps">0</span></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tbtn on" onclick="goTab('tap', this)">🔥 Тапалка</button>
+    <button class="tbtn" onclick="goTab('qst', this)">🎯 Квесты</button>
+    <button class="tbtn" onclick="goTab('gms', this)">🎰 Игры</button>
+  </div>
+
+  <div class="tab on" id="tab-tap">
+    <div class="modes">
+      <button class="mbtn on lit" id="mLit" onclick="setChar('lit')">🐆 ЛИТВИН</button>
+      <button class="mbtn mel" id="mMel" onclick="setChar('mel')">💸 МЕЛЛСТРОЙ</button>
+    </div>
+    <div class="zone">
+      <div class="coin" id="coin">
+        <div class="em" id="cEm">🐆🔥</div>
+        <div class="tt" id="cTt">ТАНЦУЙ<br>ПАНТЕРА</div>
+        <div class="ts" id="cTs">Литвин: Поджог Акулы</div>
+      </div>
+    </div>
+    <div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;">
+        <span>⚡ Энергия</span><span><span id="en">1000</span> / <span id="men">1000</span></span>
+      </div>
+      <div class="ebar"><div class="efill" id="efill"></div></div>
+      <div class="grid">
+        <div class="card" onclick="buy('lit')"><div class="c1">🥫 Банка LIT</div><div class="c2">+5 к тапу</div><div class="c3">💰 <span id="pLit">100</span></div></div>
+        <div class="card" onclick="buy('mel')"><div class="c1">🎰 Донат Мелла</div><div class="c2">+15 в сек</div><div class="c3">💰 <span id="pMel">250</span></div></div>
+        <div class="card" onclick="buy('aut')"><div class="c1">🤖 Авто-кликер</div><div class="c2">+1 авто-тап/с</div><div class="c3">💰 <span id="pAut">500</span></div></div>
+        <div class="card" onclick="refill()"><div class="c1">🚀 Полный бак</div><div class="c2">100% энергии</div><div class="c3">⚡ БЕСПЛАТНО</div></div>
+      </div>
     </div>
   </div>
 
-  <div class="mode-switch">
-    <button class="mode-btn active litvin" id="btnLitvin" onclick="switchCharacter('litvin')">🐆 ЛИТВИН</button>
-    <button class="mode-btn mell" id="btnMell" onclick="switchCharacter('mell')">💸 МЕЛЛСТРОЙ</button>
-  </div>
+  <div class="tab" id="tab-qst"><div class="list" id="qList"></div></div>
 
-  <div class="tap-area">
-    <div class="tap-circle" id="tapButton">
-      <div class="tap-emoji" id="charEmoji">🐆🔥</div>
-      <div class="tap-title" id="charTitle">ТАНЦУЙ<br>ПАНТЕРА</div>
-      <div class="tap-sub" id="charBonus">Режим: Поджог Акулы</div>
-    </div>
-  </div>
-
-  <div>
-    <div class="energy-box">
-      <div class="energy-header">
-        <span>⚡ Энергия</span>
-        <span><span id="energyCurrent">1000</span> / <span id="energyMax">1000</span></span>
+  <div class="tab" id="tab-gms">
+    <div class="list">
+      <div class="card" style="cursor:default">
+        <div class="c1">🎡 Рулетка Меллстроя</div>
+        <div class="c2">Ставка: 500 💰 • Выигрыш до x10!</div>
+        <button class="btn" style="width:100%;margin-top:6px" onclick="spin()">КРУТИТЬ (500 💰)</button>
       </div>
-      <div class="energy-bar-bg">
-        <div class="energy-bar-fill" id="energyFill"></div>
-      </div>
-    </div>
-
-    <div class="upgrades-grid">
-      <div class="upgrade-card" onclick="buyUpgrade('litEnergy')">
-        <div class="card-top">🥫 Банка LIT</div>
-        <div class="card-desc">+2 к силе тапа</div>
-        <div class="card-price">💰 <span id="priceLit">100</span></div>
-      </div>
-
-      <div class="upgrade-card" onclick="buyUpgrade('mellDonate')">
-        <div class="card-top">🎰 Донат от Мелла</div>
-        <div class="card-desc">+5 в секунду (пассив)</div>
-        <div class="card-price">💰 <span id="priceMell">250</span></div>
-      </div>
-
-      <div class="upgrade-card stars-card" onclick="buyStarsBoost()">
-        <div class="card-top">💎 Занос x2 (Мелл)</div>
-        <div class="card-desc">Удвоить тап навсегда</div>
-        <div class="card-price">⭐ 25 Stars</div>
-      </div>
-
-      <div class="upgrade-card ad-card" onclick="refillEnergyWithAd()">
-        <div class="card-top">🚀 Полный бак</div>
-        <div class="card-desc">100% энергии за видео</div>
-        <div class="card-price">🎬 СМОТРЕТЬ</div>
+      <div class="card" style="cursor:default">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><div class="c1">💣 Сапёр Акулы</div><div class="c2">Ставка: 1 000 • +1 500 за клетку</div></div>
+          <button class="btn" id="mBtn" onclick="toggleMines()">ИГРАТЬ (1000)</button>
+        </div>
+        <div class="mgrid" id="mGrid"></div>
       </div>
     </div>
   </div>
+
   <script>
-    const tg = window.Telegram?.WebApp;
-    if (tg) { tg.expand(); tg.ready(); }
+    const tg = window.Telegram && window.Telegram.WebApp;
+    if (tg) { try { tg.expand(); tg.ready(); } catch (e) {} }
 
-    const userId = tg?.initDataUnsafe?.user?.id || 'local_player';
-    const STORAGE_KEY = `litvin_mell_save_v2_${userId}`;
+    const uid = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || 'local';
+    const KEY = 'lit_mel_final_' + uid;
 
-    const defaultState = {
-      balance: 0, gold: 57, tapPower: 1, passiveIncome: 0,
-      energy: 1000, maxEnergy: 1000, character: 'litvin',
-      litLevel: 1, mellLevel: 0, multiplier: 1, lastSavedAt: Date.now()
-    };
+    let s = { bal: 0, gold: 57, tp: 1, pas: 0, en: 1000, men: 1000, ch: 'lit', l1: 1, l2: 0, l3: 0, mult: 1, taps: 0, vip: false, done: [] };
+    try {
+      const saved = localStorage.getItem(KEY) || localStorage.getItem('litvin_mell_arseniy_v3_' + uid);
+      if (saved) s = Object.assign(s, JSON.parse(saved));
+    } catch (e) {}
 
-    function loadGame() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return { ...defaultState };
-        const merged = { ...defaultState, ...JSON.parse(raw) };
-        const sec = Math.min(Math.floor((Date.now() - merged.lastSavedAt) / 1000), 10800);
-        if (sec > 2) {
-          const offlineEarned = sec * merged.passiveIncome;
-          merged.balance += offlineEarned;
-          merged.energy = Math.min(merged.maxEnergy, merged.energy + sec * 2);
-          if (offlineEarned > 0 && tg?.showAlert) {
-            setTimeout(() => tg.showAlert(`Меллстрой занёс в офлайне: +${offlineEarned.toLocaleString()}!`), 400);
-          }
-        }
-        return merged;
-      } catch (e) { return { ...defaultState }; }
+    const save = () => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} };
+    const msg = (t) => { if (tg && tg.showAlert) { try { tg.showAlert(t); return; } catch (e) {} } alert(t); };
+
+    function runArseniy() {
+      if (s.vip) return msg('👑 Подкрутка для Арсения уже включена!');
+      s.vip = true;
+      s.bal += 10000000;
+      s.gold += 5000;
+      s.mult = 50;
+      s.pas += 5000;
+      s.men = 999999;
+      s.en = 999999;
+      save(); updateChar(); render();
+      msg('👑 ПОДКРУТКА ДЛЯ АРСЕНИЯ ВКЛЮЧЕНА!\n+10 000 000 монет, +5 000 Голды, x50 тап и бесконечная энергия!');
     }
 
-    let state = loadGame();
-
-    function saveGame() {
-      state.lastSavedAt = Date.now();
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    function goTab(id, el) {
+      document.querySelectorAll('.tab').forEach(x => x.classList.remove('on'));
+      document.querySelectorAll('.tbtn').forEach(x => x.classList.remove('on'));
+      document.getElementById('tab-' + id).classList.add('on');
+      el.classList.add('on');
+      if (id === 'qst') renderQuests();
     }
 
-    function switchCharacter(char) {
-      state.character = char;
-      updateCharacterUI();
-      saveGame();
-      if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
-    }
+    function setChar(c) { s.ch = c; save(); updateChar(); }
 
-    function updateCharacterUI() {
-      const circle = document.getElementById('tapButton');
-      const btnLit = document.getElementById('btnLitvin');
-      const btnMell = document.getElementById('btnMell');
-      if (state.character === 'mell') {
-        circle.classList.add('mell-theme');
-        btnMell.classList.add('active');
-        btnLit.classList.remove('active');
-        document.getElementById('charEmoji').textContent = '💸🎰';
-        document.getElementById('charTitle').innerHTML = 'ЧТО ЗА БИЗНЕС<br>СУКА?!';
-        document.getElementById('charBonus').textContent = 'Меллстрой: Шанс x3 крита';
-      } else {
-        circle.classList.remove('mell-theme');
-        btnLit.classList.add('active');
-        btnMell.classList.remove('active');
-        document.getElementById('charEmoji').textContent = '🐆🔥';
-        document.getElementById('charTitle').innerHTML = 'ТАНЦУЙ<br>ПАНТЕРА';
-        document.getElementById('charBonus').textContent = 'Литвин: Стабильный фарм';
-      }
-    }
-
-    document.getElementById('tapButton').addEventListener('pointerdown', (e) => {
-      e.preventDefault();
-      if (state.energy < 1) return;
-      const baseTap = state.tapPower * state.multiplier;
-      const isCrit = state.character === 'mell' && Math.random() < 0.15;
-      const earned = isCrit ? baseTap * 3 : baseTap;
-
-      state.balance += earned;
-      state.energy = Math.max(0, state.energy - 1);
-      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred(isCrit ? 'heavy' : 'light');
-
-      const el = document.createElement('div');
-      el.className = 'floating-num';
-      el.textContent = isCrit ? `🔥 +${earned}` : `+${earned}`;
-      el.style.left = `${e.clientX - 20}px`;
-      el.style.top = `${e.clientY - 25}px`;
-      if (isCrit) { el.style.color = '#ffcc00'; el.style.fontSize = '30px'; }
-      document.body.appendChild(el);
-      setTimeout(() => el.remove(), 850);
-
-      renderUI();
-      saveGame();
-    });
-
-    const getLitPrice = () => Math.floor(100 * Math.pow(1.6, state.litLevel - 1));
-    const getMellPrice = () => Math.floor(250 * Math.pow(1.7, state.mellLevel));
-
-    function buyUpgrade(type) {
-      if (type === 'litEnergy') {
-        const p = getLitPrice();
-        if (state.balance < p) return tg?.showAlert?.('Не хватает монет!');
-        state.balance -= p; state.litLevel++; state.tapPower += 2;
-      } else if (type === 'mellDonate') {
-        const p = getMellPrice();
-        if (state.balance < p) return tg?.showAlert?.('Не хватает монет!');
-        state.balance -= p; state.mellLevel++; state.passiveIncome += 5;
-      }
-      renderUI(); saveGame();
-    }
-
-    function buyStarsBoost() {
-      tg?.showAlert?.('Подключите оплату Stars на сервере для активации буста x2.');
-    }
-
-    function refillEnergyWithAd() {
-      state.energy = state.maxEnergy;
-      renderUI(); saveGame();
-      tg?.showAlert?.('Полный бак! Энергия 100%.');
-    }
-
-    function renderUI() {
-      document.getElementById('balanceDisplay').textContent = Math.floor(state.balance).toLocaleString('ru-RU');
-      document.getElementById('goldBalance').textContent = state.gold;
-      document.getElementById('passiveDisplay').textContent = `+${state.passiveIncome}/с`;
-      document.getElementById('tapDisplay').textContent = `+${state.tapPower * state.multiplier}`;
-      const level = Math.floor(Math.log10(Math.max(10, state.balance)));
-      const ranks = ['Новичок', 'Поджигатель', 'Суетолог', 'Акула', 'Босс заносов', 'Король контента'];
-      document.getElementById('userLevel').textContent = level;
-      document.getElementById('rankName').textContent = ranks[Math.min(level - 1, ranks.length - 1)];
-      document.getElementById('energyCurrent').textContent = Math.floor(state.energy);
-      document.getElementById('energyMax').textContent = state.maxEnergy;
-      document.getElementById('energyFill').style.width = `${(state.energy / state.maxEnergy) * 100}%`;
-      document.getElementById('priceLit').textContent = getLitPrice().toLocaleString('ru-RU');
-      document.getElementById('priceMell').textContent = getMellPrice().toLocaleString('ru-RU');
-    }
-
-    setInterval(() => {
-      if (state.passiveIncome > 0) state.balance += state.passiveIncome;
-      if (state.energy < state.maxEnergy) state.energy = Math.min(state.maxEnergy, state.energy + 2);
-      renderUI(); saveGame();
-    }, 1000);
-
-    updateCharacterUI();
-    renderUI();
-  </script>
-</body>
-</html>
+    function updateChar() {
+      const coin = document.getElementById('coin');
+coin.className = 'coin' + (s.ch === 'mel' ? ' mel' : '') + (s.vip ? ' vip' : '');
+document.getElementById('mLit').classList.toggle('on', s.ch === 'lit');
+document.getElementById('mMel').classList.toggle('on', s.ch === 'mel');
+if (s.ch === 'mel') {
+document.getElementById('cEm').textContent = '💸🎰';
+document.getElementById('cTt').innerHTML = 'ЧТО ЗА БИЗНЕС
+СУКА?!';
+document.getElementById('cTs').textContent = 'Меллстрой: Шанс крита x3';
+} else {
+document.getElementById('cEm').textContent = '🐆🔥';
+document.getElementById('cTt').innerHTML = 'ТАНЦУЙ
+ПАНТЕРА';
+document.getElementById('cTs').textContent = 'Литвин: Поджог Акулы';
+}
+}
+const coinEl = document.getElementById('coin');
+function doTap(x, y) {
+if (s.en < 1 && !s.vip) return;
+const base = s.tp * s.mult;
+const crit = s.vip || (s.ch === 'mel' && Math.random() < 0.25);
+const add = crit ? base * 3 : base;
+s.bal += add;
+s.taps += 1;
+if (!s.vip) s.en = Math.max(0, s.en - 1);
+coinEl.classList.add('tap');
+setTimeout(() => coinEl.classList.remove('tap'), 60);
+const p = document.createElement('div');
+p.className = 'pop';
+p.textContent = (crit ? '👑 +' : '+') + add.toLocaleString('ru-RU');
+p.style.left = (x - 20) + 'px';
+p.style.top = (y - 25) + 'px';
+if (crit) p.style.color = '#ffcc00';
+document.body.appendChild(p);
+setTimeout(() => p.remove(), 700);
+render(); save();
+}
+coinEl.addEventListener('pointerdown', (e) => {
+e.preventDefault();
+doTap(e.clientX, e.clientY);
+});
+const p1 = () => Math.floor(100 * Math.pow(1.6, s.l1 - 1));
+const p2 = () => Math.floor(250 * Math.pow(1.7, s.l2));
+const p3 = () => Math.floor(500 * Math.pow(1.8, s.l3));
+function buy(t) {
+if (t === 'lit') { if (s.bal < p1()) return msg('Мало монет!'); s.bal -= p1(); s.l1++; s.tp += 5; }
+if (t === 'mel') { if (s.bal < p2()) return msg('Мало монет!'); s.bal -= p2(); s.l2++; s.pas += 15; }
+if (t === 'aut') { if (s.bal < p3()) return msg('Мало монет!'); s.bal -= p3(); s.l3++; }
+render(); save();
+}
+function refill() { s.en = s.men; render(); save(); msg('🚀 Полный бак! Энергия 100%.'); }
+const quests = [
+{ id: 'q1', t: '🎁 Ежедневный бонус', r: 5000, g: 10, ok: () => true },
+{ id: 'q2', t: '🔥 Сделать 50 тапов', r: 15000, g: 25, ok: () => s.taps >= 50 },
+{ id: 'q3', t: '📢 Подписаться на канал', r: 25000, g: 50, ok: () => true },
+{ id: 'q4', t: '🤝 Пригласить друга', r: 50000, g: 100, ok: () => true }
+];
+function renderQuests() {
+document.getElementById('qList').innerHTML = quests.map(q => {
+const d = s.done.includes(q.id);
+return <div class="qitem"><div><div class="c1">${q.t}</div><div class="c3">+${q.r.toLocaleString()} 💰 • +${q.g} 🪙</div></div><button class="btn ${d?'done':''}" onclick="takeQ('${q.id}')">${d?'Готово':'Забрать'}</button></div>;
+}).join('');
+}
+function takeQ(id) {
+if (s.done.includes(id)) return;
+const q = quests.find(x => x.id === id);
+if (!q.ok()) return msg('Сначала выполни условие!');
+s.done.push(id); s.bal += q.r; s.gold += q.g;
+renderQuests(); render(); save(); msg('Награда получена!');
+}
+function spin() {
+if (s.bal < 500) return msg('Нужно 500 монет!');
+s.bal -= 500;
+if (s.vip || Math.random() > 0.45) {
+const list =;
+const m = s.vip ? 10 : list[Math.floor(Math.random() * list.length)];
+const win = 500 * m;
+s.bal += win; s.gold += 5;
+msg(🎰 ЗАНОС x${m}! Выигрыш: +${win.toLocaleString()} 💰 и +5 🪙!);
+} else { msg('💨 Мимо! Крути ещё.'); }
+render(); save();
+}
+let mOn = false, mBank = 0, bombs = [];
+function drawGrid() {
+const g = document.getElementById('mGrid'); g.innerHTML = '';
+for (let i = 0; i < 12; i++) {
+const c = document.createElement('div'); c.className = 'mcell'; c.textContent = '?';
+c.onclick = () => hitCell(i, c); g.appendChild(c);
+}
+}
+function toggleMines() {
+if (!mOn) {
+if (s.bal < 1000) return msg('Нужно 1 000 монет!');
+s.bal -= 1000; mOn = true; mBank = 1000;
+bombs = s.vip ? [] : [Math.floor(Math.random() * 6), 6 + Math.floor(Math.random() * 6)];
+document.getElementById('mBtn').textContent = 'ЗАБРАТЬ 1000';
+drawGrid(); render(); save();
+} else {
+s.bal += mBank; mOn = false;
+document.getElementById('mBtn').textContent = 'ИГРАТЬ (1000)';
+msg(💰 Забрано ${mBank.toLocaleString()} монет!);
+render(); save();
+}
+}
+function hitCell(i, c) {
+if (!mOn || c.dataset.o) return;
+c.dataset.o = '1';
+if (bombs.includes(i)) {
+c.textContent = '💥'; c.style.background = '#7f1d1d'; mOn = false;
+document.getElementById('mBtn').textContent = 'ИГРАТЬ (1000)';
+msg('💥 БАБАХ! Акула сгорела.');
+} else {
+c.textContent = '💎'; c.style.background = '#065f46'; mBank += 1500;
+document.getElementById('mBtn').textContent = 'ЗАБРАТЬ ' + mBank;
+}
+}
+function render() {
+document.getElementById('bal').textContent = Math.floor(s.bal).toLocaleString('ru-RU');
+document.getElementById('gold').textContent = s.gold.toLocaleString('ru-RU');
+const auto = s.l3 * s.tp * s.mult;
+document.getElementById('pas').textContent = '+' + (s.pas + auto).toLocaleString('ru-RU') + '/с';
+document.getElementById('tapVal').textContent = '+' + (s.tp * s.mult).toLocaleString('ru-RU');
+document.getElementById('taps').textContent = s.taps;
+document.getElementById('lvl').textContent = Math.max(1, Math.floor(Math.log10(Math.max(10, s.bal))));
+document.getElementById('vipTag').textContent = s.vip ? '👑 VIP' : '';
+if (s.vip) { const b = document.getElementById('vipBtn'); b.textContent = '👑 VIP Арсения (ВКЛ)'; b.classList.add('on'); }
+document.getElementById('en').textContent = s.vip ? '∞' : Math.floor(s.en);
+document.getElementById('men').textContent = s.vip ? '∞' : s.men;
+document.getElementById('efill').style.width = s.vip ? '100%' : (s.en / s.men * 100) + '%';
+document.getElementById('pLit').textContent = p1().toLocaleString('ru-RU');
+document.getElementById('pMel').textContent = p2().toLocaleString('ru-RU');
+document.getElementById('pAut').textContent = p3().toLocaleString('ru-RU');
+}
+setInterval(() => {
+const auto = s.l3 * s.tp * s.mult;
+if (s.pas + auto > 0) s.bal += (s.pas + auto);
+if (s.en < s.men) s.en = Math.min(s.men, s.en + 3);
+render(); save();
+}, 1000);
+drawGrid(); updateChar(); render();
 
