@@ -9,39 +9,48 @@
 *{box-sizing:border-box;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
 body{margin:0;padding:14px;background:#0a0b0e;color:#fff;font-family:-apple-system,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:space-between;height:100dvh;overflow:hidden;touch-action:manipulation}
 .top{width:100%;max-width:400px;display:flex;justify-content:space-between;align-items:center}
-.rk{background:#181a20;border:1px solid #00e676;color:#00e676;font-size:12px;font-weight:800;padding:5px 10px;border-radius:20px}
-.cs{background:linear-gradient(135deg,#ff9100,#ff3d00);border:none;color:#fff;font-size:12px;font-weight:800;padding:6px 12px;border-radius:20px}
+.rk{background:#181a20;border:1px solid #00e676;color:#00e676;font-size:12px;font-weight:800;padding:6px 12px;border-radius:20px;cursor:pointer;display:flex;align-items:center;gap:5px}
+.rk:active{transform:scale(.95)}
+.cs{background:linear-gradient(135deg,#ff9100,#ff3d00);border:none;color:#fff;font-size:12px;font-weight:800;padding:6px 12px;border-radius:20px;cursor:pointer}
 .cs.off{background:#1c1e24;color:#666}
 .hd{text-align:center;width:100%;max-width:400px}
 .sc{font-size:42px;font-weight:900;margin:4px 0;text-shadow:0 0 20px rgba(0,230,118,.5)}
 .in{font-size:13px;color:#8e929b;margin-bottom:6px}
 .br{width:100%;height:7px;background:#1c1e24;border-radius:7px;overflow:hidden}
 .fl{height:100%;background:linear-gradient(90deg,#00c853,#00e676);width:0%;transition:width .15s}
-.zn{position:relative;display:flex;justify-content:center;align-items:center;flex:1;width:100%}
-.cn{width:195px;height:195px;border-radius:50%;background:radial-gradient(circle,#1db954 0%,#073b19 100%);border:5px solid #00e676;box-shadow:0 0 40px rgba(0,230,118,.45);display:flex;flex-direction:column;justify-content:center;align-items:center;transition:transform .05s;overflow:hidden}
-.cn.tap{transform:scale(.9)}
+.zn{position:relative;display:flex;justify-content:center;align-items:center;flex:1;width:100%;cursor:pointer}
+.cn{width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,#1db954 0%,#073b19 100%);border:5px solid #00e676;box-shadow:0 0 40px rgba(0,230,118,.45);display:flex;flex-direction:column;justify-content:center;align-items:center;transition:transform .08s;overflow:hidden;pointer-events:none}
 .cn.x2{background:radial-gradient(circle,#ff9100 0%,#5e2600 100%);border-color:#ffd600;box-shadow:0 0 55px rgba(255,214,0,.9)}
-.cn img{width:100%;height:100%;object-fit:cover;pointer-events:none}
-.em{font-size:60px;pointer-events:none}
-.tx{font-size:20px;font-weight:900;margin-top:4px;pointer-events:none}
-.pt{position:absolute;font-size:28px;font-weight:900;color:#fff;pointer-events:none;animation:up .6s ease-out forwards;z-index:10}
+.cn img{width:100%;height:100%;object-fit:cover}
+.em{font-size:62px}
+.tx{font-size:20px;font-weight:900;margin-top:4px;letter-spacing:1px}
+.pt{position:absolute;font-size:28px;font-weight:900;color:#fff;pointer-events:none;animation:up .6s ease-out forwards;z-index:10;text-shadow:0 2px 8px rgba(0,0,0,.8)}
 .pt.g{color:#ffd600;font-size:34px}
-@keyframes up{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-95px)}}
+@keyframes up{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-100px) scale(1.2)}}
 .bt{width:100%;max-width:400px}
 .et{display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:4px}
 .eb{width:100%;height:10px;background:#1c1e24;border-radius:10px;overflow:hidden;margin-bottom:10px}
 .ef{height:100%;background:linear-gradient(90deg,#00c853,#69f0ae);width:100%}
 .sh{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.bn{background:#15171c;border:1px solid #282b34;border-radius:12px;padding:10px;color:#fff;text-align:left}
+.bn{background:#15171c;border:1px solid #282b34;border-radius:12px;padding:10px;color:#fff;text-align:left;cursor:pointer}
+.bn:active{background:#23262f}
 .bn.off{opacity:.4}
 .t1{font-weight:800;font-size:13px;color:#00e676}
 .t2{font-size:11px;color:#9aa0a6;margin:2px 0}
 .t3{font-size:13px;font-weight:800}
+.md{position:fixed;inset:0;background:rgba(0,0,0,.88);display:none;justify-content:center;align-items:center;z-index:50;padding:16px}
+.md.on{display:flex}
+.mc{background:#16181f;border:2px solid #00e676;border-radius:18px;padding:16px;width:100%;max-width:340px;max-height:80dvh;display:flex;flex-direction:column}
+.ml{overflow-y:auto;margin:10px 0;display:flex;flex-direction:column;gap:7px}
+.ri{background:#1e212b;border:1px solid #2c303a;border-radius:11px;padding:9px 11px;display:flex;justify-content:space-between;align-items:center;font-size:12px}
+.ri.cur{border-color:#00e676;background:#132b1e}
+.ri.lk{opacity:.45}
+.cl{width:100%;padding:11px;border-radius:11px;border:none;background:#00e676;color:#000;font-weight:900;font-size:14px;cursor:pointer}
 </style>
 </head>
 <body>
 <div class="top">
-  <div class="rk" id="rk">Ур. 1 • Новичок</div>
+  <button class="rk" id="rk">🏆 Ур. 1 • Новичок ▾</button>
   <button class="cs" id="bC">🎁 Кейс</button>
 </div>
 
@@ -72,18 +81,36 @@ body{margin:0;padding:14px;background:#0a0b0e;color:#fff;font-family:-apple-syst
   </div>
 </div>
 
+<div class="md" id="md">
+  <div class="mc">
+    <div style="font-size:17px;font-weight:900;color:#00e676;text-align:center">🏆 Система рангов</div>
+    <div style="font-size:11px;color:#8e929b;text-align:center;margin-top:2px">Всего заработано: <b id="tot" style="color:#fff">0</b></div>
+    <div class="ml" id="rList"></div>
+    <button class="cl" id="mCl">Закрыть</button>
+  </div>
+</div>
+
 <script>
 const tg = window.Telegram && window.Telegram.WebApp;
 if (tg) { tg.ready(); tg.expand(); }
 
-const R = [["Ур. 1 • Новичок",0],["Ур. 2 • Суетолог",500],["Ур. 3 • Фанат LIT",2500],["Ур. 4 • Поджигатель",10000],["Ур. 5 • Хозяин Акулы",50000],["Ур. 6 • Легенда",200000]];
+const R = [
+  ["Ур. 1 • Новичок", 0],
+  ["Ур. 2 • Суетолог", 500],
+  ["Ур. 3 • Фанат LIT", 2500],
+  ["Ур. 4 • Поджигатель", 10000],
+  ["Ур. 5 • Хозяин Акулы", 50000],
+  ["Ур. 6 • Кондиции", 150000],
+  ["Ур. 7 • Легенда", 500000]
+];
+
 let s = { sc: 0, tt: 0, tp: 1, ps: 0, en: 500, me: 500, p1: 50, p2: 150, p3: 200, rf: 0, cs: 0 };
-try { const d = localStorage.getItem('litV9'); if (d) s = { ...s, ...JSON.parse(d) }; } catch (e) {}
+try { const d = localStorage.getItem('litV10'); if (d) s = { ...s, ...JSON.parse(d) }; } catch (e) {}
 
 let combo = 0, x2 = 0, lt = 0;
 const el = id => document.getElementById(id);
-const cn = el('cn'), zn = el('zn');
-const sv = () => { try { localStorage.setItem('litV9', JSON.stringify(s)); } catch (e) {} };
+const cn = el('cn'), zn = el('zn'), md = el('md');
+const sv = () => { try { localStorage.setItem('litV10', JSON.stringify(s)); } catch (e) {} };
 const fm = n => Math.floor(n).toLocaleString('ru-RU');
 
 function pop(txt, x, y, gold) {
@@ -94,6 +121,12 @@ function pop(txt, x, y, gold) {
   d.style.top = (y - r.top - 25) + 'px';
   zn.appendChild(d);
   setTimeout(() => d.remove(), 600);
+}
+
+function getRankIdx() {
+  let i = 0;
+  for (let k = 0; k < R.length; k++) if (s.tt >= R[k][1]) i = k;
+  return i;
 }
 
 function ui() {
@@ -116,11 +149,22 @@ function ui() {
   el('bC').innerText = s.cs > 0 ? '🎁 ' + s.cs + 'с' : '🎁 Кейс';
   cn.className = 'cn' + (x2 > 0 ? ' x2' : '');
 
-  let i = 0;
-  for (let k = 0; k < R.length; k++) if (s.tt >= R[k][1]) i = k;
-  el('rk').innerText = R[i][0];
+  const i = getRankIdx();
+  el('rk').innerText = '🏆 ' + R[i][0] + ' ▾';
   const nx = R[i + 1];
   el('lB').style.width = nx ? Math.min(100, (s.tt - R[i][1]) / (nx[1] - R[i][1]) * 100) + '%' : '100%';
+}
+
+function openRanks() {
+  const cur = getRankIdx();
+  el('tot').innerText = fm(s.tt);
+  el('rList').innerHTML = R.map((r, idx) => {
+    const done = s.tt >= r[1];
+    const cls = idx === cur ? 'ri cur' : (done ? 'ri' : 'ri lk');
+    const st = idx === cur ? '✅ Текущий' : (done ? '✔ Открыт' : '🔒 ' + fm(r[1]));
+    return `<div class="${cls}"><div><b>${r[0]}</b><div style="font-size:10px;color:#9aa0a6">Нужно: ${fm(r[1])}</div></div><div style="font-weight:800;color:${done?'#00e676':'#8e929b'}">${st}</div></div>`;
+  }).join('');
+  md.classList.add('on');
 }
 
 function tap(x, y) {
@@ -134,25 +178,31 @@ function tap(x, y) {
   combo++;
   if (combo >= 15 && x2 <= 0) { x2 = 8; combo = 0; }
 
-  cn.classList.add('tap');
-  setTimeout(() => cn.classList.remove('tap'), 65);
-  try { if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred(crit ? 'heavy' : 'light'); } catch (e) {}
+  const r = cn.getBoundingClientRect();
+  const dx = ((x || r.left + r.width / 2) - (r.left + r.width / 2)) / 8;
+  const dy = ((y || r.top + r.height / 2) - (r.top + r.height / 2)) / 8;
+  cn.style.transform = `scale(0.92) rotateX(${-dy}deg) rotateY(${dx}deg)`;
+  setTimeout(() => { cn.style.transform = 'scale(1)'; }, 80);
 
-  const r = zn.getBoundingClientRect();
+  try { if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred(crit ? 'heavy' : 'light'); } catch (e) {}
   pop((crit ? '⚡+' : '+') + fm(gain), x || r.left + r.width / 2, y || r.top + r.height / 2, crit || x2 > 0);
   ui();
 }
 
-cn.addEventListener('touchstart', e => {
+zn.addEventListener('touchstart', e => {
   e.preventDefault();
   lt = Date.now();
   for (let i = 0; i < e.changedTouches.length; i++) tap(e.changedTouches[i].clientX, e.changedTouches[i].clientY);
 }, { passive: false });
 
-cn.addEventListener('mousedown', e => {
+zn.addEventListener('mousedown', e => {
   if (Date.now() - lt < 500) return;
   tap(e.clientX, e.clientY);
 });
+
+el('rk').onclick = openRanks;
+el('mCl').onclick = () => md.classList.remove('on');
+md.onclick = e => { if (e.target === md) md.classList.remove('on'); };
 
 el('b1').onclick = () => { if (s.sc >= s.p1) { s.sc -= s.p1; s.tp++; s.p1 = Math.ceil(s.p1 * 1.5); sv(); ui(); } };
 el('b2').onclick = () => { if (s.sc >= s.p2) { s.sc -= s.p2; s.ps += 3; s.p2 = Math.ceil(s.p2 * 1.6); sv(); ui(); } };
