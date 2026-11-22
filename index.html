@@ -5,7 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Тапалка Mini App</title>
   <script src="https://telegram.org"></script>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; user-select: none; }
+    body { background: #0f0f13; color: #fff; padding: 16px; text-align: center; }
+    .header { display: flex; justify-content: space-between; font-size: 14px; color: #aaa; margin-bottom: 10px; }
+    .balance { font-size: 42px; font-weight: 800; color: #00e676; margin: 10px 0; text-shadow: 0 0 15px rgba(0, 230, 118, 0.3); }
+    .stats { font-size: 13px; color: #888; margin-bottom: 16px; }
+    .sub-text { font-size: 13px; color: #aaa; margin-top: 5px; }
+    .bank-text { margin-top: 8px; font-size: 16px; }
+    .bank-text b { color: #00e676; }
+    .tabs { display: flex; gap: 8px; justify-content: center; margin-bottom: 20px; }
+    .tab-btn { background: #1e1e26; border: 1px solid #333; color: #fff; padding: 10px 14px; border-radius: 10px; font-size: 14px; cursor: pointer; flex: 1; }
+    .tab-btn.active { background: #00c853; border-color: #00e676; font-weight: bold; }
+    .section { display: none; }
+    .section.active { display: block; }
+    .tap-circle {
+      width: 210px; height: 210px; border-radius: 50%; margin: 30px auto;
+      background: radial-gradient(circle, #00e676 0%, #00695c 100%);
+      border: 6px solid #69f0ae; box-shadow: 0 0 30px rgba(0, 230, 118, 0.4);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      font-size: 22px; font-weight: bold; cursor: pointer; transition: transform 0.08s;
+    }
+    .tap-circle:active { transform: scale(0.94); }
+    .wheel-wrap { position: relative; width: 220px; height: 220px; margin: 20px auto; }
+    .wheel {
+      width: 100%; height: 100%; border-radius: 50%; border: 5px solid #ffd600;
+      background: conic-gradient(#e53935 0deg 60deg, #8e24aa 60deg 120deg, #1e88e5 120deg 180deg, #00897b 180deg 240deg, #fdd835 240deg 300deg, #fb8c00 300deg 360deg);
+      transition: transform 3s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+    }
+    .pointer { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-size: 24px; color: #fff; z-index: 2; }
+    .action-btn { background: #ffab00; color: #000; border: none; padding: 12px 24px; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+    .action-btn:disabled { background: #444; color: #888; }
+    .full-btn { width: 100%; }
+    .mines-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 300px; margin: 16px auto; }
+    .mine-cell {
+      aspect-ratio: 1; background: #252530; border: 2px solid #383848; border-radius: 12px;
+      font-size: 24px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .mine-cell.safe { background: #1b5e20; border-color: #00e676; }
+    .mine-cell.bomb { background: #b71c1c; border-color: #ff5252; }
+    .mines-controls { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
+    .claim-btn { background: #00e676; color: #000; }
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.9); z-index: 99; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
+    .modal-box { background: #1e1e26; padding: 24px; border-radius: 16px; border: 1px solid #444; width: 100%; max-width: 300px; }
+    .modal-box p { margin-top: 10px; color: #ccc; }
+    .modal input { width: 100%; padding: 12px; margin: 15px 0; border-radius: 8px; border: 1px solid #555; background: #111; color: #fff; font-size: 18px; text-align: center; }
+  </style>
 </head>
 <body>
 
@@ -23,7 +68,6 @@
     <button class="tab-btn" onclick="switchTab('minesTab', this)">💣 Сапер</button>
   </div>
 
-  <!-- Вкладка 1: Тапалка -->
   <div id="tapTab" class="section active">
     <div class="tap-circle" id="tapBtn">
       <span style="font-size: 40px;">🐆🔥</span>
@@ -31,7 +75,6 @@
     </div>
   </div>
 
-  <!-- Вкладка 2: Колесо фортуны -->
   <div id="wheelTab" class="section">
     <h3>Колесо Фортуны</h3>
     <p class="sub-text">Выиграй от +100 до +2000 монет!</p>
@@ -42,7 +85,6 @@
     <button class="action-btn" id="spinBtn" onclick="spinWheel()">Крутить (Бесплатно)</button>
   </div>
 
-  <!-- Вкладка 3: Сапер (Гараж 12 ячеек, 3 бомбы) -->
   <div id="minesTab" class="section">
     <h3>Сапер: Гараж</h3>
     <p class="sub-text">12 ячеек • 3 бомбы • Ставка: 100</p>
@@ -54,7 +96,6 @@
     </div>
   </div>
 
-  <!-- Окно Капчи -->
   <div class="modal" id="captchaModal">
     <div class="modal-box">
       <h3>Проверка на бота 🤖</h3>
@@ -64,474 +105,204 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
-</body>
-</html>
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  user-select: none;
-}
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
 
-body {
-  background: #0f0f13;
-  color: #fff;
-  padding: 16px;
-  text-align: center;
-}
+    let state = { balance: 0, tapPower: 8, tapsToCaptcha: 100 };
+    let saveTimeout = null;
+    let captchaResult = 0;
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
-  color: #aaa;
-  margin-bottom: 10px;
-}
-
-.balance {
-  font-size: 42px;
-  font-weight: 800;
-  color: #00e676;
-  margin: 10px 0;
-  text-shadow: 0 0 15px rgba(0, 230, 118, 0.3);
-}
-
-.stats {
-  font-size: 13px;
-  color: #888;
-  margin-bottom: 16px;
-}
-
-.sub-text {
-  font-size: 13px;
-  color: #aaa;
-  margin-top: 5px;
-}
-
-.bank-text {
-  margin-top: 8px;
-  font-size: 16px;
-}
-
-.bank-text b {
-  color: #00e676;
-}
-
-.tabs {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.tab-btn {
-  background: #1e1e26;
-  border: 1px solid #333;
-  color: #fff;
-  padding: 10px 14px;
-  border-radius: 10px;
-  font-size: 14px;
-  cursor: pointer;
-  flex: 1;
-}
-
-.tab-btn.active {
-  background: #00c853;
-  border-color: #00e676;
-  font-weight: bold;
-}
-
-.section {
-  display: none;
-}
-
-.section.active {
-  display: block;
-}
-
-.tap-circle {
-  width: 210px;
-  height: 210px;
-  border-radius: 50%;
-  margin: 30px auto;
-  background: radial-gradient(circle, #00e676 0%, #00695c 100%);
-  border: 6px solid #69f0ae;
-  box-shadow: 0 0 30px rgba(0, 230, 118, 0.4);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-size: 22px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: transform 0.08s;
-}
-
-.tap-circle:active {
-  transform: scale(0.94);
-}
-
-.wheel-wrap {
-  position: relative;
-  width: 220px;
-  height: 220px;
-  margin: 20px auto;
-}
-
-.wheel {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  border: 5px solid #ffd600;
-  background: conic-gradient(
-    #e53935 0deg 60deg,
-    #8e24aa 60deg 120deg,
-    #1e88e5 120deg 180deg,
-    #00897b 180deg 240deg,
-    #fdd835 240deg 300deg,
-    #fb8c00 300deg 360deg
-  );
-  transition: transform 3s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-}
-
-.pointer {
-  position: absolute;
-  top: -12px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 24px;
-  color: #fff;
-  z-index: 2;
-}
-
-.action-btn {
-  background: #ffab00;
-  color: #000;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.action-btn:disabled {
-  background: #444;
-  color: #888;
-}
-
-.full-btn {
-  width: 100%;
-}
-
-.mines-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  max-width: 300px;
-  margin: 16px auto;
-}
-
-.mine-cell {
-  aspect-ratio: 1;
-  background: #252530;
-  border: 2px solid #383848;
-  border-radius: 12px;
-  font-size: 24px;
-  color: #fff;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.mine-cell.safe {
-  background: #1b5e20;
-  border-color: #00e676;
-}
-
-.mine-cell.bomb {
-  background: #b71c1c;
-  border-color: #ff5252;
-}
-
-.mines-controls {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  margin-top: 15px;
-}
-
-.claim-btn {
-  background: #00e676;
-  color: #000;
-}
-
-.modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.9);
-  z-index: 99;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-}
-
-.modal-box {
-  background: #1e1e26;
-  padding: 24px;
-  border-radius: 16px;
-  border: 1px solid #444;
-  width: 100%;
-  max-width: 300px;
-}
-
-.modal-box p {
-  margin-top: 10px;
-  color: #ccc;
-}
-
-.modal input {
-  width: 100%;
-  padding: 12px;
-  margin: 15px 0;
-  border-radius: 8px;
-  border: 1px solid #555;
-  background: #111;
-  color: #fff;
-  font-size: 18px;
-  text-align: center;
-}
-const tg = window.Telegram.WebApp;
-tg.ready();
-tg.expand();
-
-let state = {
-  balance: 0,
-  tapPower: 8,
-  tapsToCaptcha: 100
-};
-
-let saveTimeout = null;
-let captchaResult = 0;
-
-// 1. ЗАГРУЗКА ПРОГРЕССА (Telegram CloudStorage + резерв localStorage)
-function loadProgress() {
-  const localData = localStorage.getItem('tma_game_save');
-  if (localData) {
-    try {
-      state = { ...state, ...JSON.parse(localData) };
-    } catch (e) {}
-  }
-  updateUI();
-
-  if (tg.CloudStorage) {
-    tg.CloudStorage.getItem('game_state', (err, value) => {
-      if (!err && value) {
-        try {
-          const cloudState = JSON.parse(value);
-          if (cloudState.balance >= state.balance) {
-            state = { ...state, ...cloudState };
-            updateUI();
-          }
-        } catch (e) {}
+    function loadProgress() {
+      const localData = localStorage.getItem('tma_game_save');
+      if (localData) {
+        try { state = { ...state, ...JSON.parse(localData) }; } catch (e) {}
       }
-    });
-  }
-}
+      updateUI();
 
-// 2. СОХРАНЕНИЕ ПРОГРЕССА
-function saveProgress() {
-  localStorage.setItem('tma_game_save', JSON.stringify(state));
-  document.getElementById('saveStatus').innerText = '⏳ Сохранение...';
-
-  clearTimeout(saveTimeout);
-  saveTimeout = setTimeout(() => {
-    if (tg.CloudStorage) {
-      tg.CloudStorage.setItem('game_state', JSON.stringify(state), (err) => {
-        document.getElementById('saveStatus').innerText = err ? '⚠️ Локально' : '☁️ Сохранено';
-      });
-    } else {
-      document.getElementById('saveStatus').innerText = '💾 Локально';
+      if (tg.CloudStorage) {
+        tg.CloudStorage.getItem('game_state', (err, value) => {
+          if (!err && value) {
+            try {
+              const cloudState = JSON.parse(value);
+              if (cloudState.balance >= state.balance) {
+                state = { ...state, ...cloudState };
+                updateUI();
+              }
+            } catch (e) {}
+          }
+        });
+      }
     }
-  }, 800);
+
+    function saveProgress() {
+      localStorage.setItem('tma_game_save', JSON.stringify(state));
+      document.getElementById('saveStatus').innerText = '⏳ Сохранение...';
+      clearTimeout(saveTimeout);
+      saveTimeout = setTimeout(() => {
+        if (tg.CloudStorage) {
+          tg.CloudStorage.setItem('game_state', JSON.stringify(state), (err) => {
+            document.getElementById('saveStatus').innerText = err ? '⚠️ Локально' : '☁️ Сохранено';
+          });
+        } else {
+          document.getElementById('saveStatus').innerText = '💾 Локально';
+        }
+      }, 800);
+    }
+
+    function updateUI() {
+      document.getElementById('balance').innerText = Math.floor(state.balance);
+      document.getElementById('tapPower').innerText = state.tapPower;
+      document.getElementById('captchaLeft').innerText = state.tapsToCaptcha;
+      const lvl = Math.min(100, Math.floor(state.balance / 1000) + 1);
+      document.getElementById('level').innerText = lvl;
+    }
+
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    document.getElementById('tapBtn').addEventListener('pointerdown', () => {
+      if (state.tapsToCaptcha <= 0) { openCaptcha(); return; }
+      state.balance += state.tapPower;
+      state.tapsToCaptcha--;
+      if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+      updateUI();
+      saveProgress();
+      if (state.tapsToCaptcha === 0) openCaptcha();
+    });
+
+    function openCaptcha() {
+      const a = Math.floor(Math.random() * 9) + 2;
+      const b = Math.floor(Math.random() * 9) + 2;
+      captchaResult = a + b;
+      document.getElementById('captchaTask').innerText = `Решите пример: ${a} + ${b} = ?`;
+      document.getElementById('captchaInput').value = '';
+      document.getElementById('captchaModal').style.display = 'flex';
+    }
+
+    function verifyCaptcha() {
+      const userAns = Number(document.getElementById('captchaInput').value);
+      if (userAns === captchaResult) {
+        state.tapsToCaptcha = 100;
+        document.getElementById('captchaModal').style.display = 'none';
+        updateUI();
+        saveProgress();
+      } else {
+        tg.showAlert('Неправильный ответ! Попробуйте снова.');
+      }
+    }
+
+    let currentRotation = 0;
+    let isSpinning = false;
+    const wheelPrizes =;
+
+    function spinWheel() {
+      if (isSpinning) return;
+      isSpinning = true;
+      const spinBtn = document.getElementById('spinBtn');
+      spinBtn.disabled = true;
+
+      const prizeIndex = Math.floor(Math.random() * wheelPrizes.length);
+      const sliceAngle = 360 / wheelPrizes.length;
+      const extraSpins = 360 * 5;
+      const targetAngle = extraSpins + (360 - prizeIndex * sliceAngle - sliceAngle / 2);
+
+      currentRotation += targetAngle;
+      document.getElementById('wheel').style.transform = `rotate(${currentRotation}deg)`;
+
+      setTimeout(() => {
+        const won = wheelPrizes[prizeIndex];
+        state.balance += won;
+        updateUI();
+        saveProgress();
+        tg.showAlert(`🎉 Вы выиграли ${won} монет!`);
+isSpinning = false;
+spinBtn.disabled = false;
+}, 3100);
 }
-
-function updateUI() {
-  document.getElementById('balance').innerText = Math.floor(state.balance);
-  document.getElementById('tapPower').innerText = state.tapPower;
-  document.getElementById('captchaLeft').innerText = state.tapsToCaptcha;
-  const lvl = Math.min(100, Math.floor(state.balance / 1000) + 1);
-  document.getElementById('level').innerText = lvl;
-}
-
-function switchTab(tabId, btn) {
-  document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-  document.getElementById(tabId).classList.add('active');
-  btn.classList.add('active');
-}
-
-// 3. ЛОГИКА ТАПА И КАПЧИ
-document.getElementById('tapBtn').addEventListener('pointerdown', () => {
-  if (state.tapsToCaptcha <= 0) {
-    openCaptcha();
-    return;
-  }
-  state.balance += state.tapPower;
-  state.tapsToCaptcha--;
-  if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-  updateUI();
-  saveProgress();
-
-  if (state.tapsToCaptcha === 0) openCaptcha();
-});
-
-function openCaptcha() {
-  const a = Math.floor(Math.random() * 9) + 2;
-  const b = Math.floor(Math.random() * 9) + 2;
-  captchaResult = a + b;
-  document.getElementById('captchaTask').innerText = `Решите пример: ${a} + ${b} = ?`;
-  document.getElementById('captchaInput').value = '';
-  document.getElementById('captchaModal').style.display = 'flex';
-}
-
-function verifyCaptcha() {
-  const userAns = Number(document.getElementById('captchaInput').value);
-  if (userAns === captchaResult) {
-    state.tapsToCaptcha = 100;
-    document.getElementById('captchaModal').style.display = 'none';
-    updateUI();
-    saveProgress();
-  } else {
-    tg.showAlert('Неправильный ответ! Попробуйте снова.');
-  }
-}
-
-// 4. КОЛЕСО ФОРТУНЫ
-let currentRotation = 0;
-let isSpinning = false;
-const wheelPrizes =;
-
-function spinWheel() {
-  if (isSpinning) return;
-  isSpinning = true;
-  const spinBtn = document.getElementById('spinBtn');
-  spinBtn.disabled = true;
-
-  const prizeIndex = Math.floor(Math.random() * wheelPrizes.length);
-  const sliceAngle = 360 / wheelPrizes.length;
-  const extraSpins = 360 * 5;
-  const targetAngle = extraSpins + (360 - prizeIndex * sliceAngle - sliceAngle / 2);
-
-  currentRotation += targetAngle;
-  document.getElementById('wheel').style.transform = `rotate(${currentRotation}deg)`;
-
-  setTimeout(() => {
-    const won = wheelPrizes[prizeIndex];
-    state.balance += won;
-    updateUI();
-    saveProgress();
-    tg.showAlert(`🎉 Вы выиграли ${won} монет!`);
-    isSpinning = false;
-    spinBtn.disabled = false;
-  }, 3100);
-}
-
-// 5. САПЕР (ГАРАЖ: 12 ЯЧЕЕК, 3 БОМБЫ)
 let mineBombs = [];
 let mineActive = false;
 let roundBank = 0;
 const betAmount = 100;
-
 function renderEmptyGrid() {
-  const grid = document.getElementById('minesGrid');
-  grid.innerHTML = '';
-  for (let i = 0; i < 12; i++) {
-    const cell = document.createElement('div');
-    cell.className = 'mine-cell';
-    cell.innerText = '🚪';
-    cell.onclick = () => clickMineCell(i, cell);
-    grid.appendChild(cell);
-  }
+const grid = document.getElementById('minesGrid');
+grid.innerHTML = '';
+for (let i = 0; i < 12; i++) {
+const cell = document.createElement('div');
+cell.className = 'mine-cell';
+cell.innerText = '🚪';
+cell.onclick = () => clickMineCell(i, cell);
+grid.appendChild(cell);
 }
-
+}
 function startMines() {
-  if (mineActive) return;
-  if (state.balance < betAmount) {
-    tg.showAlert('Недостаточно монет для ставки (нужно 100)!');
-    return;
-  }
-
-  state.balance -= betAmount;
-  roundBank = betAmount;
-  mineActive = true;
-  mineBombs = [];
-
-  while (mineBombs.length < 3) {
-    const r = Math.floor(Math.random() * 12);
-    if (!mineBombs.includes(r)) mineBombs.push(r);
-  }
-
-  document.getElementById('roundBank').innerText = roundBank;
-  document.getElementById('startMinesBtn').disabled = true;
-  document.getElementById('claimMinesBtn').disabled = true;
-  renderEmptyGrid();
-  updateUI();
-  saveProgress();
+if (mineActive) return;
+if (state.balance < betAmount) {
+tg.showAlert('Недостаточно монет для ставки (нужно 100)!');
+return;
 }
-
+state.balance -= betAmount;
+roundBank = betAmount;
+mineActive = true;
+mineBombs = [];
+while (mineBombs.length < 3) {
+const r = Math.floor(Math.random() * 12);
+if (!mineBombs.includes(r)) mineBombs.push(r);
+}
+document.getElementById('roundBank').innerText = roundBank;
+document.getElementById('startMinesBtn').disabled = true;
+document.getElementById('claimMinesBtn').disabled = true;
+renderEmptyGrid();
+updateUI();
+saveProgress();
+}
 function clickMineCell(index, cellEl) {
-  if (!mineActive || cellEl.classList.contains('opened')) return;
-  cellEl.classList.add('opened');
-
-  if (mineBombs.includes(index)) {
-    cellEl.classList.add('bomb');
-    cellEl.innerText = '💣';
-    mineActive = false;
-    roundBank = 0;
-    document.getElementById('roundBank').innerText = 0;
-    document.getElementById('startMinesBtn').disabled = false;
-    document.getElementById('claimMinesBtn').disabled = true;
-    revealAllBombs();
-    if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
-  } else {
-    cellEl.classList.add('safe');
-    cellEl.innerText = '🚗';
-    roundBank = Math.floor(roundBank * 1.35);
-    document.getElementById('roundBank').innerText = roundBank;
-    document.getElementById('claimMinesBtn').disabled = false;
-    if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-  }
+if (!mineActive || cellEl.classList.contains('opened')) return;
+cellEl.classList.add('opened');
+if (mineBombs.includes(index)) {
+cellEl.classList.add('bomb');
+cellEl.innerText = '💣';
+mineActive = false;
+roundBank = 0;
+document.getElementById('roundBank').innerText = 0;
+document.getElementById('startMinesBtn').disabled = false;
+document.getElementById('claimMinesBtn').disabled = true;
+revealAllBombs();
+if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+} else {
+cellEl.classList.add('safe');
+cellEl.innerText = '🚗';
+roundBank = Math.floor(roundBank * 1.35);
+document.getElementById('roundBank').innerText = roundBank;
+document.getElementById('claimMinesBtn').disabled = false;
+if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
 }
-
+}
 function revealAllBombs() {
-  const cells = document.querySelectorAll('.mine-cell');
-  mineBombs.forEach(idx => {
-    cells[idx].classList.add('bomb');
-    cells[idx].innerText = '💣';
-  });
+const cells = document.querySelectorAll('.mine-cell');
+mineBombs.forEach(idx => {
+cells[idx].classList.add('bomb');
+cells[idx].innerText = '💣';
+});
 }
-
 function claimMines() {
-  if (!mineActive || roundBank <= 0) return;
-  state.balance += roundBank;
-  mineActive = false;
-  const won = roundBank;
-  roundBank = 0;
-  document.getElementById('roundBank').innerText = 0;
-  document.getElementById('startMinesBtn').disabled = false;
-  document.getElementById('claimMinesBtn').disabled = true;
-  revealAllBombs();
-  updateUI();
-  saveProgress();
-  tg.showAlert(`💰 Вы забрали ${won} монет!`);
+if (!mineActive || roundBank <= 0) return;
+state.balance += roundBank;
+mineActive = false;
+const won = roundBank;
+roundBank = 0;
+document.getElementById('roundBank').innerText = 0;
+document.getElementById('startMinesBtn').disabled = false;
+document.getElementById('claimMinesBtn').disabled = true;
+revealAllBombs();
+updateUI();
+saveProgress();
+tg.showAlert(💰 Вы забрали ${won} монет!);
 }
-
 renderEmptyGrid();
 loadProgress();
