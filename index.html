@@ -101,10 +101,10 @@ body{display:flex;flex-direction:column;justify-content:space-between;align-item
 try{Telegram.WebApp.ready();Telegram.WebApp.expand()}catch(e){}
 let ac=null;
 function bp(f,d){if(!s.sn)return;try{if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();let o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.setValueAtTime(f,ac.currentTime);g.gain.setValueAtTime(.08,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
-const rw=[2500,10000,50000,150000,400000,1000000];
+const rw=new Array(2500,10000,50000,150000,400000,1000000);
 let s={sc:0,tp:1,ps:0,en:1000,me:1000,rg:3,ct:250,cp:1000,ce:800,cr:2000,ut:0,up:0,ue:0,ur:0,sn:1,x2:0,cd:0,dd:0,ld:0,vip:0,used:''};
-try{let d=localStorage.getItem('litV8');if(d)s=Object.assign(s,JSON.parse(d))}catch(e){}
-const sv=()=>{try{localStorage.setItem('litV8',JSON.stringify(s))}catch(e){}};
+try{let d=localStorage.getItem('litV9');if(d)s=Object.assign(s,JSON.parse(d))}catch(e){}
+const sv=()=>{try{localStorage.setItem('litV9',JSON.stringify(s))}catch(e){}};
 const $=id=>document.getElementById(id);
 function ui(){
 let m=s.x2>0?2:1;
@@ -129,8 +129,7 @@ if(s.x2>0){xb.innerText='🔥 x2: '+s.x2+' сек';xb.className='x2';tb.classNam
 else if(s.cd>0){xb.innerText='⏳ Ждать: '+s.cd+' сек';xb.className='x2 off';tb.className=bc}
 else{xb.innerText='⚡ Включить x2 на 1 минуту';xb.className='x2';tb.className=bc}
 let g=$('dg');g.innerHTML='';
-rw.forEach((v,i)=>{g.innerHTML+='День '+(i+1)+'
-+'+v.toLocaleString('ru-RU')+''});
+rw.forEach((v,i)=>{g.innerHTML+='<div class="db'+(i<s.dd?' dn':(i===s.dd?' cr':''))+'"><b>День '+(i+1)+'</b><br><span style="color:#ffd700">+'+v.toLocaleString('ru-RU')+'</span></div>'});
 let db=$('cdb'),nw=Date.now(),dm=86400000;
 if(s.dd>=rw.length){db.innerText='Все получено!';db.style.background='#444'}
 else if(nw-s.ld>=dm){db.innerText='🎁 Забрать +'+rw[s.dd].toLocaleString('ru-RU');db.style.background='#00e676'}
@@ -145,16 +144,16 @@ bp(450,.05);try{Telegram.WebApp.HapticFeedback.impactOccurred('light')}catch(x){
 ui();sv();
 });
 $('x2b').onclick=()=>{if(s.x2>0||s.cd>0)return;s.x2=60;s.cd=180;bp(750,.2);ui();sv()};
-$('bt').onclick=()=>{if(s.sc>=s.ct){s.sc-=s.ct;s.tp+=2;s.ut++;s.ct=Math.floor(s.ct1.65);bp(600,.12);ui();sv()}};
-$('bp').onclick=()=>{if(s.sc>=s.cp){s.sc-=s.cp;s.ps+=10;s.up++;s.cp=Math.floor(s.cp1.75);bp(600,.12);ui();sv()}};
-$('be').onclick=()=>{if(s.sc>=s.ce){s.sc-=s.ce;s.me+=500;s.en=s.me;s.ue++;s.ce=Math.floor(s.ce1.7);bp(600,.12);ui();sv()}};
-$('br').onclick=()=>{if(s.sc>=s.cr){s.sc-=s.cr;s.rg+=2;s.ur++;s.cr=Math.floor(s.cr1.8);bp(600,.12);ui();sv()}};
+$('bt').onclick=()=>{if(s.sc>=s.ct){s.sc-=s.ct;s.tp+=2;s.ut++;s.ct=Math.floor(s.ct*1.65);bp(600,.12);ui();sv()}};
+$('bp').onclick=()=>{if(s.sc>=s.cp){s.sc-=s.cp;s.ps+=10;s.up++;s.cp=Math.floor(s.cp*1.75);bp(600,.12);ui();sv()}};
+$('be').onclick=()=>{if(s.sc>=s.ce){s.sc-=s.ce;s.me+=500;s.en=s.me;s.ue++;s.ce=Math.floor(s.ce*1.7);bp(600,.12);ui();sv()}};
+$('br').onclick=()=>{if(s.sc>=s.cr){s.sc-=s.cr;s.rg+=2;s.ur++;s.cr=Math.floor(s.cr*1.8);bp(600,.12);ui();sv()}};
 document.querySelectorAll('.tbtn').forEach(b=>b.onclick=()=>{
 document.querySelectorAll('.scr').forEach(e=>e.classList.remove('on'));
 document.querySelectorAll('.tbtn').forEach(e=>e.classList.remove('on'));
 $(b.dataset.t).classList.add('on');b.classList.add('on');bp(350,.04);
 });
-const msg=t=>{let u="t.me"+encodeURIComponent(t);try{Telegram.WebApp.openTelegramLink(u)}catch(e){window.open(u,'_blank')}};
+const msg=t=>{let u="https://t.me"+encodeURIComponent(t);try{Telegram.WebApp.openTelegramLink(u)}catch(e){window.open(u,'_blank')}};
 document.querySelectorAll('.dbtn').forEach(b=>b.onclick=()=>msg('Привет! Хочу купить усиление: '+b.dataset.d));
 $('actCode').onclick=()=>{
 let c=$('promoIn').value.trim().toUpperCase();
@@ -170,6 +169,9 @@ $('cdb').onclick=()=>{let n=Date.now();if(s.dd<rw.length&&n-s.ld>=86400000){s.sc
 $('st').onclick=()=>{s.sn=s.sn?0:1;if(s.sn)bp(550,.1);ui();sv()};
 $('winMsg').onclick=()=>msg('Привет! Я прошёл 100 уровень в Литвин Тапочке!');
 $('askMsg').onclick=()=>msg('Привет! Вопрос по игре Литвин Тапочка');
-$('rstBtn').onclick=()=>{if(confirm('Сбросить прогресс?')){localStorage.removeItem('litV8');location.reload()}};
+$('rstBtn').onclick=()=>{if(confirm('Сбросить прогресс?')){localStorage.removeItem('litV9');location.reload()}};
 setInterval(()=>{if(s.ps>0)s.sc+=s.ps;if(s.en<s.me)s.en=Math.min(s.me,s.en+s.rg);if(s.x2>0)s.x2--;else if(s.cd>0)s.cd--;ui();sv()},1000);
 ui();
+</script>
+</body>
+</html>
