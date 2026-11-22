@@ -8,11 +8,12 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
     body { background: #0d0d12; color: #fff; padding: 14px 14px 80px 14px; text-align: center; }
-    .header { display: flex; justify-content: space-between; font-size: 13px; color: #aaa; margin-bottom: 8px; }
-    .progress-wrap { width: 100%; height: 8px; background: #1e1e28; border-radius: 6px; overflow: hidden; margin-bottom: 12px; }
+    .header { display: flex; justify-content: space-between; font-size: 13px; color: #aaa; margin-bottom: 6px; }
+    .progress-wrap { width: 100%; height: 8px; background: #1e1e28; border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
     .progress-bar { height: 100%; width: 1%; background: linear-gradient(90deg, #00c853, #69f0ae); transition: width 0.2s; }
-    .balance { font-size: 38px; font-weight: 800; color: #00e676; margin: 6px 0; text-shadow: 0 0 15px rgba(0, 230, 118, 0.3); }
-    .stats { font-size: 12px; color: #999; margin-bottom: 14px; }
+    .balance { font-size: 36px; font-weight: 800; color: #00e676; margin: 4px 0; text-shadow: 0 0 15px rgba(0, 230, 118, 0.3); }
+    .stats { font-size: 12px; color: #999; margin-bottom: 12px; }
+    .energy-box { background: #181822; border: 1px solid #2c2c3a; border-radius: 10px; padding: 6px 12px; display: inline-block; font-size: 13px; color: #ffd600; font-weight: bold; margin-bottom: 10px; }
     .sub-text { font-size: 13px; color: #aaa; margin-top: 4px; }
     .bank-text { margin-top: 8px; font-size: 16px; }
     .bank-text b { color: #00e676; }
@@ -23,37 +24,46 @@
     .section { display: none; }
     .section.active { display: block; }
     .tap-circle {
-      width: 215px; height: 215px; border-radius: 50%; margin: 25px auto;
+      width: 205px; height: 205px; border-radius: 50%; margin: 16px auto;
       background: radial-gradient(circle, #00e676 0%, #004d40 100%);
       border: 6px solid #69f0ae; box-shadow: 0 0 35px rgba(0, 230, 118, 0.45);
       display: flex; flex-direction: column; justify-content: center; align-items: center;
       font-size: 22px; font-weight: bold; cursor: pointer; transition: transform 0.06s;
     }
     .tap-circle:active { transform: scale(0.93); }
-    .card { background: #181822; border: 1px solid #2b2b38; border-radius: 14px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; text-align: left; }
+    .card { background: #181822; border: 1px solid #2b2b38; border-radius: 14px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; text-align: left; }
     .card-info h4 { font-size: 15px; margin-bottom: 3px; color: #fff; }
     .card-info p { font-size: 12px; color: #aaa; }
     .buy-btn { background: #00e676; color: #000; border: none; padding: 10px 12px; border-radius: 10px; font-weight: bold; font-size: 13px; cursor: pointer; min-width: 95px; text-align: center; }
     .buy-btn:disabled { background: #2c2c38; color: #666; }
-    .wheel-wrap { position: relative; width: 200px; height: 200px; margin: 16px auto; }
+    
+    /* Промокоды */
+    .promo-box { background: #181822; border: 1px solid #2b2b38; border-radius: 14px; padding: 12px; margin-bottom: 12px; }
+    .promo-row { display: flex; gap: 8px; margin-top: 8px; }
+    .promo-input { flex: 1; background: #0f0f15; border: 1px solid #444; border-radius: 10px; padding: 10px; color: #fff; font-size: 14px; text-transform: uppercase; text-align: center; }
+
+    .wheel-wrap { position: relative; width: 185px; height: 185px; margin: 12px auto; }
     .wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #ffd600; background: conic-gradient(#e53935 0deg 60deg, #8e24aa 60deg 120deg, #1e88e5 120deg 180deg, #00897b 180deg 240deg, #fdd835 240deg 300deg, #fb8c00 300deg 360deg); transition: transform 3s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
     .pointer { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-size: 24px; color: #fff; z-index: 2; }
-    .action-btn { background: #ffab00; color: #000; border: none; padding: 12px 20px; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 8px; }
+    .action-btn { background: #ffab00; color: #000; border: none; padding: 11px 18px; border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 6px; }
     .action-btn:disabled { background: #333; color: #777; }
     .full-btn { width: 100%; }
-    .game-switch { display: flex; gap: 8px; margin-bottom: 14px; }
+
+    .game-switch { display: flex; gap: 8px; margin-bottom: 12px; }
     .g-tab { flex: 1; background: #1e1e28; border: 1px solid #333; color: #fff; padding: 8px; border-radius: 10px; font-size: 13px; font-weight: bold; cursor: pointer; }
     .g-tab.active { background: #00e676; color: #000; border-color: #00e676; }
-    .bet-row { display: flex; gap: 8px; justify-content: center; margin: 10px 0; }
+    .bet-row { display: flex; gap: 8px; justify-content: center; margin: 8px 0; }
     .bet-btn, .lbet-btn { background: #1e1e28; border: 1px solid #444; color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; }
     .bet-btn.active, .lbet-btn.active { border-color: #00e676; background: #004d40; font-weight: bold; }
-    .mines-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 290px; margin: 12px auto; }
+
+    .mines-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 280px; margin: 10px auto; }
     .mine-cell { aspect-ratio: 1; background: #22222e; border: 2px solid #353545; border-radius: 12px; font-size: 22px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .mine-cell.safe { background: #1b5e20; border-color: #00e676; }
     .mine-cell.bomb { background: #b71c1c; border-color: #ff5252; }
-    .mines-controls { display: flex; gap: 10px; justify-content: center; margin-top: 10px; }
+    .mines-controls { display: flex; gap: 10px; justify-content: center; margin-top: 8px; }
     .claim-btn { background: #00e676; color: #000; }
-    .ladder-scroll { max-width: 320px; max-height: 270px; overflow-y: auto; margin: 10px auto; padding: 4px; display: flex; flex-direction: column; gap: 8px; }
+
+    .ladder-scroll { max-width: 320px; max-height: 250px; overflow-y: auto; margin: 8px auto; padding: 4px; display: flex; flex-direction: column; gap: 8px; }
     .ladder-row { display: flex; align-items: center; justify-content: space-between; background: #181822; border: 1px solid #2b2b38; padding: 8px 12px; border-radius: 12px; opacity: 0.55; }
     .ladder-row.current { opacity: 1; border-color: #ffd600; box-shadow: 0 0 12px rgba(255, 214, 0, 0.25); }
     .ladder-row.passed { opacity: 0.9; border-color: #00e676; }
@@ -62,6 +72,7 @@
     .cup-btn { width: 48px; height: 42px; background: #262634; border: 2px solid #3f3f52; border-radius: 10px; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .cup-btn.win { background: #1b5e20; border-color: #00e676; }
     .cup-btn.lose { background: #b71c1c; border-color: #ff5252; }
+
     .owner-box { background: #181822; border: 1px solid #333; border-radius: 16px; padding: 20px; margin-top: 10px; }
     .tg-link-btn { display: block; width: 100%; background: #29b6f6; color: #000; text-decoration: none; padding: 14px; border-radius: 12px; font-weight: bold; font-size: 16px; margin-top: 16px; }
     .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.92); z-index: 99; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
@@ -79,49 +90,60 @@
   <div class="progress-wrap"><div class="progress-bar" id="lvlBar"></div></div>
 
   <div class="balance" id="balance">0</div>
-  <div class="stats">Тап: +<span id="tapPower">5</span> • Пассив: +<span id="passiveIncome">0</span>/сек • Капча: <span id="captchaLeft">120</span></div>
+  <div class="stats">Тап: +<span id="tapPower">1</span> • Пассив: +<span id="passiveIncome">0</span>/сек • Капча: <span id="captchaLeft">100</span></div>
 
   <div id="tapTab" class="section active">
+    <div class="energy-box">⚡ Энергия: <span id="energyVal">500</span> / <span id="maxEnergyVal">500</span></div>
     <div class="tap-circle" id="tapBtn" onclick="handleTap()">
       <span style="font-size: 44px;">🐆🔥</span>
       <span>ТАПАЙ</span>
     </div>
-    <p class="sub-text">Дойди до 100 уровня первым и забери приз!</p>
+    <p class="sub-text">Цель: 50 000 000 💰 (100 ур.) • Восстановление +2 ⚡/сек</p>
   </div>
 
   <div id="upgradeTab" class="section">
     <h3 style="margin-bottom: 10px;">Магазин улучшений</h3>
     <div class="card">
       <div class="card-info">
-        <h4>⚡ Сила тапа (+2)</h4>
-        <p>Сейчас: +<span id="uTapVal">5</span> за клик</p>
+        <h4>⚡ Сила тапа (+1)</h4>
+        <p>Сейчас: +<span id="uTapVal">1</span> за клик</p>
       </div>
-      <button class="buy-btn" id="btnTapUpg" onclick="buyUpg('tap')">300 💰</button>
+      <button class="buy-btn" id="btnTapUpg" onclick="buyUpg('tap')">500 💰</button>
     </div>
     <div class="card">
       <div class="card-info">
-        <h4>🔥 Супер-удар (+15)</h4>
-        <p>Мощный буст к клику</p>
+        <h4>🔋 Запас энергии (+250)</h4>
+        <p>Макс. энергия: <span id="uEnergyVal">500</span> ⚡</p>
       </div>
-      <button class="buy-btn" id="btnSuperUpg" onclick="buyUpg('super')">2500 💰</button>
+      <button class="buy-btn" id="btnEnergyUpg" onclick="buyUpg('energy')">1500 💰</button>
     </div>
     <div class="card">
       <div class="card-info">
-        <h4>⚙️ Авто-ферма (+5/сек)</h4>
+        <h4>⚙️ Авто-ферма (+4/сек)</h4>
         <p>Добывает монеты сама</p>
       </div>
-      <button class="buy-btn" id="btnAutoUpg" onclick="buyUpg('auto')">1000 💰</button>
+      <button class="buy-btn" id="btnAutoUpg" onclick="buyUpg('auto')">3000 💰</button>
     </div>
     <div class="card">
       <div class="card-info">
-        <h4>🏢 Бизнес-центр (+30/сек)</h4>
+        <h4>🏢 Бизнес-центр (+25/сек)</h4>
         <p>Высокий пассивный доход</p>
       </div>
-      <button class="buy-btn" id="btnBizUpg" onclick="buyUpg('biz')">6000 💰</button>
+      <button class="buy-btn" id="btnBizUpg" onclick="buyUpg('biz')">18000 💰</button>
     </div>
   </div>
 
   <div id="bonusTab" class="section">
+    <!-- Промокоды -->
+    <div class="promo-box">
+      <h4>🎟 Активация промокода</h4>
+      <p class="sub-text">Награда: +6 767 💰 и +500 ⚡ энергии</p>
+      <div class="promo-row">
+        <input type="text" id="promoInput" class="promo-input" placeholder="ВВЕДИ КОД">
+        <button class="buy-btn" onclick="activatePromo()">Ввод</button>
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-info">
         <h4>📅 Ежедневный бонус</h4>
@@ -129,13 +151,13 @@
       </div>
       <button class="buy-btn" id="dailyBtn" onclick="claimDaily()">Забрать</button>
     </div>
-    <h3 style="margin-top: 12px;">Колесо Фортуны</h3>
-    <p class="sub-text">Призы до 10 000 💰 • Цена: 500 💰</p>
+
+    <h4 style="margin-top: 8px;">Колесо Фортуны (Цена: 1 000 💰)</h4>
     <div class="wheel-wrap">
       <div class="pointer">▼</div>
       <div class="wheel" id="wheel"></div>
     </div>
-    <button class="action-btn" id="spinBtn" onclick="spinWheel()">Крутить за 500 💰</button>
+    <button class="action-btn" id="spinBtn" onclick="spinWheel()">Крутить за 1 000 💰</button>
   </div>
 
   <div id="gamesTab" class="section">
@@ -148,9 +170,9 @@
       <h3>Сапер: Гараж</h3>
       <p class="sub-text">12 ячеек • 3 бомбы • Множитель x1.35</p>
       <div class="bet-row">
-        <button class="bet-btn active" onclick="setBet(100, this)">100 💰</button>
-        <button class="bet-btn" onclick="setBet(500, this)">500 💰</button>
-        <button class="bet-btn" onclick="setBet(2000, this)">2000 💰</button>
+        <button class="bet-btn active" onclick="setBet(200, this)">200 💰</button>
+        <button class="bet-btn" onclick="setBet(1000, this)">1 000 💰</button>
+        <button class="bet-btn" onclick="setBet(5000, this)">5 000 💰</button>
       </div>
       <p class="bank-text">Банк раунда: <b id="roundBank">0</b></p>
       <div class="mines-grid" id="minesGrid"></div>
@@ -182,7 +204,7 @@
       <div style="font-size: 46px; margin-bottom: 10px;">👑</div>
       <h3>Владелец проекта</h3>
       <p style="color: #aaa; font-size: 14px; margin-top: 8px;">
-        Главный приз получает игрок, который первым честно достигнет <b>100 уровня</b> (15 000 000 монет).
+        Главный приз получает игрок, который первым честно достигнет <b>100 уровня</b> (50 000 000 монет).
       </p>
       <p style="color: #00e676; font-size: 14px; margin-top: 10px;">
         Достиг 100 уровня или есть вопросы? Пиши напрямую владельцу:
@@ -214,9 +236,19 @@
     if (tg) { tg.ready(); tg.expand(); }
 
     let state = {
-      balance: 0, tapPower: 5, passive: 0,
-      costTap: 300, costSuper: 2500, costAuto: 1000, costBiz: 6000,
-      tapsToCaptcha: 120, lastDaily: 0, dailyStreak: 1
+      balance: 0,
+      tapPower: 1,
+      passive: 0,
+      energy: 500,
+      maxEnergy: 500,
+      costTap: 500,
+      costEnergy: 1500,
+      costAuto: 3000,
+      costBiz: 18000,
+      tapsToCaptcha: 100,
+      lastDaily: 0,
+      dailyStreak: 1,
+      usedPromos: new Array()
     };
 
     let saveTimeout = null;
@@ -234,19 +266,21 @@
     }
 
     function loadProgress() {
-      const localData = localStorage.getItem('litvin_tap_v5');
+      const localData = localStorage.getItem('litvin_tap_v6');
       if (localData) {
         try { state = Object.assign(state, JSON.parse(localData)); } catch (e) {}
       }
+      if (!Array.isArray(state.usedPromos)) state.usedPromos = new Array();
       updateUI();
 
       if (tg && tg.CloudStorage) {
-        tg.CloudStorage.getItem('litvin_state_v5', function(err, value) {
+        tg.CloudStorage.getItem('litvin_state_v6', function(err, value) {
           if (!err && value) {
             try {
               const cloudState = JSON.parse(value);
               if (cloudState.balance >= state.balance) {
                 state = Object.assign(state, cloudState);
+                if (!Array.isArray(state.usedPromos)) state.usedPromos = new Array();
                 updateUI();
               }
             } catch (e) {}
@@ -256,12 +290,12 @@
     }
 
     function saveProgress() {
-      localStorage.setItem('litvin_tap_v5', JSON.stringify(state));
+      localStorage.setItem('litvin_tap_v6', JSON.stringify(state));
       document.getElementById('saveStatus').innerText = '⏳ Сохранение...';
       clearTimeout(saveTimeout);
       saveTimeout = setTimeout(function() {
         if (tg && tg.CloudStorage) {
-          tg.CloudStorage.setItem('litvin_state_v5', JSON.stringify(state), function(err) {
+          tg.CloudStorage.setItem('litvin_state_v6', JSON.stringify(state), function(err) {
             document.getElementById('saveStatus').innerText = err ? '⚠️ Локально' : '☁️ Сохранено';
           });
         } else {
@@ -270,9 +304,10 @@
       }, 700);
     }
 
+    // 100 уровень = 50 000 000 монет (минимум 2 недели активной игры)
     function calcLevel(bal) {
       if (bal <= 0) return 1;
-      const lvl = Math.floor(Math.sqrt(bal / 1500)) + 1;
+      const lvl = Math.floor(Math.sqrt(bal / 5000)) + 1;
       return Math.min(100, lvl);
     }
 
@@ -281,29 +316,32 @@
       document.getElementById('tapPower').innerText = state.tapPower;
       document.getElementById('passiveIncome').innerText = state.passive;
       document.getElementById('uTapVal').innerText = state.tapPower;
+      document.getElementById('uEnergyVal').innerText = state.maxEnergy;
+      document.getElementById('energyVal').innerText = Math.floor(state.energy);
+      document.getElementById('maxEnergyVal').innerText = state.maxEnergy;
       document.getElementById('captchaLeft').innerText = state.tapsToCaptcha;
 
       const lvl = calcLevel(state.balance);
       document.getElementById('level').innerText = lvl;
       document.getElementById('lvlBar').style.width = lvl + '%';
 
-      document.getElementById('btnTapUpg').innerText = state.costTap + ' 💰';
+      document.getElementById('btnTapUpg').innerText = state.costTap.toLocaleString('ru-RU') + ' 💰';
       document.getElementById('btnTapUpg').disabled = state.balance < state.costTap;
 
-      document.getElementById('btnSuperUpg').innerText = state.costSuper + ' 💰';
-      document.getElementById('btnSuperUpg').disabled = state.balance < state.costSuper;
+      document.getElementById('btnEnergyUpg').innerText = state.costEnergy.toLocaleString('ru-RU') + ' 💰';
+      document.getElementById('btnEnergyUpg').disabled = state.balance < state.costEnergy;
 
-      document.getElementById('btnAutoUpg').innerText = state.costAuto + ' 💰';
+      document.getElementById('btnAutoUpg').innerText = state.costAuto.toLocaleString('ru-RU') + ' 💰';
       document.getElementById('btnAutoUpg').disabled = state.balance < state.costAuto;
 
-      document.getElementById('btnBizUpg').innerText = state.costBiz + ' 💰';
+      document.getElementById('btnBizUpg').innerText = state.costBiz.toLocaleString('ru-RU') + ' 💰';
       document.getElementById('btnBizUpg').disabled = state.balance < state.costBiz;
 
-      document.getElementById('spinBtn').disabled = isSpinning || state.balance < 500;
+      document.getElementById('spinBtn').disabled = isSpinning || state.balance < 1000;
 
       const now = Date.now();
       const dailyReady = (now - state.lastDaily) >= 72000000;
-      const reward = Math.min(25000, state.dailyStreak * 1500);
+      const reward = Math.min(20000, state.dailyStreak * 1200);
       document.getElementById('dailyStreak').innerText = state.dailyStreak;
       document.getElementById('dailyBtn').innerText = dailyReady ? ('+' + reward + ' 💰') : 'Получено';
       document.getElementById('dailyBtn').disabled = !dailyReady;
@@ -324,9 +362,18 @@
       btn.classList.add('active');
     }
 
+    // Пассивный доход + восстановление энергии (+2 в сек)
     setInterval(function() {
+      let changed = false;
       if (state.passive > 0) {
         state.balance += state.passive;
+        changed = true;
+      }
+      if (state.energy < state.maxEnergy) {
+        state.energy = Math.min(state.maxEnergy, state.energy + 2);
+        changed = true;
+      }
+      if (changed) {
         updateUI();
         saveProgress();
       }
@@ -334,6 +381,11 @@
 
     function handleTap() {
       if (state.tapsToCaptcha <= 0) { openCaptcha(); return; }
+      if (state.energy < 1) {
+        notify('⚡ Энергия закончилась! Подождите восстановления или активируйте промокод.');
+        return;
+      }
+      state.energy -= 1;
       state.balance += state.tapPower;
       state.tapsToCaptcha--;
       if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
@@ -354,7 +406,7 @@
     function verifyCaptcha() {
       const userAns = Number(document.getElementById('captchaInput').value);
       if (userAns === captchaResult) {
-        state.tapsToCaptcha = 120;
+        state.tapsToCaptcha = 100;
         document.getElementById('captchaModal').style.display = 'none';
         updateUI();
         saveProgress();
@@ -363,15 +415,41 @@
       }
     }
 
+    // Промокоды (личный для Семена + общие комбинации, награда 6767 + энергия)
+    const validPromos = new Array('SEMEN2026', 'LITVIN67', 'PANTERA77', 'START6767', 'VIPBONUS');
+
+    function activatePromo() {
+      const inputEl = document.getElementById('promoInput');
+      const code = inputEl.value.trim().toUpperCase();
+      if (!code) return;
+
+      if (validPromos.indexOf(code) === -1) {
+        notify('❌ Неверный промокод!');
+        return;
+      }
+      if (state.usedPromos.indexOf(code) !== -1) {
+        notify('⚠️ Вы уже активировали этот промокод!');
+        return;
+      }
+
+      state.usedPromos.push(code);
+      state.balance += 6767;
+      state.energy += 500;
+      inputEl.value = '';
+      if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+      updateUI();
+      saveProgress();
+      notify('🎉 Промокод ' + code + ' активирован! Получено +6 767 💰 и +500 ⚡ энергии!');
+    }
     function buyUpg(type) {
       if (type === 'tap' && state.balance >= state.costTap) {
-        state.balance -= state.costTap; state.tapPower += 2; state.costTap = Math.floor(state.costTap * 1.45);
-      } else if (type === 'super' && state.balance >= state.costSuper) {
-        state.balance -= state.costSuper; state.tapPower += 15; state.costSuper = Math.floor(state.costSuper * 1.5);
+        state.balance -= state.costTap; state.tapPower += 1; state.costTap = Math.floor(state.costTap * 1.65);
+      } else if (type === 'energy' && state.balance >= state.costEnergy) {
+        state.balance -= state.costEnergy; state.maxEnergy += 250; state.energy += 250; state.costEnergy = Math.floor(state.costEnergy * 1.75);
       } else if (type === 'auto' && state.balance >= state.costAuto) {
-        state.balance -= state.costAuto; state.passive += 5; state.costAuto = Math.floor(state.costAuto * 1.45);
+        state.balance -= state.costAuto; state.passive += 4; state.costAuto = Math.floor(state.costAuto * 1.65);
       } else if (type === 'biz' && state.balance >= state.costBiz) {
-        state.balance -= state.costBiz; state.passive += 30; state.costBiz = Math.floor(state.costBiz * 1.5);
+        state.balance -= state.costBiz; state.passive += 25; state.costBiz = Math.floor(state.costBiz * 1.7);
       } else { return; }
       if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
       updateUI(); saveProgress();
@@ -380,19 +458,20 @@
     function claimDaily() {
       const now = Date.now();
       if ((now - state.lastDaily) < 72000000) return;
-      const reward = Math.min(25000, state.dailyStreak * 1500);
+      const reward = Math.min(20000, state.dailyStreak * 1200);
       state.balance += reward; state.lastDaily = now; state.dailyStreak++;
       if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
       updateUI(); saveProgress();
       notify('🎁 Ежедневный бонус: +' + reward + ' монет!');
     }
+
     let currentRotation = 0;
     let isSpinning = false;
-    const wheelPrizes = new Array(100, 750, 300, 3000, 1500, 10000);
+    const wheelPrizes = new Array(200, 1200, 500, 4000, 2000, 15000);
 
     function spinWheel() {
-      if (isSpinning || state.balance < 500) { notify('Для вращения нужно 500 монет!'); return; }
-      state.balance -= 500;
+      if (isSpinning || state.balance < 1000) { notify('Для вращения нужно 1 000 монет!'); return; }
+      state.balance -= 1000;
       isSpinning = true;
       updateUI(); saveProgress();
 
@@ -415,7 +494,7 @@
     let mineBombs = new Array();
     let mineActive = false;
     let roundBank = 0;
-    let betAmount = 100;
+    let betAmount = 200;
 
     function setBet(amount, btn) {
       if (mineActive) return;
@@ -589,7 +668,7 @@
         } else {
           appendLadderRow(ladderStep + 3, false);
           const allRows = document.querySelectorAll('.ladder-row');
-          allRows[3].classList.add('current');
+          allRows.classList.add('current');
         }
       } else {
         cupBtns[cupIdx].classList.add('lose');
