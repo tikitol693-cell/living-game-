@@ -1,281 +1,537 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Литвин Тапочка</title>
-<script src="https://telegram.org"></script>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
-html,body{width:100%;height:100dvh;overflow:hidden;touch-action:none;font-family:sans-serif;color:#fff;background:#0b0d10 url('litvin.jpg') center/cover no-repeat}
-body{display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:10px;background-color:rgba(0,0,0,0.68);background-blend-mode:darken}
-.bn{width:100%;max-width:420px;background:linear-gradient(90deg,#ff8c00,#ff2a55);text-align:center;font-size:11px;font-weight:800;padding:6px;border-radius:10px}
-.ti{width:100%;max-width:420px;display:flex;justify-content:space-between;font-size:11px;color:#ffd700;margin-top:4px}
-.sc{font-size:36px;font-weight:900;color:#00e676;text-align:center;text-shadow:0 0 15px rgba(0,230,118,.5)}
-.sb{font-size:12px;color:#ccc;text-align:center}
-.tb{display:flex;gap:3px;width:100%;max-width:420px;margin:5px 0;z-index:20}
-.tbtn{flex:1;background:rgba(25,28,36,.95);color:#fff;border:1px solid #444;padding:8px 1px;border-radius:9px;font-size:10px;font-weight:700;cursor:pointer}
-.tbtn.on{background:#00e676;color:#000;border-color:#00e676}
-.scr{display:none;width:100%;max-width:420px;flex:1;flex-direction:column;align-items:center;justify-content:space-between;overflow-y:auto;touch-action:pan-y}
-.scr.on{display:flex}
-.x2{background:linear-gradient(45deg,#ffd700,#ff6d00);color:#000;border:none;padding:8px 16px;border-radius:20px;font-size:12px;font-weight:900;cursor:pointer}
-.x2.off{background:#333;color:#888}
-.tap{width:195px;height:195px;border-radius:50%;background:radial-gradient(circle,rgba(29,185,84,.9),rgba(10,45,20,.98));border:6px solid #00e676;box-shadow:0 0 30px rgba(0,230,118,.6);display:flex;flex-direction:column;justify-content:center;align-items:center;font-size:20px;font-weight:900;text-align:center;cursor:pointer;transition:transform .04s;z-index:30;touch-action:none}
-.tap.hit{transform:scale(.91)}
-.tap.x2a{border-color:#ffd700;box-shadow:0 0 45px rgba(255,215,0,.9)}
-.tap.vip{border-color:#00e5ff;box-shadow:0 0 40px rgba(0,229,255,.7)}
-.eb{width:100%;background:rgba(0,0,0,.7);padding:9px;border-radius:12px;border:1px solid #333}
-.et{display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:4px}
-.br{width:100%;height:9px;background:#222;border-radius:5px;overflow:hidden}
-.fl{height:100%;background:linear-gradient(90deg,#00e676,#ffd700);width:100%;transition:width .15s}
-.cd{width:100%;background:rgba(25,28,35,.95);border:1px solid #383e4a;border-radius:11px;padding:10px;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center}
-.cd h4{font-size:13px;color:#ffd700;margin-bottom:2px}
-.cd p{font-size:11px;color:#bbb}
-.ab,.dbtn{background:#00e676;color:#000;border:none;padding:8px 10px;border-radius:8px;font-weight:800;font-size:11px;min-width:85px;cursor:pointer}
-.dbtn{background:linear-gradient(45deg,#ffd700,#ff9100)}
-.tg{width:100%;background:linear-gradient(90deg,#0088cc,#00aaff);color:#fff;border:none;padding:10px;border-radius:10px;font-weight:700;font-size:12px;margin-top:6px;cursor:pointer}
-.dg{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;width:100%;margin-top:6px}
-.db{background:#1c2029;border:1px solid #444;border-radius:9px;padding:7px 3px;text-align:center;font-size:10px}
-.db.dn{border-color:#00e676;background:rgba(0,230,118,.15)}
-.db.cr{border-color:#ffd700}
-.mine-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:100%;margin:8px 0}
-.mcell{height:50px;background:#1e232d;border:1px solid #4a5262;border-radius:10px;font-size:20px;font-weight:900;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
-.mcell.safe{background:rgba(0,230,118,.25);border-color:#00e676}
-.mcell.boom{background:rgba(255,42,85,.35);border-color:#ff2a55}
-.inp{width:100%;padding:9px;border-radius:8px;border:1px solid #555;background:#14171d;color:#fff;font-size:13px;margin-top:6px;user-select:text;-webkit-user-select:text}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.88);display:none;justify-content:center;align-items:center;z-index:999;padding:20px}
-.modal.show{display:flex}
-.mbox{background:#181b22;border:2px solid #ffd700;border-radius:16px;padding:18px;width:100%;max-width:320px;text-align:center}
-.cap-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
-</style>
-</head> 
-  <body>
-<div class="bn">🏆 Кто первый дойдёт до 100 УР. — получит 150 ₽!</div>
-<div class="ti"><span>Уровень: <b id="lv">1 / 100</b></span><span>Создатель: <b>Степан Шаимов</b></span></div>
-<div><div class="sc" id="sc">0</div><div class="sb">Тап: +<b id="tp">1</b> • Пассив: +<b id="ps">0</b>/с</div></div>
-<div class="tb" id="tabsBar">
-<button class="tbtn on" data-t="g">🔥 Тап</button>
-<button class="tbtn" data-t="u">🚀 Кач</button>
-<button class="tbtn" data-t="m">🎮 Игры</button>
-<button class="tbtn" data-t="d" style="color:#ffd700">💎 Донат</button>
-<button class="tbtn" data-t="b">🎁 Бонус</button>
-<button class="tbtn" data-t="s">⚙️</button>
-</div>
-<div id="g" class="scr on">
-<button class="x2" id="x2b">⚡ Включить x2 на 1 минуту</button>
-<div class="tap" id="tapBtn"><div style="font-size:44px">🐆🔥</div>ТАНЦУЙ<br>ПАНТЕРА</div>
-<div class="eb"><div class="et"><span>⚡ Энергия</span><span><span id="en">1000</span> / <span id="me">1000</span></span></div><div class="br"><div class="fl" id="ef"></div></div></div>
-</div>
-<div id="u" class="scr" style="justify-content:flex-start">
-<div class="cd" style="border-color:#00e5ff"><div><h4 style="color:#00e5ff">👻 Привидение (+1 клик)</h4><p>Доп. тень ударяет с тобой (Ур. <span id="ug">0</span>)</p></div><button class="ab" id="bg" style="background:#00e5ff">150 💰</button></div>
-<div class="cd"><div><h4>🥫 Банка LIT</h4><p>+2 к силе тапа (Ур. <span id="ut">0</span>)</p></div><button class="ab" id="bt">250 💰</button></div>
-<div class="cd"><div><h4>🔥 Сжечь Акулу</h4><p>+10 монет/сек (Ур. <span id="up">0</span>)</p></div><button class="ab" id="bp">1 000 💰</button></div>
-<div class="cd"><div><h4>🔋 Запас сил</h4><p>+500 энергии (Ур. <span id="ue">0</span>)</p></div><button class="ab" id="be">800 💰</button></div>
-<div class="cd"><div><h4>⚡ Регенерация</h4><p>+2 энергии/сек (Ур. <span id="ur">0</span>)</p></div><button class="ab" id="br">2 000 💰</button></div>
-</div>
-<div id="m" class="scr" style="justify-content:flex-start">
-<div class="cd" style="flex-direction:column;align-items:stretch;border-color:#00e676">
-<div style="display:flex;justify-content:space-between;align-items:center"><h4>💣 Мини-игра «Сапёр»</h4><span id="mineBank" style="font-size:12px;color:#00e676;font-weight:bold">Ставка: 1 000</span></div>
-<p id="mineMsg">Открой клетки без мин (2 мины) и забери куш!</p>
-<div class="mine-grid" id="mineGrid"></div>
-<div style="display:flex;gap:6px">
-<button class="ab" id="mineStart" style="flex:1;padding:10px">Играть (1 000 💰)</button>
-<button class="dbtn" id="mineTake" style="flex:1;padding:10px;display:none">Забрать куш</button>
-</div>
-</div>
-<div class="cd" style="flex-direction:column;align-items:stretch;border-color:#ffd700">
-<h4>🎰 Колесо Литвина</h4>
-<p id="spinRes">Ставка 2 500 💰 — выиграй до 20 000 💰 или энергию!</p>
-<button class="dbtn" id="spinBtn" style="width:100%;margin-top:6px;padding:11px">Крутить колесо (2 500 💰)</button>
-</div>
-</div>
-<div id="d" class="scr" style="justify-content:flex-start">
-<div class="cd" style="border-color:#ffd700"><div><h4>🥤 Мини-энергетик</h4><p>Полная энергия + 10 000 💰</p></div><button class="dbtn" data-d="Мини-энергетик за 29₽">29 ₽ / 15⭐</button></div>
-<div class="cd" style="border-color:#ffd700"><div><h4>⚡ Лёгкий буст тапа</h4><p>+3 к тапу навсегда</p></div><button class="dbtn" data-d="Буст тапа +3 за 49₽">49 ₽ / 25⭐</button></div>
-<div class="cd" style="border-color:#ffd700"><div><h4>🔥 Пассив «Лайт»</h4><p>+25 монет/сек навсегда</p></div><button class="dbtn" data-d="Пассив +25/с за 79₽">79 ₽ / 40⭐</button></div>
-<div class="cd" style="border-color:#00e5ff"><div><h4 style="color:#00e5ff">👑 VIP-рамка + Реген</h4><p>Голубая аура + 2 энергии/сек</p></div><button class="dbtn" data-d="VIP-статус за 99₽">99 ₽ / 50⭐</button></div>
-<div class="cd" style="flex-direction:column;align-items:stretch">
-<h4>🔑 Ввести код после оплаты</h4><p id="codeMsg">Получи код у @iosip6752 после перевода</p>
-<input class="inp" id="promoIn" placeholder="Введи секретный код...">
-<button class="ab" id="actCode" style="width:100%;margin-top:6px">Активировать код</button>
-</div>
-</div>
-<div id="b" class="scr" style="justify-content:flex-start">
-<div class="cd" style="flex-direction:column;align-items:stretch;border-color:#00e676">
-<h4>🎁 Ежедневный бонус</h4><p>Заходи раз в 24 часа за наградой!</p><div class="dg" id="dg"></div>
-<button class="ab" id="cdb" style="width:100%;margin-top:8px;padding:11px">Забрать</button>
-</div>
-<div class="cd" style="flex-direction:column;align-items:flex-start;gap:5px;border-color:#ffd700">
-<h4>🏆 Приз 150 ₽ за 100 уровень</h4><p>Цель: <b>10 000 000</b> монет (3–4 дня игры). До след. уровня: <b id="nl" style="color:#00e676">0</b> 💰</p>
-<button class="tg" id="winMsg">✉️ Написать @iosip6752 (Забрать 150 ₽)</button>
-</div>
-</div>
-<div id="s" class="scr" style="justify-content:flex-start">
-<div class="cd"><div><h4>🔊 Звук в игре</h4><p>Звуки кликов и мини-игр</p></div><button class="ab" id="st">ВКЛ</button></div>
-<div class="cd" style="flex-direction:column;align-items:flex-start"><h4>👑 Создатель: Степан Шаимов (@iosip6752)</h4><p id="saveStatus" style="color:#00e676">Прогресс защищён и сохранён</p><button class="tg" id="askMsg">✉️ Связаться со Степаном (@iosip6752)</button></div>
-<div class="cd" style="border-color:#ff4444"><div><h4 style="color:#ff4444">🗑 Сброс</h4><p>Начать заново с 0</p></div><button class="ab" id="rstBtn" style="background:#ff4444;color:#fff">Сброс</button></div>
-</div>
-<div class="modal" id="capModal">
-<div class="mbox">
-<h3 style="color:#ffd700">🛡 Проверка на автокликер</h3>
-<p style="font-size:13px;color:#ccc;margin-top:6px">Подтверди, что ты не робот! Реши пример:</p>
-<div id="capQ" style="font-size:28px;font-weight:900;color:#00e676;margin:12px 0">5 + 4 = ?</div>
-<div class="cap-btns" id="capOpts"></div>
-</div>
-</div>
-<script>
-const tg=window.Telegram?window.Telegram.WebApp:null;
-try{if(tg){tg.ready();tg.expand()}}catch(e){}
-let ac=null;
-function bp(f,d){if(!s.sn)return;try{if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();let o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.setValueAtTime(f,ac.currentTime);g.gain.setValueAtTime(.08,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
-const rw=new Array(2500,10000,35000,90000,200000,500000);
-let s={sc:0,tp:1,gh:0,ps:0,en:1000,me:1000,rg:3,cg:150,ct:250,cp:1000,ce:800,cr:2000,ug:0,ut:0,up:0,ue:0,ur:0,sn:1,x2:0,cd:0,dd:0,ld:0,vip:0,used:'',taps:0};
-const KEY='litvin_save_v12';
-function sv(cloud){
-let str=JSON.stringify(s);
-try{localStorage.setItem(KEY,str)}catch(e){}
-if(cloud){try{if(tg&&tg.CloudStorage)tg.CloudStorage.setItem(KEY,str)}catch(e){}}
-}
-function loadSave(){
-try{let d=localStorage.getItem(KEY);if(d)s=Object.assign(s,JSON.parse(d))}catch(e){}
-try{if(tg&&tg.CloudStorage){tg.CloudStorage.getItem(KEY,(err,val)=>{if(!err&&val){let c=JSON.parse(val);if(c.sc>=s.sc)s=Object.assign(s,c);ui()}})}}catch(e){}
-}
-window.addEventListener('visibilitychange',()=>{if(document.hidden)sv(true)});
-window.addEventListener('beforeunload',()=>sv(true));
-const $=id=>document.getElementById(id);
-function ui(){
-let m=s.x2>0?2:1,tot=(s.tp+s.gh)*m;
-$('sc').innerText=Math.floor(s.sc).toLocaleString('ru-RU');
-$('tp').innerText=tot+(s.gh>0?' (👻+'+s.gh+')':'')+(m>1?' x2':'');
-$('ps').innerText=s.ps.toLocaleString('ru-RU');
-$('en').innerText=Math.floor(s.en);
-$('me').innerText=s.me;
-$('ef').style.width=(s.en/s.me*100)+'%';
-let lv=s.sc<10?1:Math.min(100,Math.floor(Math.pow(s.sc/10,1/3))+1);
-let nx=Math.pow(lv,3)*10;
-$('lv').innerText=lv+' / 100';
-$('nl').innerText=lv>=100?'МАКС!':Math.max(0,Math.floor(nx-s.sc)).toLocaleString('ru-RU');
-$('cg').innerText=s.cg.toLocaleString('ru-RU')+' 💰';
-$('ct').innerText=s.ct.toLocaleString('ru-RU')+' 💰';
-$('cp').innerText=s.cp.toLocaleString('ru-RU')+' 💰';
-$('ce').innerText=s.ce.toLocaleString('ru-RU')+' 💰';
-$('cr').innerText=s.cr.toLocaleString('ru-RU')+' 💰';
-$('ug').innerText=s.ug;$('ut').innerText=s.ut;$('up').innerText=s.up;$('ue').innerText=s.ue;$('ur').innerText=s.ur;
-$('st').innerText=s.sn?'ВКЛ':'ВЫКЛ';$('st').style.background=s.sn?'#00e676':'#555';
-let xb=$('x2b'),tb=$('tapBtn'),bc='tap'+(s.vip?' vip':'');
-if(s.x2>0){xb.innerText='🔥 x2: '+s.x2+' сек';xb.className='x2';tb.className=bc+' x2a'}
-else if(s.cd>0){xb.innerText='⏳ Ждать: '+s.cd+' сек';xb.className='x2 off';tb.className=bc}
-else{xb.innerText='⚡ Включить x2 на 1 минуту';xb.className='x2';tb.className=bc}
-let g=$('dg');g.innerHTML='';
-rw.forEach((v,i)=>{g.innerHTML+='<div class="db'+(i<s.dd?' dn':(i===s.dd?' cr':''))+'"><b>День '+(i+1)+'</b><br><span style="color:#ffd700">+'+v.toLocaleString('ru-RU')+'</span></div>'});
-let db=$('cdb'),nw=Date.now(),dm=86400000;
-if(s.dd>=rw.length){db.innerText='Все получено!';db.style.background='#444'}
-else if(nw-s.ld>=dm){db.innerText='🎁 Забрать +'+rw[s.dd].toLocaleString('ru-RU');db.style.background='#00e676'}
-else{let h=Math.floor((dm-(nw-s.ld))/3600000),mn=Math.floor(((dm-(nw-s.ld))%3600000)/60000);db.innerText='⏳ Ждать '+h+'ч '+mn+'м';db.style.background='#444'}
-}
-let capLocked=false,lastGap=0,sameGaps=0,lastTapTime=0;
-function openCaptcha(){
-capLocked=true;
-let a=Math.floor(Math.random()*8)+2,b=Math.floor(Math.random()*8)+2,ans=a+b;
-$('capQ').innerText=a+' + '+b+' = ?';
-let opts=[ans,ans+1,ans-1].sort(()=>Math.random()-0.5);
-let box=$('capOpts');box.innerHTML='';
-opts.forEach(v=>{
-let btn=document.createElement('button');btn.className='ab';btn.style.padding='12px';btn.style.fontSize='16px';btn.innerText=v;
-btn.onclick=()=>{if(v===ans){capLocked=false;sameGaps=0;$('capModal').classList.remove('show');bp(800,.2)}else{bp(150,.3);openCaptcha()}};
-box.appendChild(btn);
-});
-$('capModal').classList.add('show');
-}
-function hit(cnt){
-if(capLocked)return;
-let now=Date.now(),gap=now-lastTapTime;
-if(lastTapTime>0&&Math.abs(gap-lastGap)<8&&gap<250){sameGaps++}else{sameGaps=Math.max(0,sameGaps-1)}
-lastGap=gap;lastTapTime=now;
-s.taps+=cnt;
-if(s.taps%300===0||sameGaps>=12){openCaptcha();return}
-let cost=s.tp+s.gh;
-for(let i=0;i<cnt;i++){if(s.en<cost)break;s.sc+=cost*(s.x2>0?2:1);s.en-=cost}
-$('tapBtn').classList.add('hit');setTimeout(()=>$('tapBtn').classList.remove('hit'),40);
-bp(450,.04);try{if(tg)tg.HapticFeedback.impactOccurred('light')}catch(x){}
-ui();sv(false);
-}
-let isT=false;
-$('tapBtn').addEventListener('touchstart',e=>{e.preventDefault();isT=true;hit(e.changedTouches.length)},{passive:false});
-$('tapBtn').addEventListener('mousedown',e=>{if(!isT)hit(1)});
-$('x2b').onclick=()=>{if(s.x2>0||s.cd>0)return;s.x2=60;s.cd=180;bp(750,.2);ui();sv(true)};
-$('bg').onclick=()=>{if(s.sc>=s.cg){s.sc-=s.cg;s.gh+=1;s.ug++;s.cg=Math.floor(s.cg*1.55);bp(650,.12);ui();sv(true)}};
-$('bt').onclick=()=>{if(s.sc>=s.ct){s.sc-=s.ct;s.tp+=2;s.ut++;s.ct=Math.floor(s.ct*1.65);bp(600,.12);ui();sv(true)}};
-$('bp').onclick=()=>{if(s.sc>=s.cp){s.sc-=s.cp;s.ps+=10;s.up++;s.cp=Math.floor(s.cp*1.75);bp(600,.12);ui();sv(true)}};
-$('be').onclick=()=>{if(s.sc>=s.ce){s.sc-=s.ce;s.me+=500;s.en=s.me;s.ue++;s.ce=Math.floor(s.ce*1.7);bp(600,.12);ui();sv(true)}};
-$('br').onclick=()=>{if(s.sc>=s.cr){s.sc-=s.cr;s.rg+=2;s.ur++;s.cr=Math.floor(s.cr*1.8);bp(600,.12);ui();sv(true)}};
-let mActive=false,mWin=0,mBombs=[];
-function drawMine(){
-let g=$('mineGrid');g.innerHTML='';
-for(let i=0;i<9;i++){
-let d=document.createElement('div');d.className='mcell';d.innerText='?';
-d.onclick=()=>{
-if(!mActive||d.classList.contains('safe'))return;
-if(mBombs.includes(i)){d.classList.add('boom');d.innerText='💥';mActive=false;mWin=0;$('mineTake').style.display='none';$('mineStart').style.display='block';$('mineBank').innerText='Бум!';$('mineMsg').innerText='Попал на мину! Попробуй снова.';bp(180,.3)}
-else{d.classList.add('safe');d.innerText='💎';mWin=Math.floor(mWin*1.45);$('mineBank').innerText='Банк: '+mWin+' 💰';$('mineTake').innerText='Забрать '+mWin+' 💰';$('mineMsg').innerText='Отлично! Открывай ещё или забирай.';bp(700,.08)}
-};
-g.appendChild(d);
-}
-}
-$('mineStart').onclick=()=>{
-if(s.sc<1000){$('mineMsg').innerText='Не хватает монет (нужно 1 000 💰)!';return}
-s.sc-=1000;mActive=true;mWin=1000;mBombs=[];
-while(mBombs.length<2){let r=Math.floor(Math.random()*9);if(!mBombs.includes(r))mBombs.push(r)}
-$('mineStart').style.display='none';$('mineTake').style.display='block';$('mineTake').innerText='Забрать 1 000 💰';$('mineBank').innerText='Банк: 1 000 💰';$('mineMsg').innerText='Игра идёт! Ищи алмазы 💎';
-drawMine();ui();sv(true);
-};
-$('mineTake').onclick=()=>{
-if(!mActive)return;
-let prize=mWin;s.sc+=prize;mActive=false;
-$('mineTake').style.display='none';$('mineStart').style.display='block';
-$('mineBank').innerText='Забрано: +'+prize+' 💰';$('mineMsg').innerText='Выигрыш +'+prize+' 💰 зачислен на счёт!';
-bp(850,.2);ui();sv(true);
-};
-let spinning=false;
-$('spinBtn').onclick=()=>{
-if(spinning)return;
-if(s.sc<2500){$('spinRes').innerText='Не хватает монет (нужно 2 500 💰)!';return}
-s.sc-=2500;spinning=true;$('spinBtn').innerText='Крутится...';bp(500,.15);ui();
-setTimeout(()=>{
-spinning=false;$('spinBtn').innerText='Крутить колесо (2 500 💰)';
-let r=Math.random();
-if(r<0.35){s.sc+=5000;$('spinRes').innerText='🎉 Выигрыш: +5 000 💰 зачислено!'}
-else if(r<0.65){s.en=s.me;$('spinRes').innerText='⚡ Приз: Полное восстановление энергии!'}
-else if(r<0.85){s.sc+=15000;$('spinRes').innerText='🔥 ДЖЕКПОТ: +15 000 💰 на баланс!'}
-else{$('spinRes').innerText='💨 Выпало пусто! Попробуй ещё раз.'}
-bp(750,.2);ui();sv(true);
-},600);
-};
-document.querySelectorAll('.tbtn').forEach(b=>b.onclick=()=>{
-document.querySelectorAll('.scr').forEach(e=>e.classList.remove('on'));
-document.querySelectorAll('.tbtn').forEach(e=>e.classList.remove('on'));
-$(b.dataset.t).classList.add('on');b.classList.add('on');bp(350,.04);
-});
-const msg=t=>{let u="https://t.me"+encodeURIComponent(t);try{if(tg)tg.openTelegramLink(u);else window.open(u,'_blank')}catch(e){window.open(u,'_blank')}};
-document.querySelectorAll('.dbtn').forEach(b=>b.onclick=()=>msg('Привет! Хочу купить усиление: '+b.dataset.d));
-$('actCode').onclick=()=>{
-let c=$('promoIn').value.trim().toUpperCase();
-if(!c||s.used.includes('|'+c+'|')){$('codeMsg').innerText='Код неверный или уже использован!';return}
-if(c==='LIT29'){s.en=s.me;s.sc+=10000}
-else if(c==='TAP49'){s.tp+=3}
-else if(c==='PAS79'){s.ps+=25}
-else if(c==='VIP99'){s.vip=1;s.rg+=2}
-else{$('codeMsg').innerText='Неверный код!';return}
-s.used+='|'+c+'|';$('promoIn').value='';$('codeMsg').innerText='Усиление успешно активировано!';bp(850,.3);ui();sv(true);
-};
-$('cdb').onclick=()=>{let n=Date.now();if(s.dd<rw.length&&n-s.ld>=86400000){s.sc+=rw[s.dd];s.dd++;s.ld=n;bp(800,.25);ui();sv(true)}};
-$('st').onclick=()=>{s.sn=s.sn?0:1;if(s.sn)bp(550,.1);ui();sv(true)};
-$('winMsg').onclick=()=>msg('Привет! Я прошёл 100 уровень в Литвин Тапочке!');
-$('askMsg').onclick=()=>msg('Привет! Вопрос по игре Литвин Тапочка');
-$('rstBtn').onclick=()=>{if(confirm('Сбросить прогресс?')){localStorage.removeItem(KEY);try{if(tg&&tg.CloudStorage)tg.CloudStorage.removeItem(KEY)}catch(e){}location.reload()}};
-setInterval(()=>{if(s.ps>0)s.sc+=s.ps;if(s.en<s.me)s.en=Math.min(s.me,s.en+s.rg);if(s.x2>0)s.x2--;else if(s.cd>0)s.cd--;ui();sv(true)},1000);
-drawMine();loadSave();ui();
-</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Тапалка Mini App</title>
+  <script src="https://telegram.org"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="header">
+    <span>Уровень: <b id="level">1</b> / 100</span>
+    <span id="saveStatus">☁️ Сохранено</span>
+  </div>
+
+  <div class="balance" id="balance">0</div>
+  <div class="stats">Тап: +<span id="tapPower">8</span> • До капчи: <span id="captchaLeft">100</span></div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('tapTab', this)">🔥 Тап</button>
+    <button class="tab-btn" onclick="switchTab('wheelTab', this)">🎡 Колесо</button>
+    <button class="tab-btn" onclick="switchTab('minesTab', this)">💣 Сапер</button>
+  </div>
+
+  <!-- Вкладка 1: Тапалка -->
+  <div id="tapTab" class="section active">
+    <div class="tap-circle" id="tapBtn">
+      <span style="font-size: 40px;">🐆🔥</span>
+      <span>ТАПАЙ</span>
+    </div>
+  </div>
+
+  <!-- Вкладка 2: Колесо фортуны -->
+  <div id="wheelTab" class="section">
+    <h3>Колесо Фортуны</h3>
+    <p class="sub-text">Выиграй от +100 до +2000 монет!</p>
+    <div class="wheel-wrap">
+      <div class="pointer">▼</div>
+      <div class="wheel" id="wheel"></div>
+    </div>
+    <button class="action-btn" id="spinBtn" onclick="spinWheel()">Крутить (Бесплатно)</button>
+  </div>
+
+  <!-- Вкладка 3: Сапер (Гараж 12 ячеек, 3 бомбы) -->
+  <div id="minesTab" class="section">
+    <h3>Сапер: Гараж</h3>
+    <p class="sub-text">12 ячеек • 3 бомбы • Ставка: 100</p>
+    <p class="bank-text">Банк раунда: <b id="roundBank">0</b></p>
+    <div class="mines-grid" id="minesGrid"></div>
+    <div class="mines-controls">
+      <button class="action-btn" id="startMinesBtn" onclick="startMines()">Играть (100)</button>
+      <button class="action-btn claim-btn" id="claimMinesBtn" onclick="claimMines()" disabled>Забрать</button>
+    </div>
+  </div>
+
+  <!-- Окно Капчи -->
+  <div class="modal" id="captchaModal">
+    <div class="modal-box">
+      <h3>Проверка на бота 🤖</h3>
+      <p id="captchaTask"></p>
+      <input type="number" id="captchaInput" placeholder="Ответ">
+      <button class="action-btn full-btn" onclick="verifyCaptcha()">Продолжить</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  user-select: none;
+}
 
+body {
+  background: #0f0f13;
+  color: #fff;
+  padding: 16px;
+  text-align: center;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #aaa;
+  margin-bottom: 10px;
+}
+
+.balance {
+  font-size: 42px;
+  font-weight: 800;
+  color: #00e676;
+  margin: 10px 0;
+  text-shadow: 0 0 15px rgba(0, 230, 118, 0.3);
+}
+
+.stats {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 16px;
+}
+
+.sub-text {
+  font-size: 13px;
+  color: #aaa;
+  margin-top: 5px;
+}
+
+.bank-text {
+  margin-top: 8px;
+  font-size: 16px;
+}
+
+.bank-text b {
+  color: #00e676;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.tab-btn {
+  background: #1e1e26;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  flex: 1;
+}
+
+.tab-btn.active {
+  background: #00c853;
+  border-color: #00e676;
+  font-weight: bold;
+}
+
+.section {
+  display: none;
+}
+
+.section.active {
+  display: block;
+}
+
+.tap-circle {
+  width: 210px;
+  height: 210px;
+  border-radius: 50%;
+  margin: 30px auto;
+  background: radial-gradient(circle, #00e676 0%, #00695c 100%);
+  border: 6px solid #69f0ae;
+  box-shadow: 0 0 30px rgba(0, 230, 118, 0.4);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.08s;
+}
+
+.tap-circle:active {
+  transform: scale(0.94);
+}
+
+.wheel-wrap {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  margin: 20px auto;
+}
+
+.wheel {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 5px solid #ffd600;
+  background: conic-gradient(
+    #e53935 0deg 60deg,
+    #8e24aa 60deg 120deg,
+    #1e88e5 120deg 180deg,
+    #00897b 180deg 240deg,
+    #fdd835 240deg 300deg,
+    #fb8c00 300deg 360deg
+  );
+  transition: transform 3s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+}
+
+.pointer {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  color: #fff;
+  z-index: 2;
+}
+
+.action-btn {
+  background: #ffab00;
+  color: #000;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.action-btn:disabled {
+  background: #444;
+  color: #888;
+}
+
+.full-btn {
+  width: 100%;
+}
+
+.mines-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  max-width: 300px;
+  margin: 16px auto;
+}
+
+.mine-cell {
+  aspect-ratio: 1;
+  background: #252530;
+  border: 2px solid #383848;
+  border-radius: 12px;
+  font-size: 24px;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mine-cell.safe {
+  background: #1b5e20;
+  border-color: #00e676;
+}
+
+.mine-cell.bomb {
+  background: #b71c1c;
+  border-color: #ff5252;
+}
+
+.mines-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.claim-btn {
+  background: #00e676;
+  color: #000;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 99;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.modal-box {
+  background: #1e1e26;
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid #444;
+  width: 100%;
+  max-width: 300px;
+}
+
+.modal-box p {
+  margin-top: 10px;
+  color: #ccc;
+}
+
+.modal input {
+  width: 100%;
+  padding: 12px;
+  margin: 15px 0;
+  border-radius: 8px;
+  border: 1px solid #555;
+  background: #111;
+  color: #fff;
+  font-size: 18px;
+  text-align: center;
+}
+const tg = window.Telegram.WebApp;
+tg.ready();
+tg.expand();
+
+let state = {
+  balance: 0,
+  tapPower: 8,
+  tapsToCaptcha: 100
+};
+
+let saveTimeout = null;
+let captchaResult = 0;
+
+// 1. ЗАГРУЗКА ПРОГРЕССА (Telegram CloudStorage + резерв localStorage)
+function loadProgress() {
+  const localData = localStorage.getItem('tma_game_save');
+  if (localData) {
+    try {
+      state = { ...state, ...JSON.parse(localData) };
+    } catch (e) {}
+  }
+  updateUI();
+
+  if (tg.CloudStorage) {
+    tg.CloudStorage.getItem('game_state', (err, value) => {
+      if (!err && value) {
+        try {
+          const cloudState = JSON.parse(value);
+          if (cloudState.balance >= state.balance) {
+            state = { ...state, ...cloudState };
+            updateUI();
+          }
+        } catch (e) {}
+      }
+    });
+  }
+}
+
+// 2. СОХРАНЕНИЕ ПРОГРЕССА
+function saveProgress() {
+  localStorage.setItem('tma_game_save', JSON.stringify(state));
+  document.getElementById('saveStatus').innerText = '⏳ Сохранение...';
+
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(() => {
+    if (tg.CloudStorage) {
+      tg.CloudStorage.setItem('game_state', JSON.stringify(state), (err) => {
+        document.getElementById('saveStatus').innerText = err ? '⚠️ Локально' : '☁️ Сохранено';
+      });
+    } else {
+      document.getElementById('saveStatus').innerText = '💾 Локально';
+    }
+  }, 800);
+}
+
+function updateUI() {
+  document.getElementById('balance').innerText = Math.floor(state.balance);
+  document.getElementById('tapPower').innerText = state.tapPower;
+  document.getElementById('captchaLeft').innerText = state.tapsToCaptcha;
+  const lvl = Math.min(100, Math.floor(state.balance / 1000) + 1);
+  document.getElementById('level').innerText = lvl;
+}
+
+function switchTab(tabId, btn) {
+  document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  btn.classList.add('active');
+}
+
+// 3. ЛОГИКА ТАПА И КАПЧИ
+document.getElementById('tapBtn').addEventListener('pointerdown', () => {
+  if (state.tapsToCaptcha <= 0) {
+    openCaptcha();
+    return;
+  }
+  state.balance += state.tapPower;
+  state.tapsToCaptcha--;
+  if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+  updateUI();
+  saveProgress();
+
+  if (state.tapsToCaptcha === 0) openCaptcha();
+});
+
+function openCaptcha() {
+  const a = Math.floor(Math.random() * 9) + 2;
+  const b = Math.floor(Math.random() * 9) + 2;
+  captchaResult = a + b;
+  document.getElementById('captchaTask').innerText = `Решите пример: ${a} + ${b} = ?`;
+  document.getElementById('captchaInput').value = '';
+  document.getElementById('captchaModal').style.display = 'flex';
+}
+
+function verifyCaptcha() {
+  const userAns = Number(document.getElementById('captchaInput').value);
+  if (userAns === captchaResult) {
+    state.tapsToCaptcha = 100;
+    document.getElementById('captchaModal').style.display = 'none';
+    updateUI();
+    saveProgress();
+  } else {
+    tg.showAlert('Неправильный ответ! Попробуйте снова.');
+  }
+}
+
+// 4. КОЛЕСО ФОРТУНЫ
+let currentRotation = 0;
+let isSpinning = false;
+const wheelPrizes =;
+
+function spinWheel() {
+  if (isSpinning) return;
+  isSpinning = true;
+  const spinBtn = document.getElementById('spinBtn');
+  spinBtn.disabled = true;
+
+  const prizeIndex = Math.floor(Math.random() * wheelPrizes.length);
+  const sliceAngle = 360 / wheelPrizes.length;
+  const extraSpins = 360 * 5;
+  const targetAngle = extraSpins + (360 - prizeIndex * sliceAngle - sliceAngle / 2);
+
+  currentRotation += targetAngle;
+  document.getElementById('wheel').style.transform = `rotate(${currentRotation}deg)`;
+
+  setTimeout(() => {
+    const won = wheelPrizes[prizeIndex];
+    state.balance += won;
+    updateUI();
+    saveProgress();
+    tg.showAlert(`🎉 Вы выиграли ${won} монет!`);
+    isSpinning = false;
+    spinBtn.disabled = false;
+  }, 3100);
+}
+
+// 5. САПЕР (ГАРАЖ: 12 ЯЧЕЕК, 3 БОМБЫ)
+let mineBombs = [];
+let mineActive = false;
+let roundBank = 0;
+const betAmount = 100;
+
+function renderEmptyGrid() {
+  const grid = document.getElementById('minesGrid');
+  grid.innerHTML = '';
+  for (let i = 0; i < 12; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'mine-cell';
+    cell.innerText = '🚪';
+    cell.onclick = () => clickMineCell(i, cell);
+    grid.appendChild(cell);
+  }
+}
+
+function startMines() {
+  if (mineActive) return;
+  if (state.balance < betAmount) {
+    tg.showAlert('Недостаточно монет для ставки (нужно 100)!');
+    return;
+  }
+
+  state.balance -= betAmount;
+  roundBank = betAmount;
+  mineActive = true;
+  mineBombs = [];
+
+  while (mineBombs.length < 3) {
+    const r = Math.floor(Math.random() * 12);
+    if (!mineBombs.includes(r)) mineBombs.push(r);
+  }
+
+  document.getElementById('roundBank').innerText = roundBank;
+  document.getElementById('startMinesBtn').disabled = true;
+  document.getElementById('claimMinesBtn').disabled = true;
+  renderEmptyGrid();
+  updateUI();
+  saveProgress();
+}
+
+function clickMineCell(index, cellEl) {
+  if (!mineActive || cellEl.classList.contains('opened')) return;
+  cellEl.classList.add('opened');
+
+  if (mineBombs.includes(index)) {
+    cellEl.classList.add('bomb');
+    cellEl.innerText = '💣';
+    mineActive = false;
+    roundBank = 0;
+    document.getElementById('roundBank').innerText = 0;
+    document.getElementById('startMinesBtn').disabled = false;
+    document.getElementById('claimMinesBtn').disabled = true;
+    revealAllBombs();
+    if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+  } else {
+    cellEl.classList.add('safe');
+    cellEl.innerText = '🚗';
+    roundBank = Math.floor(roundBank * 1.35);
+    document.getElementById('roundBank').innerText = roundBank;
+    document.getElementById('claimMinesBtn').disabled = false;
+    if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+  }
+}
+
+function revealAllBombs() {
+  const cells = document.querySelectorAll('.mine-cell');
+  mineBombs.forEach(idx => {
+    cells[idx].classList.add('bomb');
+    cells[idx].innerText = '💣';
+  });
+}
+
+function claimMines() {
+  if (!mineActive || roundBank <= 0) return;
+  state.balance += roundBank;
+  mineActive = false;
+  const won = roundBank;
+  roundBank = 0;
+  document.getElementById('roundBank').innerText = 0;
+  document.getElementById('startMinesBtn').disabled = false;
+  document.getElementById('claimMinesBtn').disabled = true;
+  revealAllBombs();
+  updateUI();
+  saveProgress();
+  tg.showAlert(`💰 Вы забрали ${won} монет!`);
+}
+
+renderEmptyGrid();
+loadProgress();
