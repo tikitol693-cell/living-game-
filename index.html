@@ -6,44 +6,62 @@
   <title>Литвин Тапочка</title>
   <script src="https://telegram.org"></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-    body {
-      background: linear-gradient(rgba(10, 12, 15, 0.85), rgba(10, 12, 15, 0.95)), 
-                  url('litvin.jpg') center/cover no-repeat fixed;
-      background-color: #121417;
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+    
+    html, body {
+      width: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      touch-action: manipulation;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       color: #ffffff;
-      min-height: 100vh;
+      /* ФОН С ЛИТВИНОМ: убедитесь, что файл litvin.jpg загружен на GitHub рядом с index.html */
+      background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.85)), 
+                  url('litvin.jpg') center/cover no-repeat;
+      background-color: #0d1015;
+    }
+
+    body {
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
       align-items: center;
       padding: 15px;
-      user-select: none;
     }
-    .header { width: 100%; display: flex; justify-content: space-between; font-size: 13px; color: #ffd700; margin-bottom: 10px; }
-    .score-box { text-align: center; margin: 10px 0; }
-    .score { font-size: 38px; font-weight: 800; color: #fff; text-shadow: 0 0 15px rgba(46, 204, 113, 0.5); }
-    .stats { font-size: 13px; color: #aaa; margin-top: 4px; }
-    .tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; width: 100%; margin: 12px 0; z-index: 10; }
-    .tab-btn {
-      background: rgba(35, 39, 46, 0.9);
-      color: #fff;
-      border: 1px solid #ffd700;
+
+    .top-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #ffd700;
+      background: rgba(0, 0, 0, 0.5);
       padding: 8px 12px;
       border-radius: 12px;
-      font-size: 13px;
-      font-weight: bold;
-      cursor: pointer;
+      border: 1px solid rgba(255, 215, 0, 0.3);
     }
-    .tab-btn.active-btn { background: #ffd700; color: #000; }
-    .tab-content { display: none; width: 100%; max-width: 400px; flex-direction: column; align-items: center; }
-    .tab-content.active { display: flex; }
-    .tap-circle {
-      width: 210px;
-      height: 210px;
+
+    .score-area { text-align: center; margin-top: 5px; }
+    .score { font-size: 44px; font-weight: 900; text-shadow: 0 2px 15px rgba(0, 230, 118, 0.7); }
+    .sub-info { font-size: 13px; color: #ddd; margin-top: 2px; }
+
+    /* Зона тапалки */
+    .tap-zone {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .tap-btn {
+      width: 220px;
+      height: 220px;
       border-radius: 50%;
-      background: radial-gradient(circle, #1f5c32 0%, #0d2614 100%);
-      border: 5px solid #2ecc71;
-      box-shadow: 0 0 25px rgba(46, 204, 113, 0.4);
+      background: radial-gradient(circle, rgba(29, 185, 84, 0.35) 0%, rgba(10, 40, 20, 0.75) 100%);
+      border: 5px solid #00e676;
+      box-shadow: 0 0 35px rgba(0, 230, 118, 0.5);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -51,130 +69,99 @@
       font-size: 22px;
       font-weight: 900;
       text-align: center;
-      margin: 20px 0;
       cursor: pointer;
-      transition: transform 0.08s;
+      transition: transform 0.05s;
+      z-index: 10;
     }
-    .tap-circle:active { transform: scale(0.94); }
-    .energy-container { width: 100%; margin-top: 10px; }
-    .energy-text { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px; }
-    .energy-bar { width: 100%; height: 10px; background: #2c3038; border-radius: 5px; overflow: hidden; }
-    .energy-fill { height: 100%; background: #2ecc71; width: 100%; transition: width 0.2s; }
-    .card {
+
+    .tap-btn.pressed { transform: scale(0.92); border-color: #ffd700; }
+
+    /* Всплывающие цифры при тапе */
+    .float-num {
+      position: absolute;
+      font-size: 28px;
+      font-weight: 900;
+      color: #00e676;
+      text-shadow: 0 2px 8px #000;
+      pointer-events: none;
+      animation: flyUp 0.7s ease-out forwards;
+      z-index: 20;
+    }
+
+    @keyframes flyUp {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-100px) scale(1.2); }
+    }
+    /* Нижняя панель с энергией и быстрыми улучшениями */
+    .bottom-panel {
       width: 100%;
-      background: rgba(28, 31, 36, 0.92);
+      max-width: 400px;
+      background: rgba(15, 18, 24, 0.85);
+      padding: 12px;
+      border-radius: 16px;
       border: 1px solid #333;
-      border-radius: 14px;
-      padding: 14px;
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      backdrop-filter: blur(5px);
     }
-    .card-info h4 { font-size: 15px; margin-bottom: 4px; color: #ffd700; }
-    .card-info p { font-size: 12px; color: #bbb; }
-    .buy-btn {
-      background: #2ecc71;
-      color: #000;
-      border: none;
-      padding: 10px 14px;
+
+    .energy-row { display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px; }
+    .energy-bar { width: 100%; height: 10px; background: #222; border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
+    .energy-fill { height: 100%; background: linear-gradient(90deg, #00c853, #ffd600); width: 100%; transition: width 0.15s; }
+
+    .upgrades-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .up-btn {
+      background: #1f242d;
+      color: #fff;
+      border: 1px solid #444;
       border-radius: 10px;
-      font-weight: bold;
-      font-size: 13px;
+      padding: 8px;
+      text-align: left;
       cursor: pointer;
     }
-    .buy-btn:active { transform: scale(0.95); }
-    .donate-btn { background: linear-gradient(45deg, #ffd700, #ff8c00); color: #000; }
+    .up-btn:active { background: #2c3340; }
+    .up-title { font-size: 12px; font-weight: bold; color: #00e676; }
+    .up-desc { font-size: 11px; color: #bbb; margin: 2px 0; }
+    .up-cost { font-size: 12px; font-weight: bold; color: #ffd700; }
   </style>
 </head>
 <body>
 
-  <div class="header">
-    <span>🏆 Ур. <span id="level">1</span> • Поджигатель</span>
-    <span>⚡ Пассив: +<span id="passive">0</span>/сек</span>
+  <div class="top-bar">
+    <span>🏆 Ур. <b id="level">1</b></span>
+    <span>Создатель: <b>Степан Шаимов</b></span>
   </div>
 
-  <div class="score-box">
+  <div class="score-area">
     <div class="score" id="score">0</div>
-    <div class="stats">За тап: +<span id="tapPower">1</span></div>
+    <div class="sub-info">Тап: +<b id="tapPower">1</b> • Пассив: +<b id="passive">0</b>/с</div>
   </div>
 
-  <div class="tabs">
-    <button class="tab-btn active-btn" onclick="switchTab('tab-game', this)">🔥 Игра</button>
-    <button class="tab-btn" onclick="switchTab('tab-shop', this)">🚀 Прокачка</button>
-    <button class="tab-btn" onclick="switchTab('tab-donate', this)">💎 Донат Мелла</button>
-    <button class="tab-btn" onclick="switchTab('tab-creator', this)">👑 Создатель</button>
-  </div>
-
-  <div id="tab-game" class="tab-content active">
-    <div class="tap-circle" onclick="handleTap()">
-      <div style="font-size: 42px; margin-bottom: 5px;">🐆🔥</div>
+  <div class="tap-zone" id="tapZone">
+    <div class="tap-btn" id="tapBtn">
+      <div style="font-size: 46px; margin-bottom: 5px;">🐆🔥</div>
       ТАНЦУЙ<br>ПАНТЕРА
     </div>
-    <div class="energy-container">
-      <div class="energy-text">
-        <span>⚡ Энергия</span>
-        <span><span id="energy">1000</span> / <span id="maxEnergy">1000</span></span>
-      </div>
-      <div class="energy-bar">
-        <div class="energy-fill" id="energyFill"></div>
-      </div>
-    </div>
-  </div>
-  <div id="tab-shop" class="tab-content">
-    <div class="card">
-      <div class="card-info">
-        <h4>🥫 Банка LIT ENERGY</h4>
-        <p>+2 к силе тапа (Ур. <span id="lvlTap">0</span>)</p>
-      </div>
-      <button class="buy-btn" onclick="buyUpgrade('tap')" id="costTap">500</button>
-    </div>
-    <div class="card">
-      <div class="card-info">
-        <h4>🦈 Сжечь Акулу</h4>
-        <p>+15 монет в секунду (Ур. <span id="lvlPassive">0</span>)</p>
-      </div>
-      <button class="buy-btn" onclick="buyUpgrade('passive')" id="costPassive">2 500</button>
-    </div>
-    <div class="card">
-      <div class="card-info">
-        <h4>🔋 Запас сил</h4>
-        <p>+500 к максимуму энергии (Ур. <span id="lvlEnergy">0</span>)</p>
-      </div>
-      <button class="buy-btn" onclick="buyUpgrade('energy')" id="costEnergy">1 500</button>
-    </div>
   </div>
 
-  <div id="tab-donate" class="tab-content">
-    <div class="card" style="border-color: #ffd700;">
-      <div class="card-info">
-        <h4>💎 Кейс от Мелла</h4>
-        <p>Мгновенно +250 000 монет на баланс</p>
-      </div>
-      <button class="buy-btn donate-btn" onclick="processDonate(250000, 'Кейс от Мелла')">Получить</button>
+  <div class="bottom-panel">
+    <div class="energy-row">
+      <span>⚡ Энергия</span>
+      <span><span id="energy">1000</span> / <span id="maxEnergy">1000</span></span>
     </div>
-    <div class="card" style="border-color: #ffd700;">
-      <div class="card-info">
-        <h4>🔥 Буст Литвина (x2)</h4>
-        <p>Увеличивает силу тапа в 2 раза навсегда</p>
-      </div>
-      <button class="buy-btn donate-btn" onclick="processDonate('x2', 'Буст Литвина')">Активировать</button>
+    <div class="energy-bar">
+      <div class="energy-fill" id="energyFill"></div>
     </div>
-    <div class="card">
-      <div class="card-info">
-        <h4>💳 Поддержать проект</h4>
-        <p>Перейти на страницу донатов</p>
-      </div>
-      <button class="buy-btn" onclick="openDonateLink()">Сайт доната</button>
-    </div>
-  </div>
 
-  <div id="tab-creator" class="tab-content">
-    <div class="card" style="flex-direction: column; text-align: center; gap: 10px; border-color: #2ecc71;">
-      <div style="font-size: 40px;">👑</div>
-      <h3 style="color: #ffd700;">Создатель игры</h3>
-      <p style="font-size: 18px; font-weight: bold; color: #fff;">Степан Шаимов</p>
-      <p style="font-size: 13px; color: #aaa;">Официальный кликер «Литвин Тапочка». Копи монеты, прокачивай уровень и открывай новые рекорды!</p>
+    <div class="upgrades-row">
+      <button class="up-btn" id="buyTap">
+        <div class="up-title">🥫 Банка LIT</div>
+        <div class="up-desc">+1 к силе тапа</div>
+        <div class="up-cost">💰 <span id="costTap">100</span></div>
+      </button>
+      <button class="up-btn" id="buyPassive">
+        <div class="up-title">🔥 Сжечь Акулу</div>
+        <div class="up-desc">+5 монет/сек</div>
+        <div class="up-cost">💰 <span id="costPassive">300</span></div>
+      </button>
     </div>
   </div>
 
@@ -182,107 +169,92 @@
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    let state = JSON.parse(localStorage.getItem('litvin_game_save')) || {
+    let state = JSON.parse(localStorage.getItem('litvin_only_tap_v1')) || {
       score: 0,
       tapPower: 1,
       passive: 0,
       energy: 1000,
       maxEnergy: 1000,
-      lvlTap: 0,
-      lvlPassive: 0,
-      lvlEnergy: 0,
-      costTap: 500,
-      costPassive: 2500,
-      costEnergy: 1500
+      costTap: 100,
+      costPassive: 300
     };
 
-    function saveGame() {
-      localStorage.setItem('litvin_game_save', JSON.stringify(state));
+    function save() {
+      localStorage.setItem('litvin_only_tap_v1', JSON.stringify(state));
     }
 
     function updateUI() {
       document.getElementById('score').innerText = Math.floor(state.score).toLocaleString('ru-RU');
-      document.getElementById('tapPower').innerText = state.tapPower.toLocaleString('ru-RU');
-      document.getElementById('passive').innerText = state.passive.toLocaleString('ru-RU');
+      document.getElementById('tapPower').innerText = state.tapPower;
+      document.getElementById('passive').innerText = state.passive;
       document.getElementById('energy').innerText = Math.floor(state.energy);
       document.getElementById('maxEnergy').innerText = state.maxEnergy;
       document.getElementById('energyFill').style.width = (state.energy / state.maxEnergy * 100) + '%';
-
-      let currentLevel = Math.floor(Math.log10(state.score + 10));
-      document.getElementById('level').innerText = currentLevel;
-
-      document.getElementById('lvlTap').innerText = state.lvlTap;
       document.getElementById('costTap').innerText = state.costTap.toLocaleString('ru-RU');
-      document.getElementById('lvlPassive').innerText = state.lvlPassive;
       document.getElementById('costPassive').innerText = state.costPassive.toLocaleString('ru-RU');
-      document.getElementById('lvlEnergy').innerText = state.lvlEnergy;
-      document.getElementById('costEnergy').innerText = state.costEnergy.toLocaleString('ru-RU');
+      document.getElementById('level').innerText = Math.floor(Math.log10(state.score + 10));
     }
 
-    function switchTab(tabId, btnElement) {
-      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active-btn'));
-      document.getElementById(tabId).classList.add('active');
-      btnElement.classList.add('active-btn');
-    }
+    // Мгновенная обработка нажатий (работает мультитач в 2-3 пальца)
+    const tapBtn = document.getElementById('tapBtn');
+    const tapZone = document.getElementById('tapZone');
 
-    function handleTap() {
-      if (state.energy >= state.tapPower) {
-        state.score += state.tapPower;
-        state.energy -= state.tapPower;
-        if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-        updateUI();
-        saveGame();
-      } else {
-        tg.showAlert("Энергия закончилась! Подождите восстановления.");
-      }
-    }
+    tapBtn.addEventListener('pointerdown', function(e) {
+      e.preventDefault();
+      if (state.energy < state.tapPower) return;
 
-    function buyUpgrade(type) {
-      if (type === 'tap' && state.score >= state.costTap) {
+      state.score += state.tapPower;
+      state.energy -= state.tapPower;
+
+      // Анимация нажатия
+      tapBtn.classList.add('pressed');
+      setTimeout(() => tapBtn.classList.remove('pressed'), 60);
+
+      // Вибрация
+      if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+
+      // Всплывающая цифра в месте касания
+      const rect = tapZone.getBoundingClientRect();
+      const num = document.createElement('div');
+      num.className = 'float-num';
+      num.innerText = '+' + state.tapPower;
+      num.style.left = (e.clientX - rect.left - 15) + 'px';
+      num.style.top = (e.clientY - rect.top - 25) + 'px';
+      tapZone.appendChild(num);
+      setTimeout(() => num.remove(), 700);
+
+      updateUI();
+      save();
+    });
+
+    // Покупка силы тапа
+    document.getElementById('buyTap').addEventListener('pointerdown', function() {
+      if (state.score >= state.costTap) {
         state.score -= state.costTap;
-        state.lvlTap++;
-        state.tapPower += 2;
-        state.costTap = Math.floor(state.costTap * 1.75);
-      } else if (type === 'passive' && state.score >= state.costPassive) {
+        state.tapPower += 1;
+        state.costTap = Math.floor(state.costTap * 1.6);
+        updateUI();
+        save();
+      }
+    });
+
+    // Покупка пассивного дохода
+    document.getElementById('buyPassive').addEventListener('pointerdown', function() {
+      if (state.score >= state.costPassive) {
         state.score -= state.costPassive;
-        state.lvlPassive++;
-        state.passive += 15;
-        state.costPassive = Math.floor(state.costPassive * 1.85);
-      } else if (type === 'energy' && state.score >= state.costEnergy) {
-        state.score -= state.costEnergy;
-        state.lvlEnergy++;
-        state.maxEnergy += 500;
-        state.energy = state.maxEnergy;
-        state.costEnergy = Math.floor(state.costEnergy * 1.8);
-      } else {
-        return tg.showAlert("Недостаточно монет! Копите дальше.");
+        state.passive += 5;
+        state.costPassive = Math.floor(state.costPassive * 1.7);
+        updateUI();
+        save();
       }
-      updateUI();
-      saveGame();
-    }
+    });
 
-    function processDonate(reward, name) {
-      if (reward === 'x2') {
-        state.tapPower *= 2;
-        tg.showAlert(`Активировано: ${name}! Тап увеличен в 2 раза.`);
-      } else {
-        state.score += reward;
-        tg.showAlert(`Успешно: ${name}! Начислено +${reward.toLocaleString('ru-RU')} монет.`);
-      }
-      updateUI();
-      saveGame();
-    }
-
-    function openDonateLink() {
-      tg.openLink("https://donationalerts.com");
-    }
-
+    // Восстановление энергии и пассивный доход раз в секунду
     setInterval(() => {
       if (state.passive > 0) state.score += state.passive;
-      if (state.energy < state.maxEnergy) state.energy = Math.min(state.maxEnergy, state.energy + 3);
+      if (state.energy < state.maxEnergy) state.energy = Math.min(state.maxEnergy, state.energy + 5);
       updateUI();
-      saveGame();
+      save();
     }, 1000);
 
     updateUI();
