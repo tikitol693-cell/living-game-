@@ -2,432 +2,375 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Литвин Тапочка | Приз 150 ₽</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Литвин Тапочка</title>
 <script src="https://telegram.org"></script>
 <style>
-  :root { --bg: #111317; --card: #1b1e24; --green: #2ecc71; --gold: #f1c40f; --red: #e74c3c; --text: #fff; }
-  * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; font-family: system-ui, sans-serif; }
-  body { margin: 0; padding: 12px; background: var(--bg); color: var(--text); display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-  .top { width: 100%; max-width: 450px; display: flex; justify-content: space-between; gap: 6px; margin-bottom: 10px; }
-  .pill { background: var(--card); border: 1px solid #333; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-  .pill.gold { border-color: var(--gold); color: var(--gold); }
-  .pill.green { border-color: var(--green); color: var(--green); }
-  .bal-box { text-align: center; margin: 4px 0 12px; }
-  .bal { font-size: 36px; font-weight: 900; }
-  .sub { font-size: 12px; color: #8e9297; }
-  .tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; width: 100%; max-width: 450px; margin-bottom: 12px; }
-  .tab-btn { background: var(--card); border: 1px solid #333; color: #fff; padding: 8px 2px; border-radius: 10px; font-size: 11px; font-weight: bold; cursor: pointer; }
-  .tab-btn.active { border-color: var(--gold); background: #2a2718; }
-  .box { width: 100%; max-width: 450px; display: none; }
-  .box.active { display: block; }
-  .tap-wrap { display: flex; justify-content: center; margin: 12px 0; position: relative; }
-  .tap-btn { width: 195px; height: 195px; border-radius: 50%; background: radial-gradient(circle, #1e4620 0%, #0d2611 100%); border: 5px solid var(--green); box-shadow: 0 0 25px rgba(46,204,113,0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.06s; }
-  .tap-btn:active { transform: scale(0.93); }
-  .float-num { position: absolute; font-size: 22px; font-weight: 900; color: var(--green); pointer-events: none; animation: flyUp 0.7s ease-out forwards; }
-  @keyframes flyUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-70px); } }
-  .en-head { display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px; }
-  .en-bg { width: 100%; height: 10px; background: #2c3036; border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
-  .en-fill { height: 100%; background: linear-gradient(90deg, #27ae60, #2ecc71); width: 100%; transition: width 0.2s; }
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .card { background: var(--card); padding: 10px; border-radius: 12px; border: 1px solid #2c3036; cursor: pointer; }
-  .card:active { background: #252932; }
-  .btn { width: 100%; padding: 11px; border: none; border-radius: 10px; font-weight: bold; font-size: 13px; cursor: pointer; background: var(--green); color: #000; margin-top: 6px; }
-  .btn.gold { background: var(--gold); }
-  .btn.red { background: var(--red); color: #fff; }
-  input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #0f1115; color: #fff; margin: 6px 0; }
-  .panel { background: var(--card); padding: 14px; border-radius: 14px; text-align: center; margin-bottom: 10px; }
-  .m-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 12px; }
-  .m-cell { aspect-ratio: 1; background: #2c3036; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; }
-  .m-cell.open { background: #163019; border: 1px solid var(--green); }
-  .m-cell.bomb { background: #4a1818; border: 1px solid var(--red); }
-  .l-row { display: flex; justify-content: center; gap: 10px; margin: 6px 0; }
-  .l-step { width: 65px; height: 36px; background: #2c3036; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-  .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; z-index: 99; padding: 20px; }
-  .modal-box { background: var(--card); padding: 20px; border-radius: 16px; width: 100%; max-width: 320px; text-align: center; border: 1px solid var(--gold); }
+*{box-sizing:border-box;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;font-family:system-ui,sans-serif}
+body{margin:0;padding:12px;background:#111317;color:#fff;display:flex;flex-direction:column;align-items:center;min-height:100vh}
+.top{width:100%;max-width:440px;display:flex;justify-content:space-between;gap:6px;margin-bottom:10px}
+.pill{background:#1b1e24;border:1px solid #333;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:bold}
+.gold{border-color:#f1c40f;color:#f1c40f}.green{border-color:#2ecc71;color:#2ecc71}
+.bal{font-size:36px;font-weight:900;text-align:center}.sub{font-size:12px;color:#8e9297;text-align:center;margin-bottom:10px}
+.tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;width:100%;max-width:440px;margin-bottom:12px}
+.tbtn{background:#1b1e24;border:1px solid #333;color:#fff;padding:8px 2px;border-radius:10px;font-size:11px;font-weight:bold;cursor:pointer}
+.tbtn.on{border-color:#f1c40f;background:#2a2718}
+.box{width:100%;max-width:440px;display:none}.box.on{display:block}
+.tap-wrap{display:flex;justify-content:center;margin:15px 0;position:relative;touch-action:manipulation}
+.tap-btn{width:190px;height:190px;border-radius:50%;background:#132a17;border:5px solid #2ecc71;box-shadow:0 0 20px rgba(46,204,113,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer}
+.tap-btn:active{transform:scale(.93)}
+.fly{position:absolute;font-size:22px;font-weight:900;color:#2ecc71;pointer-events:none;animation:up .6s ease-out forwards}
+@keyframes up{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-65px)}}
+.en-bg{width:100%;height:10px;background:#2c3036;border-radius:10px;overflow:hidden;margin:5px 0 12px}
+.en-fill{height:100%;background:#2ecc71;width:100%;transition:width .2s}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.card,.panel{background:#1b1e24;padding:12px;border-radius:12px;border:1px solid #2c3036;margin-bottom:8px}
+.panel{text-align:center}
+.btn{width:100%;padding:11px;border:none;border-radius:10px;font-weight:bold;font-size:13px;cursor:pointer;background:#2ecc71;color:#000;margin-top:6px}
+.btn.g{background:#f1c40f}.btn.r{background:#e74c3c;color:#fff}
+input{width:100%;padding:10px;border-radius:8px;border:1px solid #444;background:#0f1115;color:#fff;margin:6px 0}
+.m-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}
+.m-cell{aspect-ratio:1;background:#2c3036;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer}
+.m-cell.open{background:#163019;border:1px solid #2ecc71}.m-cell.bomb{background:#4a1818;border:1px solid #e74c3c}
+.l-row{display:flex;justify-content:center;gap:10px;margin:6px 0}
+.l-step{width:65px;height:36px;background:#2c3036;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);align-items:center;justify-content:center;z-index:99;padding:20px}
+.mbox{background:#1b1e24;padding:20px;border-radius:16px;width:100%;max-width:320px;text-align:center;border:1px solid #f1c40f}
 </style>
 </head>
 <body>
-
 <div class="top">
   <div class="pill gold">🪙 ПРИЗ: 150 ₽</div>
   <div class="pill green">🏆 <span id="vipName">Новичок</span> (x<span id="multText">1</span>)</div>
 </div>
-
-<div class="bal-box">
-  <div class="bal" id="balText">0</div>
-  <div class="sub">Пассив: +<span id="pasText">0</span>/с • Тап: +<span id="tapText">1</span></div>
-</div>
+<div class="bal" id="balText">0</div>
+<div class="sub">Пассив: +<span id="pasText">0</span>/с • Тап: +<span id="tapText">1</span></div>
 
 <div class="tabs">
-  <button class="tab-btn active" onclick="goTab('tap', this)">🔥 Тап</button>
-  <button class="tab-btn" onclick="goTab('mines', this)">💣 Сапёр</button>
-  <button class="tab-btn" onclick="goTab('ladder', this)">🪜 Лестница</button>
-  <button class="tab-btn" onclick="goTab('crash', this)">🚀 Краш</button>
-  <button class="tab-btn" onclick="goTab('more', this)">🎁 Бонусы</button>
+  <button class="tbtn on" onclick="goTab('tap',this)">🔥 Тап</button>
+  <button class="tbtn" onclick="goTab('mines',this)">💣 Сапёр</button>
+  <button class="tbtn" onclick="goTab('ladder',this)">🪜 Лестница</button>
+  <button class="tbtn" onclick="goTab('crash',this)">🚀 Краш</button>
+  <button class="tbtn" onclick="goTab('more',this)">🎁 Бонусы</button>
 </div>
 
-<!-- ВКЛАДКА 1: ТАПАЛКА -->
-<div id="tab-tap" class="box active">
+<div id="tab-tap" class="box on">
   <div class="tap-wrap" id="tapZone">
-    <div class="tap-btn" id="tapCircle">
-      <div style="font-size:48px;">🐆🔥</div>
-      <div style="font-size:18px; font-weight:900; text-align:center; margin-top:5px;">ТАНЦУЙ<br>ПАНТЕРА</div>
-    </div>
+    <button type="button" class="tap-btn" id="tapCircle">
+      <span style="font-size:46px">🐆🔥</span>
+      <span style="font-size:18px;font-weight:900;color:#fff;margin-top:4px">ТАНЦУЙ<br>ПАНТЕРА</span>
+    </button>
   </div>
-
-  <div class="en-head">
+  <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:bold">
     <span>⚡ Энергия (+<span id="regenText">2</span>/с)</span>
     <span><span id="enCur">1000</span> / <span id="enMax">1000</span></span>
   </div>
   <div class="en-bg"><div class="en-fill" id="enBar"></div></div>
-
-  <div class="grid-2">
-    <div class="card" onclick="buyUp('tap')">
-      <b>🥫 Банка LIT</b><br><span style="font-size:11px; color:#aaa;">Сила тапа +<span id="gainTap">2</span></span><br>
-      <b style="color:var(--gold);">💰 <span id="cTap">150</span></b>
-    </div>
-    <div class="card" onclick="buyUp('pas')">
-      <b>🔥 Сжечь Акулу</b><br><span style="font-size:11px; color:#aaa;">Пассив +<span id="gainPas">5</span>/с</span><br>
-      <b style="color:var(--gold);">💰 <span id="cPas">400</span></b>
-    </div>
-    <div class="card" onclick="buyUp('en')">
-      <b>🔋 Запас сил</b><br><span style="font-size:11px; color:#aaa;">+500 макс. энергии</span><br>
-      <b style="color:var(--gold);">💰 <span id="cEn">300</span></b>
-    </div>
-    <div class="card" onclick="freeRefill()">
-      <b>🚀 Полный бак</b><br><span style="font-size:11px; color:#aaa;">100% энергии</span><br>
-      <b style="color:var(--green);">БЕСПЛАТНО (<span id="refCnt">3</span>)</b>
-    </div>
+  <div class="g2">
+    <div class="card" onclick="buyUp('tap')"><b>🥫 Банка LIT</b><br><small style="color:#aaa">+<span id="gainTap">2</span> к тапу</small><br><b style="color:#f1c40f">💰 <span id="cTap">150</span></b></div>
+    <div class="card" onclick="buyUp('pas')"><b>🔥 Сжечь Акулу</b><br><small style="color:#aaa">+<span id="gainPas">5</span>/сек</small><br><b style="color:#f1c40f">💰 <span id="cPas">400</span></b></div>
+    <div class="card" onclick="buyUp('en')"><b>🔋 Запас сил</b><br><small style="color:#aaa">+500 энергии</small><br><b style="color:#f1c40f">💰 <span id="cEn">300</span></b></div>
+    <div class="card" onclick="freeRefill()"><b>🚀 Полный бак</b><br><small style="color:#aaa">100% энергии</small><br><b style="color:#2ecc71">БЕСПЛАТНО (<span id="refCnt">3</span>)</b></div>
   </div>
 </div>
 
-<!-- ВКЛАДКА 5: ПРОМОКОДЫ, ПРИВИЛЕГИИ И ПРИЗ 150 РУБ -->
-<div id="tab-more" class="box">
-  <div class="panel">
-    <h3 style="margin:0 0 6px;">💸 Приз 150 ₽ (нужно 100 000 000 🪙)</h3>
-    <p style="font-size:12px; color:#ccc; margin:0 0 8px;">Прогресс: <b id="prizeProg">0</b> / 100 000 000</p>
-    <button class="btn gold" onclick="claim150()">Забрать 150 ₽</button>
-    <div id="winBox" style="display:none; margin-top:10px; padding:10px; background:#0f1115; border-radius:8px; border:1px solid var(--green);">
-      <b style="color:var(--green);">🎉 Код победителя: <span id="winId"></span></b><br>
-      <span style="font-size:11px; color:#aaa;">Сделай скрин и скинь админу в ЛС для получения 150 ₽!</span>
-    </div>
-  </div>
-
-  <div class="panel">
-    <h3 style="margin:0 0 6px;">🎟 Промокод</h3>
-    <input type="text" id="promoCode" placeholder="Введи код (например: START)">
-    <button class="btn" onclick="applyPromo()">Активировать</button>
-  </div>
-
-  <div class="panel">
-    <h3 style="margin:0 0 6px;">👑 Привилегии (Ускоряют фарм!)</h3>
-    <button class="btn" onclick="buyRank(25000, 'Суетолог', 1.5, 4)">Суетолог (25 000 🪙) — Доход x1.5</button>
-    <button class="btn" onclick="buyRank(250000, 'Поджигатель', 2.2, 6)">Поджигатель (250 000 🪙) — Доход x2.2</button>
-    <button class="btn gold" onclick="buyRank(2500000, 'Миллионер', 3.5, 10)">Миллионер (2.5 млн 🪙) — Доход x3.5</button>
-    <button class="btn red" onclick="buyRank(15000000, 'ЛЕГЕНДА', 5, 15)">ЛЕГЕНДА (15 млн 🪙) — Доход x5.0</button>
-  </div>
-</div>
-
-<!-- КАПЧА -->
-<div class="modal" id="capModal">
-  <div class="modal-box">
-    <h3>🤖 Проверка на робота</h3>
-    <p style="font-size:13px;">Реши пример, чтобы продолжить:</p>
-    <h2 id="capText" style="color:var(--gold);"></h2>
-    <input type="number" id="capIn" placeholder="Ответ">
-    <button class="btn" onclick="verifyCap()">Подтвердить</button>
-  </div>
-</div>
-<!-- ВКЛАДКА 2: САПЁР -->
 <div id="tab-mines" class="box">
   <div class="panel">
-    <h3 style="margin-top:0;">💣 Сапёр (3 мины)</h3>
+    <h3 style="margin:0 0 8px">💣 Сапёр (3 мины)</h3>
     <input type="number" id="mBet" value="100" placeholder="Ставка (мин. 10)">
     <button class="btn" id="mBtnStart" onclick="startMines()">Играть</button>
-    <button class="btn gold" id="mBtnTake" style="display:none;" onclick="takeMines()">Забрать: <span id="mWin">0</span> 🪙</button>
+    <button class="btn g" id="mBtnTake" style="display:none" onclick="takeMines()">Забрать: <span id="mWin">0</span> 🪙</button>
     <div class="m-grid" id="mGrid"></div>
   </div>
 </div>
 
-<!-- ВКЛАДКА 3: ЛЕСТНИЦА -->
 <div id="tab-ladder" class="box">
   <div class="panel">
-    <h3 style="margin-top:0;">🪜 Лестница удачи</h3>
-    <p style="font-size:12px; color:#aaa;">Выбирай безопасную ступеньку снизу вверх (5 уровней)</p>
+    <h3 style="margin:0 0 8px">🪜 Лестница удачи</h3>
     <input type="number" id="lBet" value="100" placeholder="Ставка (мин. 10)">
     <button class="btn" id="lBtnStart" onclick="startLadder()">Начать подъем</button>
-    <button class="btn gold" id="lBtnTake" style="display:none;" onclick="takeLadder()">Забрать: <span id="lWin">0</span> 🪙</button>
-    <div id="lBoard" style="margin-top:10px;"></div>
+    <button class="btn g" id="lBtnTake" style="display:none" onclick="takeLadder()">Забрать: <span id="lWin">0</span> 🪙</button>
+    <div id="lBoard" style="margin-top:10px"></div>
   </div>
 </div>
 
-<!-- ВКЛАДКА 4: КРАШ -->
 <div id="tab-crash" class="box">
   <div class="panel">
-    <h3 style="margin-top:0;">🚀 Краш-ракета</h3>
-    <div id="cMult" style="font-size:38px; font-weight:900; color:var(--green); margin:15px 0;">1.00x</div>
+    <h3 style="margin:0">🚀 Краш-ракета</h3>
+    <div id="cMult" style="font-size:38px;font-weight:900;color:#2ecc71;margin:12px 0">1.00x</div>
     <input type="number" id="cBet" value="100" placeholder="Ставка (мин. 10)">
     <button class="btn" id="cBtnStart" onclick="startCrash()">Поставить</button>
-    <button class="btn red" id="cBtnTake" style="display:none;" onclick="takeCrash()">ЗАБРАТЬ (<span id="cWin">0</span> 🪙)</button>
+    <button class="btn r" id="cBtnTake" style="display:none" onclick="takeCrash()">ЗАБРАТЬ (<span id="cWin">0</span> 🪙)</button>
   </div>
 </div>
 
+<div id="tab-more" class="box">
+  <div class="panel">
+    <h3 style="margin:0 0 6px">💸 Приз 150 ₽ (100 000 000 🪙)</h3>
+    <p style="font-size:12px;color:#ccc;margin:0 0 8px">Прогресс: <b id="prizeProg">0</b> / 100 000 000</p>
+    <button class="btn g" onclick="claim150()">Забрать 150 ₽</button>
+    <div id="winBox" style="display:none;margin-top:10px;padding:10px;background:#0f1115;border-radius:8px;border:1px solid #2ecc71">
+      <b style="color:#2ecc71">🎉 Код: <span id="winId"></span></b><br><small style="color:#aaa">Скинь скрин админу в ЛС для получения 150 ₽!</small>
+    </div>
+  </div>
+  <div class="panel">
+    <h3 style="margin:0 0 6px">🎟 Промокод</h3>
+    <input type="text" id="promoCode" placeholder="Введи код">
+    <button class="btn" onclick="applyPromo()">Активировать</button>
+  </div>
+  <div class="panel">
+    <h3 style="margin:0 0 6px">👑 Привилегии</h3>
+    <button class="btn" onclick="buyRank(25000,'Суетолог',1.5,4)">Суетолог (25k) — x1.5</button>
+    <button class="btn" onclick="buyRank(250000,'Поджигатель',2.2,6)">Поджигатель (250k) — x2.2</button>
+    <button class="btn g" onclick="buyRank(2500000,'Миллионер',3.5,10)">Миллионер (2.5M) — x3.5</button>
+    <button class="btn r" onclick="buyRank(15000000,'ЛЕГЕНДА',5,15)">ЛЕГЕНДА (15M) — x5.0</button>
+  </div>
+</div>
+
+<div class="modal" id="capModal">
+  <div class="mbox">
+    <h3>🤖 Проверка</h3>
+    <h2 id="capText" style="color:#f1c40f"></h2>
+    <input type="number" id="capIn" placeholder="Ответ">
+    <button class="btn" onclick="verifyCap()">Подтвердить</button>
+  </div>
+</div>
 <script>
-  const tg = window.Telegram ? window.Telegram.WebApp : null;
-  if (tg) { try { tg.ready(); tg.expand(); } catch(e) {} }
+const tg = window.Telegram ? window.Telegram.WebApp : null;
+if (tg) { try { tg.ready(); tg.expand(); } catch(e) {} }
 
-  let data = {
-    bal: 0, tap: 1, pas: 0, en: 1000, maxEn: 1000, regen: 2,
-    cTap: 150, cPas: 400, cEn: 300,
-    gTap: 2, gPas: 5,
-    ref: 3, rank: 'Новичок', mult: 1, taps: 0, promos: []
-  };
+let d = {
+  bal: 0, tap: 1, pas: 0, en: 1000, maxEn: 1000, regen: 2,
+  cTap: 150, cPas: 400, cEn: 300, gTap: 2, gPas: 5,
+  ref: 3, rank: 'Новичок', mult: 1, taps: 0, promos: []
+};
+try {
+  let s = JSON.parse(localStorage.getItem('litvin_v4'));
+  if (s) d = Object.assign(d, s);
+} catch(e) {}
 
-  // Загрузка прогресса
-  try {
-    let saved = JSON.parse(localStorage.getItem('litvin_long_v1'));
-    if (saved) data = Object.assign(data, saved);
-  } catch(e) {}
+let capAns = 0, capCb = null;
 
-  let capAns = 0, capOkCb = null;
+function save() {
+  try { localStorage.setItem('litvin_v4', JSON.stringify(d)); } catch(e) {}
+  document.getElementById('balText').innerText = Math.floor(d.bal).toLocaleString('ru-RU');
+  document.getElementById('pasText').innerText = Math.floor(d.pas * d.mult).toLocaleString('ru-RU');
+  document.getElementById('tapText').innerText = Math.floor(d.tap * d.mult).toLocaleString('ru-RU');
+  document.getElementById('enCur').innerText = Math.floor(d.en);
+  document.getElementById('enMax').innerText = d.maxEn;
+  document.getElementById('regenText').innerText = d.regen;
+  document.getElementById('enBar').style.width = (d.en / d.maxEn * 100) + '%';
+  document.getElementById('cTap').innerText = Math.floor(d.cTap).toLocaleString('ru-RU');
+  document.getElementById('cPas').innerText = Math.floor(d.cPas).toLocaleString('ru-RU');
+  document.getElementById('cEn').innerText = Math.floor(d.cEn).toLocaleString('ru-RU');
+  document.getElementById('gainTap').innerText = d.gTap;
+  document.getElementById('gainPas').innerText = d.gPas;
+  document.getElementById('refCnt').innerText = d.ref;
+  document.getElementById('vipName').innerText = d.rank;
+  document.getElementById('multText').innerText = d.mult;
+  document.getElementById('prizeProg').innerText = Math.floor(d.bal).toLocaleString('ru-RU');
+}
 
-  function save() {
-    try { localStorage.setItem('litvin_long_v1', JSON.stringify(data)); } catch(e) {}
-    document.getElementById('balText').innerText = Math.floor(data.bal).toLocaleString('ru-RU');
-    document.getElementById('pasText').innerText = Math.floor(data.pas * data.mult).toLocaleString('ru-RU');
-    document.getElementById('tapText').innerText = Math.floor(data.tap * data.mult).toLocaleString('ru-RU');
-    document.getElementById('enCur').innerText = Math.floor(data.en);
-    document.getElementById('enMax').innerText = data.maxEn;
-    document.getElementById('regenText').innerText = data.regen;
-    document.getElementById('enBar').style.width = (data.en / data.maxEn * 100) + '%';
-    
-    document.getElementById('cTap').innerText = Math.floor(data.cTap).toLocaleString('ru-RU');
-    document.getElementById('cPas').innerText = Math.floor(data.cPas).toLocaleString('ru-RU');
-    document.getElementById('cEn').innerText = Math.floor(data.cEn).toLocaleString('ru-RU');
-    document.getElementById('gainTap').innerText = data.gTap;
-    document.getElementById('gainPas').innerText = data.gPas;
-    
-    document.getElementById('refCnt').innerText = data.ref;
-    document.getElementById('vipName').innerText = data.rank;
-    document.getElementById('multText').innerText = data.mult;
-    document.getElementById('prizeProg').innerText = Math.floor(data.bal).toLocaleString('ru-RU');
-  }
+function doTap(e) {
+  if (d.en < 1) return alert('Энергия на нуле! Жми «Полный бак» или подожди.');
+  let gain = Math.floor(d.tap * d.mult);
+  d.bal += gain; d.en = Math.max(0, d.en - 1); d.taps++;
 
-  // Тап по кнопке
-  document.getElementById('tapCircle').addEventListener('pointerdown', (e) => {
-    if (data.en < 1) return alert('Энергия закончилась! Жми «Полный бак» или подожди.');
-    let gain = Math.floor(data.tap * data.mult);
-    data.bal += gain; data.en = Math.max(0, data.en - 1); data.taps++;
+  let num = document.createElement('div');
+  num.className = 'fly';
+  num.innerText = '+' + gain.toLocaleString('ru-RU');
+  let rect = document.getElementById('tapZone').getBoundingClientRect();
+  let x = (e.touches && e.touches[0] ? e.touches[0].clientX : e.clientX) - rect.left;
+  let y = (e.touches && e.touches[0] ? e.touches[0].clientY : e.clientY) - rect.top;
+  num.style.left = (x || 150) + 'px';
+  num.style.top = (y || 80) + 'px';
+  document.getElementById('tapZone').appendChild(num);
+  setTimeout(() => num.remove(), 600);
 
-    let num = document.createElement('div');
-    num.className = 'float-num'; num.innerText = '+' + gain.toLocaleString('ru-RU');
-    num.style.left = (e.offsetX + 60) + 'px'; num.style.top = e.offsetY + 'px';
-    document.getElementById('tapZone').appendChild(num);
-    setTimeout(() => num.remove(), 700);
+  if (d.taps % 80 === 0) showCap(null);
+  if (tg && tg.HapticFeedback) { try { tg.HapticFeedback.impactOccurred('light'); } catch(err) {} }
+  save();
+}
 
-    if (data.taps % 80 === 0) showCaptcha(null);
-    if (tg && tg.HapticFeedback) { try { tg.HapticFeedback.impactOccurred('light'); } catch(err) {} }
-    save();
+const tapBtn = document.getElementById('tapCircle');
+tapBtn.addEventListener('touchstart', (e) => { e.preventDefault(); doTap(e); }, {passive: false});
+tapBtn.addEventListener('mousedown', (e) => { doTap(e); });
+
+setInterval(() => {
+  if (d.pas > 0) d.bal += Math.floor(d.pas * d.mult);
+  if (d.en < d.maxEn) d.en = Math.min(d.maxEn, d.en + d.regen);
+  save();
+}, 1000);
+
+function buyUp(t) {
+  if (t === 'tap' && d.bal >= d.cTap) {
+    d.bal -= d.cTap; d.tap += d.gTap; d.cTap = Math.floor(d.cTap * 1.45);
+    d.gTap = Math.max(2, Math.floor(d.tap * 0.12));
+  } else if (t === 'pas' && d.bal >= d.cPas) {
+    d.bal -= d.cPas; d.pas += d.gPas; d.cPas = Math.floor(d.cPas * 1.5);
+    d.gPas = Math.max(5, Math.floor(d.pas * 0.15));
+  } else if (t === 'en' && d.bal >= d.cEn) {
+    d.bal -= d.cEn; d.maxEn += 500; d.en = d.maxEn; d.cEn = Math.floor(d.cEn * 1.55);
+  } else return alert('Недостаточно очков!');
+  save();
+}
+
+function freeRefill() {
+  if (d.ref > 0) { d.ref--; d.en = d.maxEn; save(); }
+  else alert('Бесплатные баки закончились!');
+}
+
+function goTab(id, btn) {
+  document.querySelectorAll('.box').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.tbtn').forEach(b => b.classList.remove('on'));
+  document.getElementById('tab-' + id).classList.add('on');
+  btn.classList.add('on');
+}
+function showCap(cb) {
+  let a = Math.floor(Math.random() * 12) + 1, b = Math.floor(Math.random() * 12) + 1;
+  capAns = a + b; capCb = cb;
+  document.getElementById('capText').innerText = `${a} + ${b} = ?`;
+  document.getElementById('capIn').value = '';
+  document.getElementById('capModal').style.display = 'flex';
+}
+function verifyCap() {
+  if (parseInt(document.getElementById('capIn').value) === capAns) {
+    document.getElementById('capModal').style.display = 'none';
+    if (capCb) capCb();
+  } else { alert('Неверно!'); showCap(capCb); }
+}
+
+const CODES = { 'START': 500, 'PANTERA': 2000, 'LITVIN': 5000, 'ADMIN777': 100000000 };
+function applyPromo() {
+  let c = document.getElementById('promoCode').value.trim().toUpperCase();
+  if (d.promos.includes(c)) return alert('Код уже использован!');
+  if (CODES[c]) {
+    d.bal += CODES[c]; d.promos.push(c); save();
+    alert(`Начислено +${CODES[c].toLocaleString('ru-RU')} очков!`);
+  } else alert('Неверный код!');
+}
+
+function buyRank(cost, title, m, reg) {
+  if (d.bal < cost) return alert('Мало очков!');
+  if (d.mult >= m) return alert('Статус уже активен!');
+  d.bal -= cost; d.rank = title; d.mult = m; d.regen = reg; save();
+  alert(`Статус «${title}» активирован!`);
+}
+
+function claim150() {
+  if (d.bal < 100000000) return alert(`Нужно 100 000 000 очков! У тебя: ${Math.floor(d.bal).toLocaleString('ru-RU')}`);
+  showCap(() => {
+    document.getElementById('winId').innerText = 'LIT150-' + Math.floor(1000 + Math.random() * 8999);
+    document.getElementById('winBox').style.display = 'block';
   });
+}
 
-  // Автодоход и регенерация энергии
-  setInterval(() => {
-    if (data.pas > 0) data.bal += Math.floor(data.pas * data.mult);
-    if (data.en < data.maxEn) data.en = Math.min(data.maxEn, data.en + data.regen);
-    save();
-  }, 1000);
+let mOn = false, mWin = 0, mBombs = [];
+function startMines() {
+  let b = parseInt(document.getElementById('mBet').value);
+  if (isNaN(b) || b < 10 || b > d.bal) return alert('Неверная ставка!');
+  d.bal -= b; mWin = b; mOn = true; mBombs = []; save();
+  while (mBombs.length < 3) { let r = Math.floor(Math.random() * 25); if (!mBombs.includes(r)) mBombs.push(r); }
+  document.getElementById('mBtnStart').style.display = 'none';
+  document.getElementById('mBtnTake').style.display = 'block';
+  document.getElementById('mWin').innerText = mWin.toLocaleString('ru-RU');
+  let g = document.getElementById('mGrid'); g.innerHTML = '';
+  for (let i = 0; i < 25; i++) {
+    let cell = document.createElement('div'); cell.className = 'm-cell'; cell.innerText = '?';
+    cell.onclick = () => {
+      if (!mOn || cell.classList.contains('open')) return;
+      if (mBombs.includes(i)) {
+        cell.classList.add('bomb'); cell.innerText = '💣'; mOn = false; alert('Бум! Мина!');
+        document.getElementById('mBtnStart').style.display = 'block';
+        document.getElementById('mBtnTake').style.display = 'none';
+      } else {
+        cell.classList.add('open'); cell.innerText = '💎';
+        mWin = Math.floor(mWin * 1.25); document.getElementById('mWin').innerText = mWin.toLocaleString('ru-RU');
+      }
+    };
+    g.appendChild(cell);
+  }
+}
+function takeMines() {
+  if (!mOn) return;
+  mOn = false; d.bal += mWin; save();
+  document.getElementById('mBtnStart').style.display = 'block';
+  document.getElementById('mBtnTake').style.display = 'none';
+}
 
-  // Покупка улучшений с ростом эффективности для долгой игры
-  function buyUp(t) {
-    if (t === 'tap' && data.bal >= data.cTap) {
-      data.bal -= data.cTap;
-      data.tap += data.gTap;
-      data.cTap = Math.floor(data.cTap * 1.45);
-      data.gTap = Math.max(2, Math.floor(data.tap * 0.12));
-    } else if (t === 'pas' && data.bal >= data.cPas) {
-      data.bal -= data.cPas;
-      data.pas += data.gPas;
-      data.cPas = Math.floor(data.cPas * 1.5);
-      data.gPas = Math.max(5, Math.floor(data.pas * 0.15));
-    } else if (t === 'en' && data.bal >= data.cEn) {
-      data.bal -= data.cEn;
-      data.maxEn += 500;
-      data.en = data.maxEn;
-      data.cEn = Math.floor(data.cEn * 1.55);
-    } else {
-      return alert('Недостаточно очков!');
-    }
-    save();
-  }
-
-  function freeRefill() {
-    if (data.ref > 0) { data.ref--; data.en = data.maxEn; save(); }
-    else alert('Бесплатные баки на сегодня закончились!');
-  }
-
-  function goTab(name, btn) {
-    document.querySelectorAll('.box').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('tab-' + name).classList.add('active');
-    btn.classList.add('active');
-  }
-
-  // КАПЧА
-  function showCaptcha(cb) {
-    let a = Math.floor(Math.random() * 12) + 1, b = Math.floor(Math.random() * 12) + 1;
-    capAns = a + b; capOkCb = cb;
-    document.getElementById('capText').innerText = `${a} + ${b} = ?`;
-    document.getElementById('capIn').value = '';
-    document.getElementById('capModal').style.display = 'flex';
-  }
-  function verifyCap() {
-    if (parseInt(document.getElementById('capIn').value) === capAns) {
-      document.getElementById('capModal').style.display = 'none';
-      if (capOkCb) capOkCb();
-    } else { alert('Неверно! Попробуй ещё раз.'); showCaptcha(capOkCb); }
-  }
-
-  // ПРОМОКОДЫ (включая твой личный ADMIN777 на 100к)
-  const CODES = { 'START': 500, 'PANTERA': 2000, 'LITVIN': 5000, 'ADMIN777': 100000 };
-  function applyPromo() {
-    let c = document.getElementById('promoCode').value.trim().toUpperCase();
-    if (data.promos.includes(c)) return alert('Этот код уже активирован!');
-    if (CODES[c]) {
-      data.bal += CODES[c];
-      data.promos.push(c);
-      save();
-      alert(`Успешно! Начислено +${CODES[c].toLocaleString('ru-RU')} очков!`);
-    } else alert('Неверный промокод!');
-  }
-
-  // ПРИВИЛЕГИИ
-  function buyRank(cost, title, m, newRegen) {
-    if (data.bal < cost) return alert('Недостаточно очков!');
-    if (data.mult >= m) return alert('У тебя уже есть этот или более крутой статус!');
-    data.bal -= cost;
-    data.rank = title;
-    data.mult = m;
-    data.regen = newRegen;
-    save();
-    alert(`Статус «${title}» активирован! Множитель дохода: x${m}`);
-  }
-
-  // ВЫВОД ПРИЗА 150 РУБ (ПОРОГ 100 000 000)
-  function claim150() {
-    if (data.bal < 100000000) {
-      return alert(`Нужно 100 000 000 очков! У тебя сейчас: ${Math.floor(data.bal).toLocaleString('ru-RU')}`);
-    }
-    showCaptcha(() => {
-      document.getElementById('winId').innerText = 'LIT150-' + Math.floor(1000 + Math.random() * 8999);
-      document.getElementById('winBox').style.display = 'block';
-    });
-  }
-
-  // --- ИГРА 1: САПЁР ---
-  let mOn = false, mWin = 0, mBombs = [];
-  function startMines() {
-    let b = parseInt(document.getElementById('mBet').value);
-    if (isNaN(b) || b < 10 || b > data.bal) return alert('Неверная ставка!');
-    data.bal -= b; mWin = b; mOn = true; mBombs = []; save();
-    while (mBombs.length < 3) { let r = Math.floor(Math.random() * 25); if (!mBombs.includes(r)) mBombs.push(r); }
-    document.getElementById('mBtnStart').style.display = 'none';
-    document.getElementById('mBtnTake').style.display = 'block';
-    document.getElementById('mWin').innerText = mWin.toLocaleString('ru-RU');
-    let g = document.getElementById('mGrid'); g.innerHTML = '';
-    for (let i = 0; i < 25; i++) {
-      let cell = document.createElement('div'); cell.className = 'm-cell'; cell.innerText = '?';
-      cell.onclick = () => {
-        if (!mOn || cell.classList.contains('open')) return;
-        if (mBombs.includes(i)) {
-          cell.classList.add('bomb'); cell.innerText = '💣'; mOn = false; alert('Бум! Мина!');
-          document.getElementById('mBtnStart').style.display = 'block';
-          document.getElementById('mBtnTake').style.display = 'none';
-        } else {
-          cell.classList.add('open'); cell.innerText = '💎';
-          mWin = Math.floor(mWin * 1.25); document.getElementById('mWin').innerText = mWin.toLocaleString('ru-RU');
-        }
-      };
-      g.appendChild(cell);
-    }
-  }
-  function takeMines() {
-    if (!mOn) return;
-    mOn = false; data.bal += mWin; save();
-    document.getElementById('mBtnStart').style.display = 'block';
-    document.getElementById('mBtnTake').style.display = 'none';
-  }
-
-  // --- ИГРА 2: ЛЕСТНИЦА ---
-  let lOn = false, lBet = 0, lStep = 0;
-  const lMults = [1.3, 1.7, 2.2, 3.0, 4.5];
-  function startLadder() {
-    lBet = parseInt(document.getElementById('lBet').value);
-    if (isNaN(lBet) || lBet < 10 || lBet > data.bal) return alert('Неверная ставка!');
-    data.bal -= lBet; lStep = 0; lOn = true; save();
-    document.getElementById('lBtnStart').style.display = 'none';
-    document.getElementById('lBtnTake').style.display = 'block';
-document.getElementById('lWin').innerText = lBet.toLocaleString('ru-RU');
-drawLadder();
+let lOn = false, lBet = 0, lStep = 0;
+const lMults = [1.3, 1.7, 2.2, 3.0, 4.5];
+function startLadder() {
+  lBet = parseInt(document.getElementById('lBet').value);
+  if (isNaN(lBet) || lBet < 10 || lBet > d.bal) return alert('Неверная ставка!');
+  d.bal -= lBet; lStep = 0; lOn = true; save();
+  document.getElementById('lBtnStart').style.display = 'none';
+  document.getElementById('lBtnTake').style.display = 'block';
+  document.getElementById('lWin').innerText = lBet.toLocaleString('ru-RU');
+  drawLadder();
 }
 function drawLadder() {
-let b = document.getElementById('lBoard'); b.innerHTML = '';
-for (let r = 4; r >= 0; r--) {
-let row = document.createElement('div'); row.className = 'l-row';
-for (let c = 0; c < 3; c++) {
-let s = document.createElement('div'); s.className = 'l-step';
-s.innerText = (r === lStep && lOn) ? '❓' : (r < lStep ? '✅' : '🔒');
-if (r === lStep && lOn) s.onclick = () => {
-if (c === Math.floor(Math.random() * 3)) {
-lOn = false; alert('Ступенька сломалась!');
-document.getElementById('lBtnStart').style.display = 'block';
-document.getElementById('lBtnTake').style.display = 'none';
-} else {
-lStep++; document.getElementById('lWin').innerText = Math.floor(lBet * lMults[lStep - 1]).toLocaleString('ru-RU');
-if (lStep === 5) takeLadder();
-}
-drawLadder();
-};
-row.appendChild(s);
-}
-b.appendChild(row);
-}
+  let b = document.getElementById('lBoard'); b.innerHTML = '';
+  for (let r = 4; r >= 0; r--) {
+    let row = document.createElement('div'); row.className = 'l-row';
+    for (let c = 0; c < 3; c++) {
+      let s = document.createElement('div'); s.className = 'l-step';
+      s.innerText = (r === lStep && lOn) ? '❓' : (r < lStep ? '✅' : '🔒');
+      if (r === lStep && lOn) s.onclick = () => {
+        if (c === Math.floor(Math.random() * 3)) {
+          lOn = false; alert('Ступенька сломалась!');
+          document.getElementById('lBtnStart').style.display = 'block';
+          document.getElementById('lBtnTake').style.display = 'none';
+        } else {
+          lStep++; document.getElementById('lWin').innerText = Math.floor(lBet * lMults[lStep - 1]).toLocaleString('ru-RU');
+          if (lStep === 5) takeLadder();
+        }
+        drawLadder();
+      };
+      row.appendChild(s);
+    }
+    b.appendChild(row);
+  }
 }
 function takeLadder() {
-if (!lOn) return;
-let win = lStep === 0 ? lBet : Math.floor(lBet * lMults[lStep - 1]);
-data.bal += win; lOn = false; save();
-document.getElementById('lBtnStart').style.display = 'block';
-document.getElementById('lBtnTake').style.display = 'none';
-drawLadder();
+  if (!lOn) return;
+  let win = lStep === 0 ? lBet : Math.floor(lBet * lMults[lStep - 1]);
+  d.bal += win; lOn = false; save();
+  document.getElementById('lBtnStart').style.display = 'block';
+  document.getElementById('lBtnTake').style.display = 'none';
+  drawLadder();
 }
-// --- ИГРА 3: КРАШ ---
+
 let cInt = null, cM = 1.0, cEnd = 1.0, cBet = 0;
 function startCrash() {
-cBet = parseInt(document.getElementById('cBet').value);
-if (isNaN(cBet) || cBet < 10 || cBet > data.bal) return alert('Неверная ставка!');
-data.bal -= cBet; cM = 1.0; cEnd = +(Math.random() * 3.8 + 1.1).toFixed(2); save();
-document.getElementById('cBtnStart').style.display = 'none';
-document.getElementById('cBtnTake').style.display = 'block';
-document.getElementById('cMult').style.color = 'var(--green)';
-cInt = setInterval(() => {
-cM = +(cM + 0.05).toFixed(2);
-document.getElementById('cMult').innerText = cM.toFixed(2) + 'x';
-document.getElementById('cWin').innerText = Math.floor(cBet * cM).toLocaleString('ru-RU');
-if (cM >= cEnd) {
-clearInterval(cInt); cInt = null;
-document.getElementById('cMult').style.color = 'var(--red)';
-document.getElementById('cMult').innerText = 💥 ${cEnd}x;
-document.getElementById('cBtnStart').style.display = 'block';
-document.getElementById('cBtnTake').style.display = 'none';
-}
-}, 150);
+  cBet = parseInt(document.getElementById('cBet').value);
+  if (isNaN(cBet) || cBet < 10 || cBet > d.bal) return alert('Неверная ставка!');
+  d.bal -= cBet; cM = 1.0; cEnd = +(Math.random() * 3.8 + 1.1).toFixed(2); save();
+  document.getElementById('cBtnStart').style.display = 'none';
+  document.getElementById('cBtnTake').style.display = 'block';
+  document.getElementById('cMult').style.color = '#2ecc71';
+  cInt = setInterval(() => {
+    cM = +(cM + 0.05).toFixed(2);
+    document.getElementById('cMult').innerText = cM.toFixed(2) + 'x';
+    document.getElementById('cWin').innerText = Math.floor(cBet * cM).toLocaleString('ru-RU');
+    if (cM >= cEnd) {
+      clearInterval(cInt); cInt = null;
+      document.getElementById('cMult').style.color = '#e74c3c';
+      document.getElementById('cMult').innerText = `💥 ${cEnd}x`;
+      document.getElementById('cBtnStart').style.display = 'block';
+      document.getElementById('cBtnTake').style.display = 'none';
+    }
+  }, 150);
 }
 function takeCrash() {
-if (!cInt) return;
-clearInterval(cInt); cInt = null;
-data.bal += Math.floor(cBet * cM); save();
-document.getElementById('cBtnStart').style.display = 'block';
-document.getElementById('cBtnTake').style.display = 'none';
+  if (!cInt) return;
+  clearInterval(cInt); cInt = null;
+  d.bal += Math.floor(cBet * cM); save();
+  document.getElementById('cBtnStart').style.display = 'block';
+  document.getElementById('cBtnTake').style.display = 'none';
 }
+
 save();
+</script>
+</body>
+</html>
