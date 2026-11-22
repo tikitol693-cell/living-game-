@@ -2,321 +2,392 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Игровой портал | Приз 150 ₽</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Литвин Тапочка | Приз 150 ₽</title>
+<script src="https://telegram.org"></script>
 <style>
-  :root { --bg: #0f172a; --card: #1e293b; --accent: #3b82f6; --green: #10b981; --red: #ef4444; --text: #f8fafc; }
-  body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
-  .header { width: 100%; max-width: 500px; background: var(--card); padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; box-sizing: border-box; }
-  .stat { font-weight: bold; font-size: 16px; }
-  .badge { background: #f59e0b; color: #000; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; }
-  .tabs { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; justify-content: center; }
-  button { background: var(--accent); color: white; border: none; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-  button:disabled { opacity: 0.5; cursor: not-allowed; }
-  button.sec { background: #334155; }
-  button.green { background: var(--green); }
-  .box { width: 100%; max-width: 500px; background: var(--card); padding: 20px; border-radius: 12px; box-sizing: border-box; text-align: center; display: none; }
+  :root { --bg: #111317; --card: #1b1e24; --green: #2ecc71; --gold: #f1c40f; --red: #e74c3c; --text: #fff; }
+  * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; font-family: system-ui, sans-serif; }
+  body { margin: 0; padding: 12px; background: var(--bg); color: var(--text); display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+  .top { width: 100%; max-width: 450px; display: flex; justify-content: space-between; gap: 6px; margin-bottom: 10px; }
+  .pill { background: var(--card); border: 1px solid #333; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+  .pill.gold { border-color: var(--gold); color: var(--gold); }
+  .pill.green { border-color: var(--green); color: var(--green); }
+  .bal-box { text-align: center; margin: 5px 0 12px; }
+  .bal { font-size: 40px; font-weight: 900; }
+  .sub { font-size: 12px; color: #8e9297; }
+  .tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; width: 100%; max-width: 450px; margin-bottom: 12px; }
+  .tab-btn { background: var(--card); border: 1px solid #333; color: #fff; padding: 8px 2px; border-radius: 10px; font-size: 11px; font-weight: bold; cursor: pointer; }
+  .tab-btn.active { border-color: var(--gold); background: #2a2718; }
+  .box { width: 100%; max-width: 450px; display: none; }
   .box.active { display: block; }
-  input { padding: 10px; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: white; width: 65%; margin-bottom: 10px; }
-  .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 15px 0; }
-  .cell { aspect-ratio: 1; background: #334155; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; font-weight: bold; }
-  .cell.open { background: #0f172a; cursor: default; }
-  .ladder-row { display: flex; justify-content: center; gap: 15px; margin: 6px 0; }
-  .step { width: 60px; height: 35px; background: #334155; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-  .crash-num { font-size: 42px; font-weight: 900; margin: 20px 0; color: var(--green); }
-  #captchaModal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 99; }
-  .modal-card { background: var(--card); padding: 25px; border-radius: 12px; text-align: center; max-width: 320px; }
+  /* Кнопка тапа */
+  .tap-wrap { display: flex; justify-content: center; margin: 15px 0; position: relative; }
+  .tap-btn { width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle, #1e4620 0%, #0d2611 100%); border: 5px solid var(--green); box-shadow: 0 0 25px rgba(46,204,113,0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.06s; }
+  .tap-btn:active { transform: scale(0.93); }
+  .float-num { position: absolute; font-size: 24px; font-weight: 900; color: var(--green); pointer-events: none; animation: flyUp 0.7s ease-out forwards; }
+  @keyframes flyUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-70px); } }
+  /* Энергия и карточки */
+  .en-head { display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px; }
+  .en-bg { width: 100%; height: 10px; background: #2c3036; border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
+  .en-fill { height: 100%; background: linear-gradient(90deg, #27ae60, #2ecc71); width: 100%; transition: width 0.2s; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .card { background: var(--card); padding: 10px; border-radius: 12px; border: 1px solid #2c3036; cursor: pointer; }
+  .card:active { background: #252932; }
+  .btn { width: 100%; padding: 11px; border: none; border-radius: 10px; font-weight: bold; font-size: 14px; cursor: pointer; background: var(--green); color: #000; margin-top: 6px; }
+  .btn.gold { background: var(--gold); }
+  .btn.red { background: var(--red); color: #fff; }
+  input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #0f1115; color: #fff; margin: 6px 0; }
+  .panel { background: var(--card); padding: 15px; border-radius: 14px; text-align: center; }
+  /* Мини-игры */
+  .m-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 12px; }
+  .m-cell { aspect-ratio: 1; background: #2c3036; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; }
+  .m-cell.open { background: #163019; border: 1px solid var(--green); }
+  .m-cell.bomb { background: #4a1818; border: 1px solid var(--red); }
+  .l-row { display: flex; justify-content: center; gap: 10px; margin: 6px 0; }
+  .l-step { width: 65px; height: 36px; background: #2c3036; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  /* Модальное окно */
+  .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; z-index: 99; padding: 20px; }
+  .modal-box { background: var(--card); padding: 20px; border-radius: 16px; width: 100%; max-width: 320px; text-align: center; border: 1px solid var(--gold); }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div>
-    <div class="stat">⚡ Энергия: <span id="enVal">5</span>/5</div>
-    <div style="font-size: 12px; color: #94a3b8;">+1 энергия каждые 30 сек</div>
-  </div>
-  <div style="text-align: right;">
-    <div class="stat">🪙 Очки: <span id="ptsVal">0</span></div>
-    <span class="badge" id="vipBadge">Новичок</span>
-  </div>
+<div class="top">
+  <div class="pill gold">🪙 ПРИЗ: 150 ₽</div>
+  <div class="pill green">🏆 <span id="vipName">Новичок</span></div>
+</div>
+
+<div class="bal-box">
+  <div class="bal" id="balText">0</div>
+  <div class="sub">Пассив: +<span id="pasText">0</span>/с • Тап: +<span id="tapText">1</span></div>
 </div>
 
 <div class="tabs">
-  <button onclick="openTab('mines')">💣 Сапёр</button>
-  <button onclick="openTab('ladder')">🪜 Лестница</button>
-  <button onclick="openTab('crash')">🚀 Краш</button>
-  <button class="sec" onclick="openTab('shop')">👑 Магазин / Промо</button>
-  <button class="green" onclick="openTab('prize')">🎁 Приз 150 ₽</button>
+  <button class="tab-btn active" onclick="goTab('tap', this)">🔥 Тап</button>
+  <button class="tab-btn" onclick="goTab('mines', this)">💣 Сапёр</button>
+  <button class="tab-btn" onclick="goTab('ladder', this)">🪜 Лестница</button>
+  <button class="tab-btn" onclick="goTab('crash', this)">🚀 Краш</button>
+  <button class="tab-btn" onclick="goTab('more', this)">🎁 Бонусы</button>
 </div>
 
-<!-- МАГАЗИН И ПРОМОКОДЫ -->
-<div id="shop" class="box">
-  <h3>🎟 Ввести промокод</h3>
-  <input type="text" id="promoIn" placeholder="Код (например: START100)">
-  <button onclick="usePromo()">Активировать</button>
-  <p id="promoMsg" style="font-size: 14px; color: #38bdf8;"></p>
-  <hr style="border-color: #334155; margin: 15px 0;">
-  <h3>👑 Привилегии за очки</h3>
-  <p><b>VIP (500 очков):</b> макс. энергия +3 и бонус +20% к очкам.</p>
-  <button onclick="buyVip(500, 'VIP', 8, 1.2)">Купить VIP (500 🪙)</button><br><br>
-  <p><b>LEGENDA (1500 очков):</b> макс. энергия +5 и бонус +50% к очкам.</p>
-  <button onclick="buyVip(1500, 'LEGENDA', 10, 1.5)">Купить LEGENDA (1500 🪙)</button>
-</div>
+<!-- ВКЛАДКА 1: ТАПАЛКА -->
+<div id="tab-tap" class="box active">
+  <div class="tap-wrap" id="tapZone">
+    <div class="tap-btn" id="tapCircle">
+      <div style="font-size:48px;">🐆🔥</div>
+      <div style="font-size:18px; font-weight:900; text-align:center; margin-top:5px;">ТАНЦУЙ<br>ПАНТЕРА</div>
+    </div>
+  </div>
 
-<!-- ПРИЗ 150 РУБЛЕЙ -->
-<div id="prize" class="box">
-  <h3>🏆 Главный приз: 150 ₽</h3>
-  <p>Набери <b>2000 очков</b>, пройди проверку на робота и забери награду!</p>
-  <button id="claimBtn" class="green" onclick="startPrizeClaim()">Забрать 150 ₽ (нужно 2000 🪙)</button>
-  <div id="prizeSecret" style="display:none; margin-top: 15px; padding: 15px; background: #0f172a; border-radius: 8px; border: 1px solid var(--green);">
-    <p style="color: var(--green); font-weight: bold;">🎉 Поздравляем! Ты прошёл игру!</p>
-    <p>Твой уникальный код победителя: <b id="winCode">WIN-150-VIP</b></p>
-    <p style="font-size: 13px; color: #94a3b8;">Сделай скриншот этого окна и отправь админу в Telegram для выплаты 150 ₽.</p>
+  <div class="en-head">
+    <span>⚡ Энергия</span>
+    <span><span id="enCur">1000</span> / <span id="enMax">1000</span></span>
+  </div>
+  <div class="en-bg"><div class="en-fill" id="enBar"></div></div>
+
+  <div class="grid-2">
+    <div class="card" onclick="buyUp('tap')">
+      <b>🥫 Банка LIT</b><br><span style="font-size:11px; color:#aaa;">+1 к тапу</span><br>
+      <b style="color:var(--gold);">💰 <span id="cTap">100</span></b>
+    </div>
+    <div class="card" onclick="buyUp('pas')">
+      <b>🔥 Сжечь Акулу</b><br><span style="font-size:11px; color:#aaa;">+2 очка/сек</span><br>
+      <b style="color:var(--gold);">💰 <span id="cPas">250</span></b>
+    </div>
+    <div class="card" onclick="buyUp('en')">
+      <b>🔋 Запас сил</b><br><span style="font-size:11px; color:#aaa;">+300 энергии</span><br>
+      <b style="color:var(--gold);">💰 <span id="cEn">200</span></b>
+    </div>
+    <div class="card" onclick="freeRefill()">
+      <b>🚀 Полный бак</b><br><span style="font-size:11px; color:#aaa;">100% энергии</span><br>
+      <b style="color:var(--green);">БЕСПЛАТНО (<span id="refCnt">3</span>)</b>
+    </div>
   </div>
 </div>
 
-<!-- КАПЧА -->
-<div id="captchaModal">
-  <div class="modal-card">
+<!-- ВКЛАДКА 5: ПРОМОКОДЫ, ПРИВИЛЕГИИ И ПРИЗ 150 РУБ -->
+<div id="tab-more" class="box">
+  <div class="panel" style="margin-bottom:10px;">
+    <h3 style="margin:0 0 8px;">💸 Приз 150 ₽ (нужно 50 000 🪙)</h3>
+    <p style="font-size:12px; color:#ccc; margin:0 0 8px;">Прогресс: <b id="prizeProg">0</b> / 50 000</p>
+    <button class="btn gold" onclick="claim150()">Забрать 150 ₽</button>
+    <div id="winBox" style="display:none; margin-top:10px; padding:10px; background:#0f1115; border-radius:8px; border:1px solid var(--green);">
+      <b style="color:var(--green);">🎉 Код победителя: <span id="winId"></span></b><br>
+      <span style="font-size:11px; color:#aaa;">Сделай скрин и скинь админу в ЛС для получения 150 ₽!</span>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-bottom:10px;">
+    <h3 style="margin:0 0 8px;">🎟 Промокод</h3>
+    <input type="text" id="promoCode" placeholder="Введи код (например: START)">
+    <button class="btn" onclick="applyPromo()">Активировать</button>
+  </div>
+
+  <div class="panel">
+    <h3 style="margin:0 0 8px;">👑 Привилегии за очки</h3>
+    <button class="btn" onclick="buyRank(5000, 'Суетолог', 1.5)">Суетолог (5 000 🪙) — Тап x1.5</button>
+    <button class="btn gold" onclick="buyRank(20000, 'Поджигатель', 2)">Поджигатель (20 000 🪙) — Тап x2</button>
+  </div>
+</div>
+
+<!-- МОДАЛЬНОЕ ОКНО КАПЧИ -->
+<div class="modal" id="capModal">
+  <div class="modal-box">
     <h3>🤖 Проверка (Капча)</h3>
-    <p>Реши пример, чтобы продолжить:</p>
-    <h2 id="capQ">5 + 7 = ?</h2>
-    <input type="number" id="capAns" placeholder="Ответ">
-    <br>
-    <button onclick="checkCaptcha()">Подтвердить</button>
+    <p style="font-size:13px;">Реши пример, чтобы продолжить:</p>
+    <h2 id="capText" style="color:var(--gold);"></h2>
+    <input type="number" id="capIn" placeholder="Ответ">
+    <button class="btn" onclick="verifyCap()">Подтвердить</button>
   </div>
 </div>
-<!-- САПЁР -->
-<div id="mines" class="box active">
-  <h3>💣 Сапёр (Ставка: 1 энергия)</h3>
-  <p>Открывай клетки: 💎 дают очки, 💣 сжигают выигрыш!</p>
-  <button id="mStart" onclick="startMines()">Начать игру (-1 ⚡)</button>
-  <button id="mTake" class="green" onclick="takeMines()" style="display:none;">Забрать <span id="mWin">0</span> 🪙</button>
-  <div class="grid" id="mGrid"></div>
+<!-- ВКЛАДКА 2: САПЁР -->
+<div id="tab-mines" class="box">
+  <div class="panel">
+    <h3 style="margin-top:0;">💣 Сапёр (3 мины)</h3>
+    <input type="number" id="mBet" value="50" placeholder="Ставка (мин. 10)">
+    <button class="btn" id="mBtnStart" onclick="startMines()">Играть</button>
+    <button class="btn gold" id="mBtnTake" style="display:none;" onclick="takeMines()">Забрать: <span id="mWin">0</span> 🪙</button>
+    <div class="m-grid" id="mGrid"></div>
+  </div>
 </div>
 
-<!-- ЛЕСТНИЦА -->
-<div id="ladder" class="box">
-  <h3>🪜 Лестница (Ставка: 1 энергия)</h3>
-  <p>Выбирай безопасную ступеньку снизу вверх (5 уровней).</p>
-  <button id="lStart" onclick="startLadder()">Начать игру (-1 ⚡)</button>
-  <button id="lTake" class="green" onclick="takeLadder()" style="display:none;">Забрать <span id="lWin">0</span> 🪙</button>
-  <div id="lBoard" style="margin-top: 15px;"></div>
+<!-- ВКЛАДКА 3: ЛЕСТНИЦА -->
+<div id="tab-ladder" class="box">
+  <div class="panel">
+    <h3 style="margin-top:0;">🪜 Лестница удачи</h3>
+    <p style="font-size:12px; color:#aaa;">Выбирай безопасную ступеньку снизу вверх (5 уровней)</p>
+    <input type="number" id="lBet" value="50" placeholder="Ставка (мин. 10)">
+    <button class="btn" id="lBtnStart" onclick="startLadder()">Начать подъем</button>
+    <button class="btn gold" id="lBtnTake" style="display:none;" onclick="takeLadder()">Забрать: <span id="lWin">0</span> 🪙</button>
+    <div id="lBoard" style="margin-top:10px;"></div>
+  </div>
 </div>
 
-<!-- КРАШ -->
-<div id="crash" class="box">
-  <h3>🚀 Краш (Ставка: 1 энергия)</h3>
-  <p>Успей забрать очки, пока ракета не взорвалась!</p>
-  <div class="crash-num" id="cNum">1.00x</div>
-  <button id="cStart" onclick="startCrash()">Запустить (-1 ⚡)</button>
-  <button id="cTake" class="green" onclick="takeCrash()" style="display:none;">Забрать (<span id="cWin">50</span> 🪙)</button>
+<!-- ВКЛАДКА 4: КРАШ -->
+<div id="tab-crash" class="box">
+  <div class="panel">
+    <h3 style="margin-top:0;">🚀 Краш-ракета</h3>
+    <div id="cMult" style="font-size:38px; font-weight:900; color:var(--green); margin:15px 0;">1.00x</div>
+    <input type="number" id="cBet" value="50" placeholder="Ставка (мин. 10)">
+    <button class="btn" id="cBtnStart" onclick="startCrash()">Поставить</button>
+    <button class="btn red" id="cBtnTake" style="display:none;" onclick="takeCrash()">ЗАБРАТЬ (<span id="cWin">0</span> 🪙)</button>
+  </div>
 </div>
-
 <script>
-  // --- БАЗОВЫЕ ПЕРЕМЕННЫЕ И СОХРАНЕНИЕ ---
-  let state = JSON.parse(localStorage.getItem('gameSave')) || {
-    pts: 0, en: 5, maxEn: 5, mult: 1, vip: 'Новичок', usedPromos: [], gamesPlayed: 0
+  try { window.Telegram.WebApp.expand(); } catch(e) {}
+
+  let data = {
+    bal: 0, tap: 1, pas: 0, en: 1000, maxEn: 1000,
+    cTap: 100, cPas: 250, cEn: 200, ref: 3,
+    rank: 'Новичок', mult: 1, taps: 0, promos: []
   };
-  const PROMOS = { 'START100': 100, 'BONUS300': 300, 'LITVIN': 500 };
-  let capSolution = 0, capCallback = null;
+  try {
+    let saved = JSON.parse(localStorage.getItem('litvin_tap_v3'));
+    if (saved) data = Object.assign(data, saved);
+  } catch(e) {}
+
+  let capAns = 0, capOkCb = null;
 
   function save() {
-    localStorage.setItem('gameSave', JSON.stringify(state));
-    document.getElementById('ptsVal').innerText = Math.floor(state.pts);
-    document.getElementById('enVal').innerText = state.en;
-    document.querySelector('.stat').innerHTML = `⚡ Энергия: <span id="enVal">${state.en}</span>/${state.maxEn}`;
-    document.getElementById('vipBadge').innerText = state.vip;
+    try { localStorage.setItem('litvin_tap_v3', JSON.stringify(data)); } catch(e) {}
+    document.getElementById('balText').innerText = Math.floor(data.bal).toLocaleString('ru-RU');
+    document.getElementById('pasText').innerText = data.pas;
+    document.getElementById('tapText').innerText = Math.floor(data.tap * data.mult);
+    document.getElementById('enCur').innerText = Math.floor(data.en);
+    document.getElementById('enMax').innerText = data.maxEn;
+    document.getElementById('enBar').style.width = (data.en / data.maxEn * 100) + '%';
+    document.getElementById('cTap').innerText = data.cTap;
+    document.getElementById('cPas').innerText = data.cPas;
+    document.getElementById('cEn').innerText = data.cEn;
+    document.getElementById('refCnt').innerText = data.ref;
+    document.getElementById('vipName').innerText = data.rank;
+    document.getElementById('prizeProg').innerText = Math.floor(data.bal).toLocaleString('ru-RU');
   }
 
-  // Восстановление энергии каждые 30 сек
+  document.getElementById('tapCircle').addEventListener('pointerdown', (e) => {
+    if (data.en < 1) return alert('Энергия на нуле! Жми «Полный бак» или подожди.');
+    let gain = Math.floor(data.tap * data.mult);
+    data.bal += gain; data.en = Math.max(0, data.en - 1); data.taps++;
+    let num = document.createElement('div');
+    num.className = 'float-num'; num.innerText = '+' + gain;
+    num.style.left = (e.offsetX + 70) + 'px'; num.style.top = e.offsetY + 'px';
+    document.getElementById('tapZone').appendChild(num);
+    setTimeout(() => num.remove(), 700);
+    if (data.taps % 70 === 0) showCaptcha(null);
+    try { window.Telegram.WebApp.HapticFeedback.impactOccurred('light'); } catch(err) {}
+    save();
+  });
+
   setInterval(() => {
-    if (state.en < state.maxEn) { state.en++; save(); }
-  }, 30000);
+    if (data.pas > 0) data.bal += data.pas;
+    if (data.en < data.maxEn) data.en = Math.min(data.maxEn, data.en + 2);
+    save();
+  }, 1000);
 
-  function openTab(id) {
+  function buyUp(t) {
+    if (t === 'tap' && data.bal >= data.cTap) { data.bal -= data.cTap; data.tap += 1; data.cTap = Math.floor(data.cTap * 1.6); }
+    else if (t === 'pas' && data.bal >= data.cPas) { data.bal -= data.cPas; data.pas += 2; data.cPas = Math.floor(data.cPas * 1.7); }
+    else if (t === 'en' && data.bal >= data.cEn) { data.bal -= data.cEn; data.maxEn += 300; data.en = data.maxEn; data.cEn = Math.floor(data.cEn * 1.6); }
+    else alert('Не хватает очков!');
+    save();
+  }
+
+  function freeRefill() {
+    if (data.ref > 0) { data.ref--; data.en = data.maxEn; save(); }
+    else alert('Бесплатные баки закончились!');
+  }
+
+  function goTab(name, btn) {
     document.querySelectorAll('.box').forEach(b => b.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
   }
 
-  function spendEnergy() {
-    if (state.en <= 0) { alert('Нет энергии! Подожди восстановления или введи промокод.'); return false; }
-    state.en--; state.gamesPlayed++; save();
-    return true;
+  function showCaptcha(cb) {
+    let a = Math.floor(Math.random() * 10) + 1, b = Math.floor(Math.random() * 10) + 1;
+    capAns = a + b; capOkCb = cb;
+    document.getElementById('capText').innerText = `${a} + ${b} = ?`;
+    document.getElementById('capIn').value = '';
+    document.getElementById('capModal').style.display = 'flex';
+  }
+  function verifyCap() {
+    if (parseInt(document.getElementById('capIn').value) === capAns) {
+      document.getElementById('capModal').style.display = 'none';
+      if (capOkCb) capOkCb();
+    } else { alert('Неверно!'); showCaptcha(capOkCb); }
   }
 
-  function addPoints(amount) {
-    state.pts += Math.round(amount * state.mult);
-    save();
+  const CODES = { 'START': 500, 'PANTERA': 1500, 'LITVIN': 3000 };
+  function applyPromo() {
+    let c = document.getElementById('promoCode').value.trim().toUpperCase();
+    if (data.promos.includes(c)) return alert('Уже активирован!');
+    if (CODES[c]) { data.bal += CODES[c]; data.promos.push(c); save(); alert(`Начислено +${CODES[c]} очков!`); }
+    else alert('Неверный код!');
   }
 
-  // --- КАПЧА ---
-  function requireCaptcha(onSuccess) {
-    let a = Math.floor(Math.random() * 10) + 1;
-    let b = Math.floor(Math.random() * 10) + 1;
-    capSolution = a + b;
-    capCallback = onSuccess;
-    document.getElementById('capQ').innerText = `${a} + ${b} = ?`;
-    document.getElementById('capAns').value = '';
-    document.getElementById('captchaModal').style.display = 'flex';
+  function buyRank(cost, title, m) {
+    if (data.bal < cost) return alert('Мало очков!');
+    if (data.mult >= m) return alert('Статус уже активен!');
+    data.bal -= cost; data.rank = title; data.mult = m; save();
+    alert(`Статус «${title}» активирован!`);
   }
 
-  function checkCaptcha() {
-    if (parseInt(document.getElementById('capAns').value) === capSolution) {
-      document.getElementById('captchaModal').style.display = 'none';
-      if (capCallback) capCallback();
-    } else {
-      alert('Неверный ответ! Попробуй ещё раз.');
-      requireCaptcha(capCallback);
-    }
-  }
-
-  // --- ПРОМОКОДЫ, ПРИВИЛЕГИИ И ПРИЗ ---
-  function usePromo() {
-    let code = document.getElementById('promoIn').value.trim().toUpperCase();
-    let msg = document.getElementById('promoMsg');
-    if (state.usedPromos.includes(code)) { msg.innerText = '❌ Этот промокод уже активирован!'; return; }
-    if (PROMOS[code]) {
-      state.usedPromos.push(code);
-      state.pts += PROMOS[code];
-      state.en = state.maxEn;
-      msg.innerText = `✅ Успех! +${PROMOS[code]} очков и полная энергия!`;
-      save();
-    } else { msg.innerText = '❌ Неверный промокод!'; }
-  }
-
-  function buyVip(cost, name, newMaxEn, newMult) {
-    if (state.pts < cost) { alert('Недостаточно очков!'); return; }
-    state.pts -= cost; state.vip = name; state.maxEn = newMaxEn; state.en = newMaxEn; state.mult = newMult;
-    alert(`Поздравляем! Привилегия ${name} активирована!`);
-    save();
-  }
-
-  function startPrizeClaim() {
-    if (state.pts < 2000) { alert(`Нужно 2000 очков! У тебя сейчас: ${Math.floor(state.pts)}`); return; }
-    requireCaptcha(() => {
-      document.getElementById('claimBtn').style.display = 'none';
-      document.getElementById('winCode').innerText = 'PRIZE150-' + Math.floor(1000 + Math.random() * 9000);
-      document.getElementById('prizeSecret').style.display = 'block';
+  function claim150() {
+    if (data.bal < 50000) return alert(`Нужно 50 000 очков! У тебя: ${Math.floor(data.bal)}`);
+    showCaptcha(() => {
+      document.getElementById('winId').innerText = 'LIT150-' + Math.floor(1000 + Math.random() * 8999);
+      document.getElementById('winBox').style.display = 'block';
     });
   }
 
-  // --- ИГРА 1: САПЁР ---
-  let mBombs = [], mCurrentWin = 0, mActive = false;
+  let mOn = false, mWin = 0, mBombs = [];
   function startMines() {
-    if (!spendEnergy()) return;
-    mActive = true; mCurrentWin = 0; mBombs = [];
-    while (mBombs.length < 5) {
-      let r = Math.floor(Math.random() * 25);
-      if (!mBombs.includes(r)) mBombs.push(r);
-    }
-    document.getElementById('mStart').style.display = 'none';
-    document.getElementById('mTake').style.display = 'none';
-    let grid = document.getElementById('mGrid'); grid.innerHTML = '';
+    let b = parseInt(document.getElementById('mBet').value);
+    if (isNaN(b) || b < 10 || b > data.bal) return alert('Неверная ставка!');
+    data.bal -= b; mWin = b; mOn = true; mBombs = []; save();
+    while (mBombs.length < 3) { let r = Math.floor(Math.random() * 25); if (!mBombs.includes(r)) mBombs.push(r); }
+    document.getElementById('mBtnStart').style.display = 'none';
+    document.getElementById('mBtnTake').style.display = 'block';
+    document.getElementById('mWin').innerText = mWin;
+    let g = document.getElementById('mGrid'); g.innerHTML = '';
     for (let i = 0; i < 25; i++) {
-      let c = document.createElement('div'); c.className = 'cell';
-      c.onclick = () => clickMine(i, c);
-      grid.appendChild(c);
-    }
-  }
-  function clickMine(idx, el) {
-    if (!mActive || el.classList.contains('open')) return;
-    el.classList.add('open');
-    if (mBombs.includes(idx)) {
-      el.innerText = '💣'; mActive = false;
-      alert('Бум! Ты попал на мину.');
-      document.getElementById('mStart').style.display = 'inline-block';
-      document.getElementById('mTake').style.display = 'none';
-    } else {
-      el.innerText = '💎'; mCurrentWin += 35;
-      document.getElementById('mWin').innerText = Math.round(mCurrentWin * state.mult);
-      document.getElementById('mTake').style.display = 'inline-block';
+      let cell = document.createElement('div'); cell.className = 'm-cell'; cell.innerText = '?';
+      cell.onclick = () => {
+        if (!mOn || cell.classList.contains('open')) return;
+        if (mBombs.includes(i)) {
+          cell.classList.add('bomb'); cell.innerText = '💣'; mOn = false; alert('Бум! Мина!');
+          document.getElementById('mBtnStart').style.display = 'block';
+          document.getElementById('mBtnTake').style.display = 'none';
+        } else {
+          cell.classList.add('open'); cell.innerText = '💎';
+          mWin = Math.floor(mWin * 1.25); document.getElementById('mWin').innerText = mWin;
+        }
+      };
+      g.appendChild(cell);
     }
   }
   function takeMines() {
-    if (!mActive) return;
-    mActive = false; addPoints(mCurrentWin);
-    document.getElementById('mStart').style.display = 'inline-block';
-    document.getElementById('mTake').style.display = 'none';
+    if (!mOn) return;
+    mOn = false; data.bal += mWin; save();
+    document.getElementById('mBtnStart').style.display = 'block';
+    document.getElementById('mBtnTake').style.display = 'none';
   }
 
-  // --- ИГРА 2: ЛЕСТНИЦА ---
-  let lStep = 0, lWin = 0, lActive = false;
+  let lOn = false, lBet = 0, lStep = 0;
+  const lMults = [1.3, 1.7, 2.2, 3.0, 4.5];
   function startLadder() {
-    if (!spendEnergy()) return;
-    lStep = 0; lWin = 0; lActive = true;
-    document.getElementById('lStart').style.display = 'none';
-    document.getElementById('lTake').style.display = 'none';
-    renderLadder();
+    lBet = parseInt(document.getElementById('lBet').value);
+    if (isNaN(lBet) || lBet < 10 || lBet > data.bal) return alert('Неверная ставка!');
+    data.bal -= lBet; lStep = 0; lOn = true; save();
+    document.getElementById('lBtnStart').style.display = 'none';
+    document.getElementById('lBtnTake').style.display = 'block';
+    document.getElementById('lWin').innerText = lBet;
+    drawLadder();
   }
-  function renderLadder() {
+  function drawLadder() {
     let b = document.getElementById('lBoard'); b.innerHTML = '';
-    for (let row = 4; row >= 0; row--) {
-      let rDiv = document.createElement('div'); rDiv.className = 'ladder-row';
-      for (let col = 0; col < 3; col++) {
-        let s = document.createElement('div'); s.className = 'step';
-        s.innerText = row === lStep && lActive ? '❓' : (row < lStep ? '✅' : '🔒');
-        if (row === lStep && lActive) s.onclick = () => stepLadder(col);
-        rDiv.appendChild(s);
+    for (let r = 4; r >= 0; r--) {
+      let row = document.createElement('div'); row.className = 'l-row';
+      for (let c = 0; c < 3; c++) {
+        let s = document.createElement('div'); s.className = 'l-step';
+        s.innerText = (r === lStep && lOn) ? '❓' : (r < lStep ? '✅' : '🔒');
+        if (r === lStep && lOn) s.onclick = () => {
+          if (c === Math.floor(Math.random() * 3)) {
+            lOn = false; alert('Ступенька сломалась!');
+            document.getElementById('lBtnStart').style.display = 'block';
+            document.getElementById('lBtnTake').style.display = 'none';
+          } else {
+            lStep++; document.getElementById('lWin').innerText = Math.floor(lBet * lMults[lStep - 1]);
+            if (lStep === 5) takeLadder();
+          }
+          drawLadder();
+        };
+        row.appendChild(s);
       }
-      b.appendChild(rDiv);
+      b.appendChild(row);
     }
-  }
-  function stepLadder(col) {
-    let bombCol = Math.floor(Math.random() * 3);
-    if (col === bombCol) {
-      lActive = false; alert('💥 Ступенька обрушилась!');
-      document.getElementById('lStart').style.display = 'inline-block';
-      document.getElementById('lTake').style.display = 'none';
-    } else {
-      lStep++; lWin += 60 * lStep;
-      document.getElementById('lWin').innerText = Math.round(lWin * state.mult);
-      document.getElementById('lTake').style.display = 'inline-block';
-      if (lStep === 5) { takeLadder(); alert('🏆 Ты дошёл до вершины!'); }
-    }
-    renderLadder();
   }
   function takeLadder() {
-    if (!lActive) return;
-    lActive = false; addPoints(lWin);
-    document.getElementById('lStart').style.display = 'inline-block';
-    document.getElementById('lTake').style.display = 'none';
-    renderLadder();
+    if (!lOn) return;
+    let win = lStep === 0 ? lBet : Math.floor(lBet * lMults[lStep - 1]);
+    data.bal += win; lOn = false; save();
+    document.getElementById('lBtnStart').style.display = 'block';
+    document.getElementById('lBtnTake').style.display = 'none';
+    drawLadder();
   }
 
-  // --- ИГРА 3: КРАШ ---
-  let cTimer = null, cMult = 1.0, cCrashPoint = 1.0, cActive = false;
+  let cInt = null, cM = 1.0, cEnd = 1.0, cBet = 0;
   function startCrash() {
-    if (!spendEnergy()) return;
-    cActive = true; cMult = 1.0;
-    cCrashPoint = (Math.random() * 4 + 1.1).toFixed(2);
-    document.getElementById('cStart').style.display = 'none';
-    document.getElementById('cTake').style.display = 'inline-block';
-    document.getElementById('cNum').style.color = 'var(--green)';
-    cTimer = setInterval(() => {
-      cMult = +(cMult + 0.05).toFixed(2);
-      document.getElementById('cNum').innerText = cMult.toFixed(2) + 'x';
-      document.getElementById('cWin').innerText = Math.round(50 * cMult * state.mult);
-      if (cMult >= cCrashPoint) {
-        clearInterval(cTimer); cActive = false;
-        document.getElementById('cNum').style.color = 'var(--red)';
-        document.getElementById('cNum').innerText = `💥 ${cCrashPoint}x`;
-        document.getElementById('cStart').style.display = 'inline-block';
-        document.getElementById('cTake').style.display = 'none';
+    cBet = parseInt(document.getElementById('cBet').value);
+    if (isNaN(cBet) || cBet < 10 || cBet > data.bal) return alert('Неверная ставка!');
+    data.bal -= cBet; cM = 1.0; cEnd = +(Math.random() * 3.8 + 1.1).toFixed(2); save();
+    document.getElementById('cBtnStart').style.display = 'none';
+    document.getElementById('cBtnTake').style.display = 'block';
+    document.getElementById('cMult').style.color = 'var(--green)';
+    cInt = setInterval(() => {
+      cM = +(cM + 0.05).toFixed(2);
+      document.getElementById('cMult').innerText = cM.toFixed(2) + 'x';
+      document.getElementById('cWin').innerText = Math.floor(cBet * cM);
+      if (cM >= cEnd) {
+        clearInterval(cInt); cInt = null;
+        document.getElementById('cMult').style.color = 'var(--red)';
+        document.getElementById('cMult').innerText = `💥 ${cEnd}x`;
+        document.getElementById('cBtnStart').style.display = 'block';
+        document.getElementById('cBtnTake').style.display = 'none';
       }
     }, 150);
   }
   function takeCrash() {
-    if (!cActive) return;
-    clearInterval(cTimer); cActive = false;
-    addPoints(50 * cMult);
-    document.getElementById('cStart').style.display = 'inline-block';
-    document.getElementById('cTake').style.display = 'none';
+    if (!cInt) return;
+    clearInterval(cInt); cInt = null;
+    data.bal += Math.floor(cBet * cM); save();
+    document.getElementById('cBtnStart').style.display = 'block';
+    document.getElementById('cBtnTake').style.display = 'none';
   }
 
-  // Первый запуск и проверка капчи при входе
   save();
-  if (state.gamesPlayed === 0) requireCaptcha(() => {});
 </script>
 </body>
 </html>
