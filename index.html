@@ -1,196 +1,159 @@
-  <script>
-    try { window.Telegram.WebApp.ready(); window.Telegram.WebApp.expand(); } catch (e) {}
-
-    let audioCtx = null;
-    function playBeep(freq, dur) {
-      if (!s.sound) return;
-      try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
-        osc.connect(gain); gain.connect(audioCtx.destination);
-        osc.start(); osc.stop(audioCtx.currentTime + dur);
-      } catch (e) {}
-    }
-
-    const dailyRewards =;
-
-    let s = {
-      score: 0, tap: 1, pas: 0, en: 1000, maxEn: 1000, reg: 3,
-      cTap: 250, cPas: 1000, cEn: 800, cReg: 2000,
-      uTap: 0, uPas: 0, uEn: 0, uReg: 0,
-      sound: true, x2Left: 0, x2Cd: 0,
-      dailyDay: 0, lastDaily: 0
-    };
-
-    try { let d = localStorage.getItem('litvin_v5'); if (d) s = Object.assign(s, JSON.parse(d)); } catch (e) {}
-    function save() { try { localStorage.setItem('litvin_v5', JSON.stringify(s)); } catch (e) {} }
-
-    function getLevelInfo(score) {
-      let lvl = Math.min(100, Math.floor(Math.pow(score / 1000, 1 / 3)) + 1);
-      if (score < 1000) lvl = 1;
-      let nextScore = Math.pow(lvl, 3) * 1000;
-      return { lvl, nextScore };
-    }
-
-    function renderDaily() {
-      const grid = document.getElementById('dailyGrid');
-      grid.innerHTML = '';
-      dailyRewards.forEach((rew, idx) => {
-        let cls = 'day-box';
-        if (idx < s.dailyDay) cls += ' done';
-        else if (idx === s.dailyDay) cls += ' current';
-        grid.innerHTML += '<div class="' + cls + '"><b>День ' + (idx + 1) + '</b><br><span style="color:#ffd700;">+' + rew.toLocaleString('ru-RU') + '</span></div>';
-      });
-
-      const btn = document.getElementById('claimDailyBtn');
-      const now = Date.now();
-      const dayMs = 24 * 60 * 60 * 1000;
-      if (s.dailyDay >= dailyRewards.length) {
-        btn.innerText = 'Все награды получены!';
-        btn.style.background = '#444';
-      } else if (now - s.lastDaily >= dayMs) {
-        btn.innerText = '🎁 Забрать +' + dailyRewards[s.dailyDay].toLocaleString('ru-RU') + ' 💰';
-        btn.style.background = '#00e676';
-      } else {
-        let leftHrs = Math.ceil((dayMs - (now - s.lastDaily)) / (1000 * 60 * 60));
-        btn.innerText = '⏳ Доступно через ~' + leftHrs + ' ч.';
-        btn.style.background = '#444';
-      }
-    }
-    function claimDaily() {
-      const now = Date.now();
-      const dayMs = 24 * 60 * 60 * 1000;
-      if (s.dailyDay < dailyRewards.length && now - s.lastDaily >= dayMs) {
-        let prize = dailyRewards[s.dailyDay];
-        s.score += prize;
-        s.dailyDay++;
-        s.lastDaily = now;
-        playBeep(800, 0.25);
-        render(); save();
-        try { window.Telegram.WebApp.showAlert('Получено +' + prize.toLocaleString('ru-RU') + ' монет!'); } catch (e) {}
-      }
-    }
-
-    function render() {
-      let mult = s.x2Left > 0 ? 2 : 1;
-      document.getElementById('scoreText').innerText = Math.floor(s.score).toLocaleString('ru-RU');
-      document.getElementById('tapText').innerText = (s.tap * mult).toLocaleString('ru-RU') + (mult > 1 ? ' (x2)' : '');
-      document.getElementById('pasText').innerText = s.pas.toLocaleString('ru-RU');
-      document.getElementById('enText').innerText = Math.floor(s.en);
-      document.getElementById('maxEnText').innerText = s.maxEn;
-      document.getElementById('enFill').style.width = (s.en / s.maxEn * 100) + '%';
-
-      let info = getLevelInfo(s.score);
-      document.getElementById('lvlText').innerText = info.lvl + ' / 100';
-      document.getElementById('nextLvlNeed').innerText = info.lvl >= 100 ? 'МАКСИМУМ!' : Math.max(0, Math.floor(info.nextScore - s.score)).toLocaleString('ru-RU');
-
-      document.getElementById('cTap').innerText = s.cTap.toLocaleString('ru-RU') + ' 💰';
-      document.getElementById('cPas').innerText = s.cPas.toLocaleString('ru-RU') + ' 💰';
-      document.getElementById('cEn').innerText = s.cEn.toLocaleString('ru-RU') + ' 💰';
-      document.getElementById('cReg').innerText = s.cReg.toLocaleString('ru-RU') + ' 💰';
-
-      document.getElementById('uTapLvl').innerText = s.uTap;
-      document.getElementById('uPasLvl').innerText = s.uPas;
-      document.getElementById('uEnLvl').innerText = s.uEn;
-      document.getElementById('uRegLvl').innerText = s.uReg;
-
-      document.getElementById('soundToggle').innerText = s.sound ? 'ВКЛ' : 'ВЫКЛ';
-      document.getElementById('soundToggle').style.background = s.sound ? '#00e676' : '#555';
-
-      const x2Btn = document.getElementById('x2Btn');
-      const tapBtn = document.getElementById('tapBtn');
-      if (s.x2Left > 0) {
-        x2Btn.innerText = '🔥 x2 АКТИВЕН: ' + s.x2Left + ' сек';
-        x2Btn.classList.remove('disabled');
-        tapBtn.classList.add('x2-active');
-      } else if (s.x2Cd > 0) {
-        x2Btn.innerText = '⏳ Перезарядка x2: ' + s.x2Cd + ' сек';
-        x2Btn.classList.add('disabled');
-        tapBtn.classList.remove('x2-active');
-      } else {
-        x2Btn.innerText = '⚡ Включить x2 на 1 минуту';
-        x2Btn.classList.remove('disabled');
-        tapBtn.classList.remove('x2-active');
-      }
-      renderDaily();
-    }
-
-    let lastTouch = 0;
-    function doTap(e) {
-      if (e) e.preventDefault();
-      let now = Date.now();
-      if (now - lastTouch < 35) return;
-      lastTouch = now;
-
-      if (s.en >= s.tap) {
-        let mult = s.x2Left > 0 ? 2 : 1;
-        s.score += s.tap * mult;
-        s.en -= s.tap;
-        playBeep(450, 0.05);
-        try { window.Telegram.WebApp.HapticFeedback.impactOccurred('light'); } catch (err) {}
-        render(); save();
-      }
-    }
-
-    function activateX2() {
-      if (s.x2Left > 0 || s.x2Cd > 0) return;
-      s.x2Left = 60;
-      s.x2Cd = 180;
-      playBeep(750, 0.2);
-      render(); save();
-    }
-
-    function buy(type) {
-      if (type === 'tap' && s.score >= s.cTap) { s.score -= s.cTap; s.tap += 2; s.uTap++; s.cTap = Math.floor(s.cTap * 1.65); }
-      else if (type === 'pas' && s.score >= s.cPas) { s.score -= s.cPas; s.pas += 10; s.uPas++; s.cPas = Math.floor(s.cPas * 1.75); }
-      else if (type === 'en' && s.score >= s.cEn) { s.score -= s.cEn; s.maxEn += 500; s.en = s.maxEn; s.uEn++; s.cEn = Math.floor(s.cEn * 1.7); }
-      else if (type === 'reg' && s.score >= s.cReg) { s.score -= s.cReg; s.reg += 2; s.uReg++; s.cReg = Math.floor(s.cReg * 1.8); }
-      else return;
-      playBeep(600, 0.12);
-      render(); save();
-    }
-
-    function openTab(id, btn) {
-      document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-      btn.classList.add('active');
-      playBeep(350, 0.04);
-    }
-
-    function toggleSound() {
-      s.sound = !s.sound;
-      if (s.sound) playBeep(550, 0.1);
-      render(); save();
-    }
-
-    function contactCreator() {
-      const url = "https://t.me";
-      try { window.Telegram.WebApp.openTelegramLink(url); } catch (e) { window.open(url, '_blank'); }
-    }
-
-    function resetGame() {
-      if (confirm('Точно сбросить весь прогресс до 0?')) {
-        localStorage.removeItem('litvin_v5');
-        location.reload();
-      }
-    }
-
-    setInterval(() => {
-      if (s.pas > 0) s.score += s.pas;
-      if (s.en < s.maxEn) s.en = Math.min(s.maxEn, s.en + s.reg);
-      if (s.x2Left > 0) s.x2Left--;
-      else if (s.x2Cd > 0) s.x2Cd--;
-      render(); save();
-    }, 1000);
-
-    render();
-  </script>
-</body>
-</html>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Литвин Тапочка</title>
+<script src="https://telegram.org"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+body{width:100vw;height:100dvh;overflow:hidden;font-family:sans-serif;color:#fff;display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:10px;background:#0b0d10 linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.9)),url('litvin.jpg') center/cover no-repeat}
+.bn{width:100%;max-width:420px;background:linear-gradient(90deg,#ff8c00,#ff2a55);text-align:center;font-size:11px;font-weight:800;padding:6px;border-radius:10px}
+.ti{width:100%;max-width:420px;display:flex;justify-content:space-between;font-size:11px;color:#ffd700;margin-top:4px}
+.sc{font-size:36px;font-weight:900;color:#00e676;text-align:center;text-shadow:0 0 15px rgba(0,230,118,.5)}
+.sb{font-size:12px;color:#ccc;text-align:center}
+.tb{display:flex;gap:3px;width:100%;max-width:420px;margin:5px 0;z-index:50}
+.tbtn{flex:1;background:rgba(25,28,36,.9);color:#fff;border:1px solid #444;padding:8px 1px;border-radius:9px;font-size:10px;font-weight:700}
+.tbtn.on{background:#00e676;color:#000;border-color:#00e676}
+.scr{display:none;width:100%;max-width:420px;flex:1;flex-direction:column;align-items:center;justify-content:space-between;overflow-y:auto}
+.scr.on{display:flex}
+.x2{background:linear-gradient(45deg,#ffd700,#ff6d00);color:#000;border:none;padding:7px 14px;border-radius:20px;font-size:12px;font-weight:900}
+.x2.off{background:#333;color:#888}
+.tap{width:195px;height:195px;border-radius:50%;background:radial-gradient(circle,rgba(29,185,84,.85),rgba(10,45,20,.95));border:6px solid #00e676;box-shadow:0 0 30px rgba(0,230,118,.6);display:flex;flex-direction:column;justify-content:center;align-items:center;font-size:20px;font-weight:900;text-align:center;z-index:99}
+.tap:active{transform:scale(.92)}
+.tap.x2a{border-color:#ffd700;box-shadow:0 0 45px rgba(255,215,0,.9)}
+.tap.vip{border-color:#00e5ff;box-shadow:0 0 40px rgba(0,229,255,.7)}
+.eb{width:100%;background:rgba(0,0,0,.6);padding:9px;border-radius:12px;border:1px solid #333}
+.et{display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:4px}
+.br{width:100%;height:9px;background:#222;border-radius:5px;overflow:hidden}
+.fl{height:100%;background:linear-gradient(90deg,#00e676,#ffd700);width:100%;transition:width .15s}
+.cd{width:100%;background:rgba(25,28,35,.92);border:1px solid #383e4a;border-radius:11px;padding:10px;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center}
+.cd h4{font-size:13px;color:#ffd700;margin-bottom:2px}
+.cd p{font-size:11px;color:#bbb}
+.ab{background:#00e676;color:#000;border:none;padding:8px 10px;border-radius:8px;font-weight:800;font-size:11px;min-width:82px}
+.dbtn{background:linear-gradient(45deg,#ffd700,#ff9100);color:#000;border:none;padding:8px 10px;border-radius:8px;font-weight:900;font-size:11px;min-width:85px}
+.tg{width:100%;background:linear-gradient(90deg,#0088cc,#00aaff);color:#fff;border:none;padding:10px;border-radius:10px;font-weight:700;font-size:12px;margin-top:6px}
+.dg{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;width:100%;margin-top:6px}
+.db{background:#1c2029;border:1px solid #444;border-radius:9px;padding:7px 3px;text-align:center;font-size:10px}
+.db.dn{border-color:#00e676;background:rgba(0,230,118,.15)}
+.db.cr{border-color:#ffd700}
+.inp{width:100%;padding:9px;border-radius:8px;border:1px solid #555;background:#14171d;color:#fff;font-size:13px;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="bn">🏆 Кто первый дойдёт до 100 УР. — получит 150 ₽!</div>
+<div class="ti"><span>Уровень: <b id="lv">1 / 100</b></span><span>Создатель: <b>Степан Шаимов</b></span></div>
+<div><div class="sc" id="sc">0</div><div class="sb">Тап: +<b id="tp">1</b> • Пассив: +<b id="ps">0</b>/с</div></div>
+<div class="tb">
+<button class="tbtn on" onclick="tab('g',this)">🔥 Тап</button>
+<button class="tbtn" onclick="tab('u',this)">🚀 Кач</button>
+<button class="tbtn" onclick="tab('d',this)" style="color:#ffd700">💎 Донат</button>
+<button class="tbtn" onclick="tab('b',this)">🎁 Бонус</button>
+<button class="tbtn" onclick="tab('l',this)">🏆 150₽</button>
+<button class="tbtn" onclick="tab('s',this)">⚙️</button>
+</div>
+<div id="g" class="scr on">
+<button class="x2" id="x2b" onclick="goX2()">⚡ Включить x2 на 1 минуту</button>
+<div class="tap" id="tapBtn" ontouchstart="tap(event)" onclick="tap(event)"><div style="font-size:44px">🐆🔥</div>ТАНЦУЙ<br>ПАНТЕРА</div>
+<div class="eb"><div class="et"><span>⚡ Энергия</span><span><span id="en">1000</span> / <span id="me">1000</span></span></div><div class="br"><div class="fl" id="ef"></div></div></div>
+</div>
+<div id="u" class="scr" style="justify-content:flex-start">
+<div class="cd"><div><h4>🥫 Банка LIT</h4><p>+2 к тапу (Ур. <span id="ut">0</span>)</p></div><button class="ab" onclick="buy('t')" id="ct">250 💰</button></div>
+<div class="cd"><div><h4>🔥 Сжечь Акулу</h4><p>+10 монет/сек (Ур. <span id="up">0</span>)</p></div><button class="ab" onclick="buy('p')" id="cp">1 000 💰</button></div>
+<div class="cd"><div><h4>🔋 Запас сил</h4><p>+500 энергии (Ур. <span id="ue">0</span>)</p></div><button class="ab" onclick="buy('e')" id="ce">800 💰</button></div>
+<div class="cd"><div><h4>⚡ Регенерация</h4><p>+2 энергии/сек (Ур. <span id="ur">0</span>)</p></div><button class="ab" onclick="buy('r')" id="cr">2 000 💰</button></div>
+</div>
+<div id="d" class="scr" style="justify-content:flex-start">
+<div class="cd" style="border-color:#ffd700"><div><h4>🥤 Мини-энергетик</h4><p>Полная энергия + 10 000 💰</p></div><button class="dbtn" onclick="buyDon('Мини-энергетик за 29₽')">29 ₽ / 15⭐</button></div>
+<div class="cd" style="border-color:#ffd700"><div><h4>⚡ Лёгкий буст тапа</h4><p>+3 к тапу навсегда</p></div><button class="dbtn" onclick="buyDon('Буст тапа +3 за 49₽')">49 ₽ / 25⭐</button></div>
+<div class="cd" style="border-color:#ffd700"><div><h4>🔥 Пассив «Лайт»</h4><p>+25 монет/сек навсегда</p></div><button class="dbtn" onclick="buyDon('Пассив +25/с за 79₽')">79 ₽ / 40⭐</button></div>
+<div class="cd" style="border-color:#00e5ff"><div><h4 style="color:#00e5ff">👑 VIP-рамка + Реген</h4><p>Голубая аура + 2 энергии/сек</p></div><button class="dbtn" onclick="buyDon('VIP-статус за 99₽')">99 ₽ / 50⭐</button></div>
+<div class="cd" style="flex-direction:column;align-items:stretch">
+<h4>🔑 Ввести код после оплаты</h4><p>Получи код у создателя после перевода</p>
+<input class="inp" id="promoIn" placeholder="Введи секретный код...">
+<button class="ab" onclick="useCode()" style="width:100%;margin-top:6px">Активировать код</button>
+</div>
+</div>
+<div id="b" class="scr" style="justify-content:flex-start">
+<div class="cd" style="flex-direction:column;align-items:stretch;border-color:#00e676">
+<h4>🎁 Ежедневный бонус</h4><p>Заходи каждый день за наградой!</p><div class="dg" id="dg"></div>
+<button class="ab" id="cdb" onclick="getD()" style="width:100%;margin-top:8px;padding:11px">Забрать</button>
+</div>
+</div>
+<div id="l" class="scr" style="justify-content:flex-start">
+<div class="cd" style="flex-direction:column;align-items:flex-start;gap:5px;border-color:#ffd700">
+<h4>🏆 Конкурс на 150 ₽</h4><p>Первый на <b>100 уровне</b> (1 000 000 000 монет) получит <b>150 ₽</b>!</p>
+<p style="color:#00e676;font-weight:700">До след. уровня: <span id="nl">0</span> 💰</p>
+<button class="tg" onclick="msg('Привет! Я прошёл 100 уровень в Литвин Тапочке!')">✉️ Написать создателю (Забрать 150 ₽)</button>
+</div>
+<div class="cd"><div><h4>Ур. 1–25</h4><p>Новичок и Суетолог</p></div><span>Старт</span></div>
+<div class="cd"><div><h4>Ур. 26–60</h4><p>Поджигатель Акулы</p></div><span>Средний</span></div>
+<div class="cd"><div><h4>Ур. 61–99</h4><p>Миллионер Кондиций</p></div><span>Профи</span></div>
+<div class="cd" style="border-color:#ff2a55"><div><h4>Ур. 100</h4><p>Босс Литвин (150 ₽)</p></div><span>Финал</span></div>
+</div>
+<div id="s" class="scr" style="justify-content:flex-start">
+<div class="cd"><div><h4>🔊 Звук в игре</h4><p>Звуки кликов и меню</p></div><button class="ab" id="st" onclick="snd()">ВКЛ</button></div>
+<div class="cd" style="flex-direction:column;align-items:flex-start"><h4>👑 Создатель: Степан Шаимов</h4><button class="tg" onclick="msg('Привет! Вопрос по игре Литвин Тапочка')">✉️ Связаться со Степаном</button></div>
+<div class="cd" style="border-color:#ff4444"><div><h4 style="color:#ff4444">🗑 Сброс</h4><p>Начать заново с 0</p></div><button class="ab" style="background:#ff4444;color:#fff" onclick="rst()">Сброс</button></div>
+</div>
+<script>
+try{Telegram.WebApp.ready();Telegram.WebApp.expand()}catch(e){}
+let ac=null;
+function bp(f,d){if(!s.sn)return;try{if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();let o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.setValueAtTime(f,ac.currentTime);g.gain.setValueAtTime(.08,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
+const rw=new Array(2500,10000,50000,150000,400000,1000000);
+let s={sc:0,tp:1,ps:0,en:1000,me:1000,rg:3,ct:250,cp:1000,ce:800,cr:2000,ut:0,up:0,ue:0,ur:0,sn:1,x2:0,cd:0,dd:0,ld:0,vip:0,used:[]};
+try{let d=localStorage.getItem('litV7');if(d)s=Object.assign(s,JSON.parse(d))}catch(e){}
+const sv=()=>{try{localStorage.setItem('litV7',JSON.stringify(s))}catch(e){}};
+function ui(){
+let m=s.x2>0?2:1;
+document.getElementById('sc').innerText=Math.floor(s.sc).toLocaleString('ru-RU');
+document.getElementById('tp').innerText=(s.tp*m)+(m>1?' (x2)':'');
+document.getElementById('ps').innerText=s.ps.toLocaleString('ru-RU');
+document.getElementById('en').innerText=Math.floor(s.en);
+document.getElementById('me').innerText=s.me;
+document.getElementById('ef').style.width=(s.en/s.me100)+'%';
+let lv=s.sc<1000?1:Math.min(100,Math.floor(Math.pow(s.sc/1000,1/3))+1);
+let nx=Math.pow(lv,3)1000;
+document.getElementById('lv').innerText=lv+' / 100';
+document.getElementById('nl').innerText=lv>=100?'МАКС!':Math.max(0,Math.floor(nx-s.sc)).toLocaleString('ru-RU');
+document.getElementById('ct').innerText=s.ct.toLocaleString('ru-RU')+' 💰';
+document.getElementById('cp').innerText=s.cp.toLocaleString('ru-RU')+' 💰';
+document.getElementById('ce').innerText=s.ce.toLocaleString('ru-RU')+' 💰';
+document.getElementById('cr').innerText=s.cr.toLocaleString('ru-RU')+' 💰';
+document.getElementById('ut').innerText=s.ut;document.getElementById('up').innerText=s.up;document.getElementById('ue').innerText=s.ue;document.getElementById('ur').innerText=s.ur;
+document.getElementById('st').innerText=s.sn?'ВКЛ':'ВЫКЛ';document.getElementById('st').style.background=s.sn?'#00e676':'#555';
+let xb=document.getElementById('x2b'),tb=document.getElementById('tapBtn');
+let baseCls='tap'+(s.vip?' vip':'');
+if(s.x2>0){xb.innerText='🔥 x2: '+s.x2+' сек';xb.className='x2';tb.className=baseCls+' x2a'}
+else if(s.cd>0){xb.innerText='⏳ Ждать: '+s.cd+' сек';xb.className='x2 off';tb.className=baseCls}
+else{xb.innerText='⚡ Включить x2 на 1 минуту';xb.className='x2';tb.className=baseCls}
+let g=document.getElementById('dg');g.innerHTML='';
+rw.forEach((v,i)=>{g.innerHTML+='День '+(i+1)+'
++'+v.toLocaleString('ru-RU')+''});
+let db=document.getElementById('cdb'),nw=Date.now(),dm=86400000;
+if(s.dd>=rw.length){db.innerText='Все получено!';db.style.background='#444'}
+else if(nw-s.ld>=dm){db.innerText='🎁 Забрать +'+rw[s.dd].toLocaleString('ru-RU');db.style.background='#00e676'}
+else{db.innerText='⏳ Через ~'+Math.ceil((dm-(nw-s.ld))/3600000)+' ч.';db.style.background='#444'}
+}
+let lt=0;
+function tap(e){if(e)e.preventDefault();let n=Date.now();if(n-lt<35)return;lt=n;if(s.en>=s.tp){s.sc+=s.tp(s.x2>0?2:1);s.en-=s.tp;bp(450,.05);try{Telegram.WebApp.HapticFeedback.impactOccurred('light')}catch(x){}ui();sv()}}
+function goX2(){if(s.x2>0||s.cd>0)return;s.x2=60;s.cd=180;bp(750,.2);ui();sv()}
+function buy(t){if(t==='t'&&s.sc>=s.ct){s.sc-=s.ct;s.tp+=2;s.ut++;s.ct=Math.floor(s.ct1.65)}else if(t==='p'&&s.sc>=s.cp){s.sc-=s.cp;s.ps+=10;s.up++;s.cp=Math.floor(s.cp1.75)}else if(t==='e'&&s.sc>=s.ce){s.sc-=s.ce;s.me+=500;s.en=s.me;s.ue++;s.ce=Math.floor(s.ce1.7)}else if(t==='r'&&s.sc>=s.cr){s.sc-=s.cr;s.rg+=2;s.ur++;s.cr=Math.floor(s.cr*1.8)}else return;bp(600,.12);ui();sv()}
+function buyDon(item){msg('Привет! Хочу купить усиление: '+item)}
+function useCode(){
+let c=document.getElementById('promoIn').value.trim().toUpperCase();
+if(!c||s.used.includes(c))return alert('Код неверный или уже использован!');
+if(c==='LIT29'){s.en=s.me;s.sc+=10000}
+else if(c==='TAP49'){s.tp+=3}
+else if(c==='PAS79'){s.ps+=25}
+else if(c==='VIP99'){s.vip=1;s.rg+=2}
+else return alert('Неверный код!');
+s.used.push(c);document.getElementById('promoIn').value='';bp(850,.3);ui();sv();alert('Усиление успешно активировано!');
+}
+function getD(){let n=Date.now();if(s.dd<rw.length&&n-s.ld>=86400000){s.sc+=rw[s.dd];s.dd++;s.ld=n;bp(800,.25);ui();sv()}}
+function tab(i,b){document.querySelectorAll('.scr').forEach(e=>e.classList.remove('on'));document.querySelectorAll('.tbtn').forEach(e=>e.classList.remove('on'));document.getElementById(i).classList.add('on');b.classList.add('on');bp(350,.04)}
+function snd(){s.sn=s.sn?0:1;if(s.sn)bp(550,.1);ui();sv()}
+function msg(txt){let u="t.me"+encodeURIComponent(txt||'Привет!');try{Telegram.WebApp.openTelegramLink(u)}catch(e){window.open(u,'_blank')}}
+function rst(){if(confirm('Сбросить прогресс?')){localStorage.removeItem('litV7');location.reload()}}
+setInterval(()=>{if(s.ps>0)s.sc+=s.ps;if(s.en<s.me)s.en=Math.min(s.me,s.en+s.rg);if(s.x2>0)s.x2--;else if(s.cd>0)s.cd--;ui();sv()},1000);
+ui();
