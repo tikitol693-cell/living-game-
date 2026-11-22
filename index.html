@@ -1,147 +1,27 @@
-    function buyTapUpgrade() {
-      if (state.balance < state.tapCost) return;
-      state.balance -= state.tapCost;
-      state.tapPower += 2;
-      state.tapCost = Math.floor(state.tapCost * 1.5);
-      if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-      updateUI();
-      saveProgress();
-    }
-
-    function buyMegaTapUpgrade() {
-      if (state.balance < state.megaTapCost) return;
-      state.balance -= state.megaTapCost;
-      state.tapPower += 10;
-      state.megaTapCost = Math.floor(state.megaTapCost * 1.6);
-      if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-      updateUI();
-      saveProgress();
-    }
-
-    let currentRotation = 0;
-    let isSpinning = false;
-    const wheelPrizes = new Array(100, 250, 500, 1000, 150, 2000);
-
-    function spinWheel() {
-      if (isSpinning) return;
-      isSpinning = true;
-      const spinBtn = document.getElementById('spinBtn');
-      spinBtn.disabled = true;
-
-      const prizeIndex = Math.floor(Math.random() * wheelPrizes.length);
-      const sliceAngle = 360 / wheelPrizes.length;
-      const extraSpins = 360 * 5;
-      const targetAngle = extraSpins + (360 - prizeIndex * sliceAngle - sliceAngle / 2);
-
-      currentRotation += targetAngle;
-      document.getElementById('wheel').style.transform = 'rotate(' + currentRotation + 'deg)';
-
-      setTimeout(function() {
-        const won = wheelPrizes[prizeIndex];
-        state.balance += won;
-        updateUI();
-        saveProgress();
-        notify('🎉 Вы выиграли ' + won + ' монет!');
-        isSpinning = false;
-        spinBtn.disabled = false;
-      }, 3100);
-    }
-
-    let mineBombs = new Array();
-    let mineActive = false;
-    let roundBank = 0;
-    const betAmount = 100;
-
-    function renderEmptyGrid() {
-      const grid = document.getElementById('minesGrid');
-      grid.innerHTML = '';
-      for (let i = 0; i < 12; i++) {
-        (function(idx) {
-          const cell = document.createElement('div');
-          cell.className = 'mine-cell';
-          cell.innerText = '🚪';
-          cell.onclick = function() { clickMineCell(idx, cell); };
-          grid.appendChild(cell);
-        })(i);
-      }
-    }
-
-    function startMines() {
-      if (mineActive) return;
-      if (state.balance < betAmount) {
-        notify('Недостаточно монет для ставки (нужно 100)!');
-        return;
-      }
-      state.balance -= betAmount;
-      roundBank = betAmount;
-      mineActive = true;
-      mineBombs = new Array();
-
-      while (mineBombs.length < 3) {
-        const r = Math.floor(Math.random() * 12);
-        if (mineBombs.indexOf(r) === -1) mineBombs.push(r);
-      }
-
-      document.getElementById('roundBank').innerText = roundBank;
-      document.getElementById('startMinesBtn').disabled = true;
-      document.getElementById('claimMinesBtn').disabled = true;
-      renderEmptyGrid();
-      updateUI();
-      saveProgress();
-    }
-
-    function clickMineCell(index, cellEl) {
-      if (!mineActive || cellEl.classList.contains('opened')) return;
-      cellEl.classList.add('opened');
-
-      if (mineBombs.indexOf(index) !== -1) {
-        cellEl.classList.add('bomb');
-        cellEl.innerText = '💣';
-        mineActive = false;
-        roundBank = 0;
-        document.getElementById('roundBank').innerText = 0;
-        document.getElementById('startMinesBtn').disabled = false;
-        document.getElementById('claimMinesBtn').disabled = true;
-        revealAllBombs();
-        if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
-      } else {
-        cellEl.classList.add('safe');
-        cellEl.innerText = '🚗';
-        roundBank = Math.floor(roundBank * 1.35);
-        document.getElementById('roundBank').innerText = roundBank;
-        document.getElementById('claimMinesBtn').disabled = false;
-        if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-      }
-    }
-
-    function revealAllBombs() {
-      const cells = document.querySelectorAll('.mine-cell');
-      mineBombs.forEach(function(idx) {
-        cells[idx].classList.add('bomb');
-        cells[idx].innerText = '💣';
-      });
-    }
-
-    function claimMines() {
-      if (!mineActive || roundBank <= 0) return;
-      state.balance += roundBank;
-      mineActive = false;
-      const won = roundBank;
-      roundBank = 0;
-      document.getElementById('roundBank').innerText = 0;
-      document.getElementById('startMinesBtn').disabled = false;
-      document.getElementById('claimMinesBtn').disabled = true;
-      revealAllBombs();
-      updateUI();
-      saveProgress();
-      notify('💰 Вы забрали ' + won + ' монет!');
-    }
-
-    renderEmptyGrid();
-    loadProgress();
-  </script>
-</body>
-</html>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Литвин Тапочка</title>
+  <script src="https://telegram.org"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
+    body { background: #0d0d12; color: #fff; padding: 14px 14px 80px 14px; text-align: center; }
+    .header { display: flex; justify-content: space-between; font-size: 13px; color: #aaa; margin-bottom: 8px; }
+    .progress-wrap { width: 100%; height: 8px; background: #1e1e28; border-radius: 6px; overflow: hidden; margin-bottom: 12px; }
+    .progress-bar { height: 100%; width: 1%; background: linear-gradient(90deg, #00c853, #69f0ae); transition: width 0.2s; }
+    .balance { font-size: 38px; font-weight: 800; color: #00e676; margin: 6px 0; text-shadow: 0 0 15px rgba(0, 230, 118, 0.3); }
+    .stats { font-size: 12px; color: #999; margin-bottom: 14px; }
+    .sub-text { font-size: 13px; color: #aaa; margin-top: 4px; }
+    .bank-text { margin-top: 8px; font-size: 16px; }
+    .bank-text b { color: #00e676; }
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #16161e; border-top: 1px solid #2c2c3a; display: flex; padding: 6px 4px; z-index: 50; }
+    .nav-btn { flex: 1; background: none; border: none; color: #888; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 4px 0; cursor: pointer; }
+    .nav-btn span.ico { font-size: 20px; }
+    .nav-btn.active { color: #00e676; font-weight: bold; }
+    .section { display: none; }
+    .section.active { display: block; }
     .tap-circle {
       width: 215px; height: 215px; border-radius: 50%; margin: 25px auto;
       background: radial-gradient(circle, #00e676 0%, #004d40 100%);
@@ -150,71 +30,40 @@
       font-size: 22px; font-weight: bold; cursor: pointer; transition: transform 0.06s;
     }
     .tap-circle:active { transform: scale(0.93); }
-
-    .card {
-      background: #181822; border: 1px solid #2b2b38; border-radius: 14px;
-      padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; text-align: left;
-    }
+    .card { background: #181822; border: 1px solid #2b2b38; border-radius: 14px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; text-align: left; }
     .card-info h4 { font-size: 15px; margin-bottom: 3px; color: #fff; }
     .card-info p { font-size: 12px; color: #aaa; }
-    .buy-btn {
-      background: #00e676; color: #000; border: none; padding: 10px 12px;
-      border-radius: 10px; font-weight: bold; font-size: 13px; cursor: pointer; min-width: 95px; text-align: center;
-    }
+    .buy-btn { background: #00e676; color: #000; border: none; padding: 10px 12px; border-radius: 10px; font-weight: bold; font-size: 13px; cursor: pointer; min-width: 95px; text-align: center; }
     .buy-btn:disabled { background: #2c2c38; color: #666; }
-
     .wheel-wrap { position: relative; width: 200px; height: 200px; margin: 16px auto; }
-    .wheel {
-      width: 100%; height: 100%; border-radius: 50%; border: 5px solid #ffd600;
-      background: conic-gradient(#e53935 0deg 60deg, #8e24aa 60deg 120deg, #1e88e5 120deg 180deg, #00897b 180deg 240deg, #fdd835 240deg 300deg, #fb8c00 300deg 360deg);
-      transition: transform 3s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-    }
+    .wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #ffd600; background: conic-gradient(#e53935 0deg 60deg, #8e24aa 60deg 120deg, #1e88e5 120deg 180deg, #00897b 180deg 240deg, #fdd835 240deg 300deg, #fb8c00 300deg 360deg); transition: transform 3s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
     .pointer { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-size: 24px; color: #fff; z-index: 2; }
     .action-btn { background: #ffab00; color: #000; border: none; padding: 12px 20px; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 8px; }
     .action-btn:disabled { background: #333; color: #777; }
     .full-btn { width: 100%; }
-
     .game-switch { display: flex; gap: 8px; margin-bottom: 14px; }
     .g-tab { flex: 1; background: #1e1e28; border: 1px solid #333; color: #fff; padding: 8px; border-radius: 10px; font-size: 13px; font-weight: bold; cursor: pointer; }
     .g-tab.active { background: #00e676; color: #000; border-color: #00e676; }
-
     .bet-row { display: flex; gap: 8px; justify-content: center; margin: 10px 0; }
     .bet-btn, .lbet-btn { background: #1e1e28; border: 1px solid #444; color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; }
     .bet-btn.active, .lbet-btn.active { border-color: #00e676; background: #004d40; font-weight: bold; }
-
     .mines-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 290px; margin: 12px auto; }
-    .mine-cell {
-      aspect-ratio: 1; background: #22222e; border: 2px solid #353545; border-radius: 12px;
-      font-size: 22px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
-    }
+    .mine-cell { aspect-ratio: 1; background: #22222e; border: 2px solid #353545; border-radius: 12px; font-size: 22px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .mine-cell.safe { background: #1b5e20; border-color: #00e676; }
     .mine-cell.bomb { background: #b71c1c; border-color: #ff5252; }
     .mines-controls { display: flex; gap: 10px; justify-content: center; margin-top: 10px; }
     .claim-btn { background: #00e676; color: #000; }
-
-    /* Бесконечная Лестница */
     .ladder-scroll { max-width: 320px; max-height: 270px; overflow-y: auto; margin: 10px auto; padding: 4px; display: flex; flex-direction: column; gap: 8px; }
-    .ladder-row {
-      display: flex; align-items: center; justify-content: space-between;
-      background: #181822; border: 1px solid #2b2b38; padding: 8px 12px; border-radius: 12px; opacity: 0.55;
-    }
+    .ladder-row { display: flex; align-items: center; justify-content: space-between; background: #181822; border: 1px solid #2b2b38; padding: 8px 12px; border-radius: 12px; opacity: 0.55; }
     .ladder-row.current { opacity: 1; border-color: #ffd600; box-shadow: 0 0 12px rgba(255, 214, 0, 0.25); }
     .ladder-row.passed { opacity: 0.9; border-color: #00e676; }
     .step-prize { font-size: 12px; font-weight: bold; color: #ffd600; min-width: 90px; text-align: left; }
     .cups-wrap { display: flex; gap: 10px; }
-    .cup-btn {
-      width: 48px; height: 42px; background: #262634; border: 2px solid #3f3f52;
-      border-radius: 10px; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-    }
+    .cup-btn { width: 48px; height: 42px; background: #262634; border: 2px solid #3f3f52; border-radius: 10px; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .cup-btn.win { background: #1b5e20; border-color: #00e676; }
     .cup-btn.lose { background: #b71c1c; border-color: #ff5252; }
-
     .owner-box { background: #181822; border: 1px solid #333; border-radius: 16px; padding: 20px; margin-top: 10px; }
-    .tg-link-btn {
-      display: block; width: 100%; background: #29b6f6; color: #000; text-decoration: none;
-      padding: 14px; border-radius: 12px; font-weight: bold; font-size: 16px; margin-top: 16px;
-    }
-
+    .tg-link-btn { display: block; width: 100%; background: #29b6f6; color: #000; text-decoration: none; padding: 14px; border-radius: 12px; font-weight: bold; font-size: 16px; margin-top: 16px; }
     .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.92); z-index: 99; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
     .modal-box { background: #1e1e26; padding: 24px; border-radius: 16px; border: 1px solid #444; width: 100%; max-width: 300px; }
     .modal-box p { margin-top: 10px; color: #ccc; }
@@ -232,7 +81,6 @@
   <div class="balance" id="balance">0</div>
   <div class="stats">Тап: +<span id="tapPower">5</span> • Пассив: +<span id="passiveIncome">0</span>/сек • Капча: <span id="captchaLeft">120</span></div>
 
-  <!-- Вкладка 1: Тап -->
   <div id="tapTab" class="section active">
     <div class="tap-circle" id="tapBtn" onclick="handleTap()">
       <span style="font-size: 44px;">🐆🔥</span>
@@ -241,7 +89,6 @@
     <p class="sub-text">Дойди до 100 уровня первым и забери приз!</p>
   </div>
 
-  <!-- Вкладка 2: Прокачка -->
   <div id="upgradeTab" class="section">
     <h3 style="margin-bottom: 10px;">Магазин улучшений</h3>
     <div class="card">
@@ -274,7 +121,6 @@
     </div>
   </div>
 
-  <!-- Вкладка 3: Бонусы и Колесо -->
   <div id="bonusTab" class="section">
     <div class="card">
       <div class="card-info">
@@ -283,7 +129,6 @@
       </div>
       <button class="buy-btn" id="dailyBtn" onclick="claimDaily()">Забрать</button>
     </div>
-
     <h3 style="margin-top: 12px;">Колесо Фортуны</h3>
     <p class="sub-text">Призы до 10 000 💰 • Цена: 500 💰</p>
     <div class="wheel-wrap">
@@ -293,14 +138,12 @@
     <button class="action-btn" id="spinBtn" onclick="spinWheel()">Крутить за 500 💰</button>
   </div>
 
-  <!-- Вкладка 4: Мини-игры (Сапер + Бесконечная Лестница) -->
   <div id="gamesTab" class="section">
     <div class="game-switch">
       <button class="g-tab active" onclick="switchSubGame('minesBox', this)">💣 Сапер</button>
       <button class="g-tab" onclick="switchSubGame('ladderBox', this)">🪜 Лестница</button>
     </div>
 
-    <!-- Сапер -->
     <div id="minesBox">
       <h3>Сапер: Гараж</h3>
       <p class="sub-text">12 ячеек • 3 бомбы • Множитель x1.35</p>
@@ -317,7 +160,6 @@
       </div>
     </div>
 
-    <!-- Бесконечная Лестница до 1 000 000 -->
     <div id="ladderBox" style="display: none;">
       <h3>Бесконечная Лестница 🔮</h3>
       <p class="sub-text">Множитель ×1.6 за шаг • Макс: 1 000 000 💰</p>
@@ -335,7 +177,6 @@
     </div>
   </div>
 
-  <!-- Вкладка 5: Владелец -->
   <div id="ownerTab" class="section">
     <div class="owner-box">
       <div style="font-size: 46px; margin-bottom: 10px;">👑</div>
@@ -370,22 +211,12 @@
   </div>
   <script>
     const tg = window.Telegram ? window.Telegram.WebApp : null;
-    if (tg) {
-      tg.ready();
-      tg.expand();
-    }
+    if (tg) { tg.ready(); tg.expand(); }
 
     let state = {
-      balance: 0,
-      tapPower: 5,
-      passive: 0,
-      costTap: 300,
-      costSuper: 2500,
-      costAuto: 1000,
-      costBiz: 6000,
-      tapsToCaptcha: 120,
-      lastDaily: 0,
-      dailyStreak: 1
+      balance: 0, tapPower: 5, passive: 0,
+      costTap: 300, costSuper: 2500, costAuto: 1000, costBiz: 6000,
+      tapsToCaptcha: 120, lastDaily: 0, dailyStreak: 1
     };
 
     let saveTimeout = null;
@@ -403,14 +234,14 @@
     }
 
     function loadProgress() {
-      const localData = localStorage.getItem('litvin_tap_v4');
+      const localData = localStorage.getItem('litvin_tap_v5');
       if (localData) {
         try { state = Object.assign(state, JSON.parse(localData)); } catch (e) {}
       }
       updateUI();
 
       if (tg && tg.CloudStorage) {
-        tg.CloudStorage.getItem('litvin_state_v4', function(err, value) {
+        tg.CloudStorage.getItem('litvin_state_v5', function(err, value) {
           if (!err && value) {
             try {
               const cloudState = JSON.parse(value);
@@ -425,12 +256,12 @@
     }
 
     function saveProgress() {
-      localStorage.setItem('litvin_tap_v4', JSON.stringify(state));
+      localStorage.setItem('litvin_tap_v5', JSON.stringify(state));
       document.getElementById('saveStatus').innerText = '⏳ Сохранение...';
       clearTimeout(saveTimeout);
       saveTimeout = setTimeout(function() {
         if (tg && tg.CloudStorage) {
-          tg.CloudStorage.setItem('litvin_state_v4', JSON.stringify(state), function(err) {
+          tg.CloudStorage.setItem('litvin_state_v5', JSON.stringify(state), function(err) {
             document.getElementById('saveStatus').innerText = err ? '⚠️ Локально' : '☁️ Сохранено';
           });
         } else {
@@ -534,39 +365,25 @@
 
     function buyUpg(type) {
       if (type === 'tap' && state.balance >= state.costTap) {
-        state.balance -= state.costTap;
-        state.tapPower += 2;
-        state.costTap = Math.floor(state.costTap * 1.45);
+        state.balance -= state.costTap; state.tapPower += 2; state.costTap = Math.floor(state.costTap * 1.45);
       } else if (type === 'super' && state.balance >= state.costSuper) {
-        state.balance -= state.costSuper;
-        state.tapPower += 15;
-        state.costSuper = Math.floor(state.costSuper * 1.5);
+        state.balance -= state.costSuper; state.tapPower += 15; state.costSuper = Math.floor(state.costSuper * 1.5);
       } else if (type === 'auto' && state.balance >= state.costAuto) {
-        state.balance -= state.costAuto;
-        state.passive += 5;
-        state.costAuto = Math.floor(state.costAuto * 1.45);
+        state.balance -= state.costAuto; state.passive += 5; state.costAuto = Math.floor(state.costAuto * 1.45);
       } else if (type === 'biz' && state.balance >= state.costBiz) {
-        state.balance -= state.costBiz;
-        state.passive += 30;
-        state.costBiz = Math.floor(state.costBiz * 1.5);
-      } else {
-        return;
-      }
+        state.balance -= state.costBiz; state.passive += 30; state.costBiz = Math.floor(state.costBiz * 1.5);
+      } else { return; }
       if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-      updateUI();
-      saveProgress();
+      updateUI(); saveProgress();
     }
 
     function claimDaily() {
       const now = Date.now();
       if ((now - state.lastDaily) < 72000000) return;
       const reward = Math.min(25000, state.dailyStreak * 1500);
-      state.balance += reward;
-      state.lastDaily = now;
-      state.dailyStreak++;
+      state.balance += reward; state.lastDaily = now; state.dailyStreak++;
       if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-      updateUI();
-      saveProgress();
+      updateUI(); saveProgress();
       notify('🎁 Ежедневный бонус: +' + reward + ' монет!');
     }
     let currentRotation = 0;
@@ -574,19 +391,14 @@
     const wheelPrizes = new Array(100, 750, 300, 3000, 1500, 10000);
 
     function spinWheel() {
-      if (isSpinning || state.balance < 500) {
-        notify('Для вращения нужно 500 монет!');
-        return;
-      }
+      if (isSpinning || state.balance < 500) { notify('Для вращения нужно 500 монет!'); return; }
       state.balance -= 500;
       isSpinning = true;
-      updateUI();
-      saveProgress();
+      updateUI(); saveProgress();
 
       const prizeIndex = Math.floor(Math.random() * wheelPrizes.length);
       const sliceAngle = 360 / wheelPrizes.length;
-      const extraSpins = 360 * 5;
-      const targetAngle = extraSpins + (360 - prizeIndex * sliceAngle - sliceAngle / 2);
+      const targetAngle = (360 * 5) + (360 - prizeIndex * sliceAngle - sliceAngle / 2);
 
       currentRotation += targetAngle;
       document.getElementById('wheel').style.transform = 'rotate(' + currentRotation + 'deg)';
@@ -595,13 +407,11 @@
         const won = wheelPrizes[prizeIndex];
         state.balance += won;
         isSpinning = false;
-        updateUI();
-        saveProgress();
+        updateUI(); saveProgress();
         notify('🎉 Вы выиграли ' + won + ' монет!');
       }, 3100);
     }
 
-    // Сапер
     let mineBombs = new Array();
     let mineActive = false;
     let roundBank = 0;
@@ -630,10 +440,7 @@
 
     function startMines() {
       if (mineActive) return;
-      if (state.balance < betAmount) {
-        notify('Недостаточно монет для ставки (' + betAmount + ')!');
-        return;
-      }
+      if (state.balance < betAmount) { notify('Недостаточно монет (' + betAmount + ')!'); return; }
       state.balance -= betAmount;
       roundBank = betAmount;
       mineActive = true;
@@ -647,9 +454,7 @@
       document.getElementById('roundBank').innerText = roundBank;
       document.getElementById('startMinesBtn').disabled = true;
       document.getElementById('claimMinesBtn').disabled = true;
-      renderEmptyGrid();
-      updateUI();
-      saveProgress();
+      renderEmptyGrid(); updateUI(); saveProgress();
     }
 
     function clickMineCell(index, cellEl) {
@@ -657,18 +462,15 @@
       cellEl.classList.add('opened');
 
       if (mineBombs.indexOf(index) !== -1) {
-        cellEl.classList.add('bomb');
-        cellEl.innerText = '💣';
-        mineActive = false;
-        roundBank = 0;
+        cellEl.classList.add('bomb'); cellEl.innerText = '💣';
+        mineActive = false; roundBank = 0;
         document.getElementById('roundBank').innerText = 0;
         document.getElementById('startMinesBtn').disabled = false;
         document.getElementById('claimMinesBtn').disabled = true;
         revealAllBombs();
         if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
       } else {
-        cellEl.classList.add('safe');
-        cellEl.innerText = '🚗';
+        cellEl.classList.add('safe'); cellEl.innerText = '🚗';
         roundBank = Math.floor(roundBank * 1.35);
         document.getElementById('roundBank').innerText = roundBank;
         document.getElementById('claimMinesBtn').disabled = false;
@@ -693,13 +495,10 @@
       document.getElementById('roundBank').innerText = 0;
       document.getElementById('startMinesBtn').disabled = false;
       document.getElementById('claimMinesBtn').disabled = true;
-      revealAllBombs();
-      updateUI();
-      saveProgress();
+      revealAllBombs(); updateUI(); saveProgress();
       notify('💰 Вы забрали ' + won + ' монет!');
     }
 
-    // Бесконечная Лестница (Стаканы с шариком, до 1 000 000)
     let ladderBet = 1000;
     let ladderActive = false;
     let ladderStep = 0;
@@ -766,9 +565,7 @@
       document.getElementById('ladderBank').innerText = 0;
       document.getElementById('startLadderBtn').disabled = true;
       document.getElementById('claimLadderBtn').disabled = true;
-      initLadderView();
-      updateUI();
-      saveProgress();
+      initLadderView(); updateUI(); saveProgress();
     }
 
     function pickCup(stepIdx, cupIdx, rowEl) {
@@ -817,8 +614,7 @@
       document.getElementById('ladderBank').innerText = 0;
       document.getElementById('startLadderBtn').disabled = false;
       document.getElementById('claimLadderBtn').disabled = true;
-      updateUI();
-      saveProgress();
+      updateUI(); saveProgress();
       notify('🔮 Вы забрали ' + won.toLocaleString('ru-RU') + ' монет в Лестнице!');
     }
 
