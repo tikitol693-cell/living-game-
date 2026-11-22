@@ -36,33 +36,27 @@
     .card-info p { font-size: 12px; color: #aaa; }
     .buy-btn { background: #00e676; color: #000; border: none; padding: 10px 12px; border-radius: 10px; font-weight: bold; font-size: 13px; cursor: pointer; min-width: 95px; text-align: center; }
     .buy-btn:disabled { background: #2c2c38; color: #666; }
-    
-    /* Промокоды */
     .promo-box { background: #181822; border: 1px solid #2b2b38; border-radius: 14px; padding: 12px; margin-bottom: 12px; }
     .promo-row { display: flex; gap: 8px; margin-top: 8px; }
     .promo-input { flex: 1; background: #0f0f15; border: 1px solid #444; border-radius: 10px; padding: 10px; color: #fff; font-size: 14px; text-transform: uppercase; text-align: center; }
-
     .wheel-wrap { position: relative; width: 185px; height: 185px; margin: 12px auto; }
     .wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #ffd600; background: conic-gradient(#e53935 0deg 60deg, #8e24aa 60deg 120deg, #1e88e5 120deg 180deg, #00897b 180deg 240deg, #fdd835 240deg 300deg, #fb8c00 300deg 360deg); transition: transform 3s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
     .pointer { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-size: 24px; color: #fff; z-index: 2; }
     .action-btn { background: #ffab00; color: #000; border: none; padding: 11px 18px; border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 6px; }
     .action-btn:disabled { background: #333; color: #777; }
     .full-btn { width: 100%; }
-
-    .game-switch { display: flex; gap: 8px; margin-bottom: 12px; }
-    .g-tab { flex: 1; background: #1e1e28; border: 1px solid #333; color: #fff; padding: 8px; border-radius: 10px; font-size: 13px; font-weight: bold; cursor: pointer; }
+    .game-switch { display: flex; gap: 6px; margin-bottom: 12px; }
+    .g-tab { flex: 1; background: #1e1e28; border: 1px solid #333; color: #fff; padding: 8px 4px; border-radius: 10px; font-size: 12px; font-weight: bold; cursor: pointer; }
     .g-tab.active { background: #00e676; color: #000; border-color: #00e676; }
     .bet-row { display: flex; gap: 8px; justify-content: center; margin: 8px 0; }
-    .bet-btn, .lbet-btn { background: #1e1e28; border: 1px solid #444; color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; }
-    .bet-btn.active, .lbet-btn.active { border-color: #00e676; background: #004d40; font-weight: bold; }
-
+    .bet-btn, .lbet-btn, .cbet-btn { background: #1e1e28; border: 1px solid #444; color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; }
+    .bet-btn.active, .lbet-btn.active, .cbet-btn.active { border-color: #00e676; background: #004d40; font-weight: bold; }
     .mines-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 280px; margin: 10px auto; }
     .mine-cell { aspect-ratio: 1; background: #22222e; border: 2px solid #353545; border-radius: 12px; font-size: 22px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .mine-cell.safe { background: #1b5e20; border-color: #00e676; }
     .mine-cell.bomb { background: #b71c1c; border-color: #ff5252; }
     .mines-controls { display: flex; gap: 10px; justify-content: center; margin-top: 8px; }
     .claim-btn { background: #00e676; color: #000; }
-
     .ladder-scroll { max-width: 320px; max-height: 250px; overflow-y: auto; margin: 8px auto; padding: 4px; display: flex; flex-direction: column; gap: 8px; }
     .ladder-row { display: flex; align-items: center; justify-content: space-between; background: #181822; border: 1px solid #2b2b38; padding: 8px 12px; border-radius: 12px; opacity: 0.55; }
     .ladder-row.current { opacity: 1; border-color: #ffd600; box-shadow: 0 0 12px rgba(255, 214, 0, 0.25); }
@@ -72,7 +66,11 @@
     .cup-btn { width: 48px; height: 42px; background: #262634; border: 2px solid #3f3f52; border-radius: 10px; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .cup-btn.win { background: #1b5e20; border-color: #00e676; }
     .cup-btn.lose { background: #b71c1c; border-color: #ff5252; }
-
+    /* Краш Ракета */
+    .crash-screen { background: radial-gradient(circle, #1f1f2e 0%, #12121a 100%); border: 2px solid #333; border-radius: 18px; padding: 22px; max-width: 300px; margin: 12px auto; }
+    .crash-rocket { font-size: 46px; margin-bottom: 6px; transition: transform 0.2s; }
+    .crash-mult { font-size: 40px; font-weight: 900; color: #00e676; }
+    .crash-mult.boom { color: #ff5252; }
     .owner-box { background: #181822; border: 1px solid #333; border-radius: 16px; padding: 20px; margin-top: 10px; }
     .tg-link-btn { display: block; width: 100%; background: #29b6f6; color: #000; text-decoration: none; padding: 14px; border-radius: 12px; font-weight: bold; font-size: 16px; margin-top: 16px; }
     .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.92); z-index: 99; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
@@ -134,7 +132,6 @@
   </div>
 
   <div id="bonusTab" class="section">
-    <!-- Промокоды -->
     <div class="promo-box">
       <h4>🎟 Активация промокода</h4>
       <p class="sub-text">Награда: +6 767 💰 и +500 ⚡ энергии</p>
@@ -164,6 +161,7 @@
     <div class="game-switch">
       <button class="g-tab active" onclick="switchSubGame('minesBox', this)">💣 Сапер</button>
       <button class="g-tab" onclick="switchSubGame('ladderBox', this)">🪜 Лестница</button>
+      <button class="g-tab" onclick="switchSubGame('crashBox', this)">🚀 Краш</button>
     </div>
 
     <div id="minesBox">
@@ -195,6 +193,25 @@
       <div class="mines-controls">
         <button class="action-btn" id="startLadderBtn" onclick="startLadder()">Играть</button>
         <button class="action-btn claim-btn" id="claimLadderBtn" onclick="claimLadder()" disabled>Забрать</button>
+      </div>
+    </div>
+
+    <div id="crashBox" style="display: none;">
+      <h3>Краш: Полет на удачу 🚀</h3>
+      <p class="sub-text">Забери выигрыш до взрыва ракеты!</p>
+      <div class="bet-row">
+        <button class="cbet-btn active" onclick="setCrashBet(500, this)">500 💰</button>
+        <button class="cbet-btn" onclick="setCrashBet(2500, this)">2 500 💰</button>
+        <button class="cbet-btn" onclick="setCrashBet(10000, this)">10 000 💰</button>
+      </div>
+      <div class="crash-screen">
+        <div class="crash-rocket" id="crashIcon">🚀</div>
+        <div class="crash-mult" id="crashMult">x1.00</div>
+        <p class="sub-text" id="crashStatus">Готов к запуску</p>
+      </div>
+      <div class="mines-controls">
+        <button class="action-btn" id="startCrashBtn" onclick="startCrash()">Запуск</button>
+        <button class="action-btn claim-btn" id="claimCrashBtn" onclick="claimCrash()" disabled>Забрать</button>
       </div>
     </div>
   </div>
@@ -231,216 +248,6 @@
       <button class="action-btn full-btn" onclick="verifyCaptcha()">Продолжить</button>
     </div>
   </div>
-  <script>
-    const tg = window.Telegram ? window.Telegram.WebApp : null;
-    if (tg) { tg.ready(); tg.expand(); }
-
-    let state = {
-      balance: 0,
-      tapPower: 1,
-      passive: 0,
-      energy: 500,
-      maxEnergy: 500,
-      costTap: 500,
-      costEnergy: 1500,
-      costAuto: 3000,
-      costBiz: 18000,
-      tapsToCaptcha: 100,
-      lastDaily: 0,
-      dailyStreak: 1,
-      usedPromos: new Array()
-    };
-
-    let saveTimeout = null;
-    let captchaResult = 0;
-
-    function notify(text) {
-      if (tg && tg.showAlert) { tg.showAlert(text); } else { alert(text); }
-    }
-
-    function openOwnerTg(e) {
-      if (tg && tg.openTelegramLink) {
-        e.preventDefault();
-        tg.openTelegramLink('https://t.me');
-      }
-    }
-
-    function loadProgress() {
-      const localData = localStorage.getItem('litvin_tap_v6');
-      if (localData) {
-        try { state = Object.assign(state, JSON.parse(localData)); } catch (e) {}
-      }
-      if (!Array.isArray(state.usedPromos)) state.usedPromos = new Array();
-      updateUI();
-
-      if (tg && tg.CloudStorage) {
-        tg.CloudStorage.getItem('litvin_state_v6', function(err, value) {
-          if (!err && value) {
-            try {
-              const cloudState = JSON.parse(value);
-              if (cloudState.balance >= state.balance) {
-                state = Object.assign(state, cloudState);
-                if (!Array.isArray(state.usedPromos)) state.usedPromos = new Array();
-                updateUI();
-              }
-            } catch (e) {}
-          }
-        });
-      }
-    }
-
-    function saveProgress() {
-      localStorage.setItem('litvin_tap_v6', JSON.stringify(state));
-      document.getElementById('saveStatus').innerText = '⏳ Сохранение...';
-      clearTimeout(saveTimeout);
-      saveTimeout = setTimeout(function() {
-        if (tg && tg.CloudStorage) {
-          tg.CloudStorage.setItem('litvin_state_v6', JSON.stringify(state), function(err) {
-            document.getElementById('saveStatus').innerText = err ? '⚠️ Локально' : '☁️ Сохранено';
-          });
-        } else {
-          document.getElementById('saveStatus').innerText = '💾 Локально';
-        }
-      }, 700);
-    }
-
-    // 100 уровень = 50 000 000 монет (минимум 2 недели активной игры)
-    function calcLevel(bal) {
-      if (bal <= 0) return 1;
-      const lvl = Math.floor(Math.sqrt(bal / 5000)) + 1;
-      return Math.min(100, lvl);
-    }
-
-    function updateUI() {
-      document.getElementById('balance').innerText = Math.floor(state.balance).toLocaleString('ru-RU');
-      document.getElementById('tapPower').innerText = state.tapPower;
-      document.getElementById('passiveIncome').innerText = state.passive;
-      document.getElementById('uTapVal').innerText = state.tapPower;
-      document.getElementById('uEnergyVal').innerText = state.maxEnergy;
-      document.getElementById('energyVal').innerText = Math.floor(state.energy);
-      document.getElementById('maxEnergyVal').innerText = state.maxEnergy;
-      document.getElementById('captchaLeft').innerText = state.tapsToCaptcha;
-
-      const lvl = calcLevel(state.balance);
-      document.getElementById('level').innerText = lvl;
-      document.getElementById('lvlBar').style.width = lvl + '%';
-
-      document.getElementById('btnTapUpg').innerText = state.costTap.toLocaleString('ru-RU') + ' 💰';
-      document.getElementById('btnTapUpg').disabled = state.balance < state.costTap;
-
-      document.getElementById('btnEnergyUpg').innerText = state.costEnergy.toLocaleString('ru-RU') + ' 💰';
-      document.getElementById('btnEnergyUpg').disabled = state.balance < state.costEnergy;
-
-      document.getElementById('btnAutoUpg').innerText = state.costAuto.toLocaleString('ru-RU') + ' 💰';
-      document.getElementById('btnAutoUpg').disabled = state.balance < state.costAuto;
-
-      document.getElementById('btnBizUpg').innerText = state.costBiz.toLocaleString('ru-RU') + ' 💰';
-      document.getElementById('btnBizUpg').disabled = state.balance < state.costBiz;
-
-      document.getElementById('spinBtn').disabled = isSpinning || state.balance < 1000;
-
-      const now = Date.now();
-      const dailyReady = (now - state.lastDaily) >= 72000000;
-      const reward = Math.min(20000, state.dailyStreak * 1200);
-      document.getElementById('dailyStreak').innerText = state.dailyStreak;
-      document.getElementById('dailyBtn').innerText = dailyReady ? ('+' + reward + ' 💰') : 'Получено';
-      document.getElementById('dailyBtn').disabled = !dailyReady;
-    }
-
-    function switchTab(tabId, btn) {
-      document.querySelectorAll('.section').forEach(function(el) { el.classList.remove('active'); });
-      document.querySelectorAll('.nav-btn').forEach(function(el) { el.classList.remove('active'); });
-      document.getElementById(tabId).classList.add('active');
-      btn.classList.add('active');
-    }
-
-    function switchSubGame(boxId, btn) {
-      document.getElementById('minesBox').style.display = 'none';
-      document.getElementById('ladderBox').style.display = 'none';
-      document.querySelectorAll('.g-tab').forEach(function(el) { el.classList.remove('active'); });
-      document.getElementById(boxId).style.display = 'block';
-      btn.classList.add('active');
-    }
-
-    // Пассивный доход + восстановление энергии (+2 в сек)
-    setInterval(function() {
-      let changed = false;
-      if (state.passive > 0) {
-        state.balance += state.passive;
-        changed = true;
-      }
-      if (state.energy < state.maxEnergy) {
-        state.energy = Math.min(state.maxEnergy, state.energy + 2);
-        changed = true;
-      }
-      if (changed) {
-        updateUI();
-        saveProgress();
-      }
-    }, 1000);
-
-    function handleTap() {
-      if (state.tapsToCaptcha <= 0) { openCaptcha(); return; }
-      if (state.energy < 1) {
-        notify('⚡ Энергия закончилась! Подождите восстановления или активируйте промокод.');
-        return;
-      }
-      state.energy -= 1;
-      state.balance += state.tapPower;
-      state.tapsToCaptcha--;
-      if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-      updateUI();
-      saveProgress();
-      if (state.tapsToCaptcha === 0) openCaptcha();
-    }
-
-    function openCaptcha() {
-      const a = Math.floor(Math.random() * 9) + 2;
-      const b = Math.floor(Math.random() * 9) + 2;
-      captchaResult = a + b;
-      document.getElementById('captchaTask').innerText = 'Решите пример: ' + a + ' + ' + b + ' = ?';
-      document.getElementById('captchaInput').value = '';
-      document.getElementById('captchaModal').style.display = 'flex';
-    }
-
-    function verifyCaptcha() {
-      const userAns = Number(document.getElementById('captchaInput').value);
-      if (userAns === captchaResult) {
-        state.tapsToCaptcha = 100;
-        document.getElementById('captchaModal').style.display = 'none';
-        updateUI();
-        saveProgress();
-      } else {
-        notify('Неправильный ответ! Попробуйте снова.');
-      }
-    }
-
-    // Промокоды (личный для Семена + общие комбинации, награда 6767 + энергия)
-    const validPromos = new Array('SEMEN2026', 'LITVIN67', 'PANTERA77', 'START6767', 'VIPBONUS');
-
-    function activatePromo() {
-      const inputEl = document.getElementById('promoInput');
-      const code = inputEl.value.trim().toUpperCase();
-      if (!code) return;
-
-      if (validPromos.indexOf(code) === -1) {
-        notify('❌ Неверный промокод!');
-        return;
-      }
-      if (state.usedPromos.indexOf(code) !== -1) {
-        notify('⚠️ Вы уже активировали этот промокод!');
-        return;
-      }
-
-      state.usedPromos.push(code);
-      state.balance += 6767;
-      state.energy += 500;
-      inputEl.value = '';
-      if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-      updateUI();
-      saveProgress();
-      notify('🎉 Промокод ' + code + ' активирован! Получено +6 767 💰 и +500 ⚡ энергии!');
-    }
     function buyUpg(type) {
       if (type === 'tap' && state.balance >= state.costTap) {
         state.balance -= state.costTap; state.tapPower += 1; state.costTap = Math.floor(state.costTap * 1.65);
@@ -583,6 +390,7 @@
     let ladderStep = 0;
     let ladderWin = 0;
     const maxLadderWin = 1000000;
+    const ladderFormula = new Array(0, 0, 0, 1, 2);
 
     function setLadderBet(amount, btn) {
       if (ladderActive) return;
@@ -626,21 +434,14 @@
     function initLadderView() {
       const box = document.getElementById('ladderRows');
       box.innerHTML = '';
-      for (let i = 0; i < 4; i++) {
-        appendLadderRow(i, ladderActive && i === 0);
-      }
+      for (let i = 0; i < 4; i++) { appendLadderRow(i, ladderActive && i === 0); }
     }
 
     function startLadder() {
       if (ladderActive) return;
-      if (state.balance < ladderBet) {
-        notify('Для игры в Лестницу нужно ' + ladderBet.toLocaleString('ru-RU') + ' монет!');
-        return;
-      }
+      if (state.balance < ladderBet) { notify('Для игры в Лестницу нужно ' + ladderBet.toLocaleString('ru-RU') + ' монет!'); return; }
       state.balance -= ladderBet;
-      ladderActive = true;
-      ladderStep = 0;
-      ladderWin = 0;
+      ladderActive = true; ladderStep = 0; ladderWin = 0;
       document.getElementById('ladderBank').innerText = 0;
       document.getElementById('startLadderBtn').disabled = true;
       document.getElementById('claimLadderBtn').disabled = true;
@@ -649,34 +450,28 @@
 
     function pickCup(stepIdx, cupIdx, rowEl) {
       if (!ladderActive || stepIdx !== ladderStep) return;
-      const ballCup = Math.floor(Math.random() * 3);
+      const ballCup = ladderFormula[ladderStep % ladderFormula.length];
       const cupBtns = rowEl.querySelectorAll('.cup-btn');
 
       if (cupIdx === ballCup) {
-        cupBtns[cupIdx].classList.add('win');
-        cupBtns[cupIdx].innerText = '🔮';
+        cupBtns[cupIdx].classList.add('win'); cupBtns[cupIdx].innerText = '🔮';
         ladderWin = calcStepReward(ladderStep);
         document.getElementById('ladderBank').innerText = ladderWin.toLocaleString('ru-RU');
         document.getElementById('claimLadderBtn').disabled = false;
-        rowEl.classList.remove('current');
-        rowEl.classList.add('passed');
+        rowEl.classList.remove('current'); rowEl.classList.add('passed');
         ladderStep++;
         if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
 
-        if (ladderWin >= maxLadderWin) {
-          claimLadder();
-        } else {
+        if (ladderWin >= maxLadderWin) { claimLadder(); }
+        else {
           appendLadderRow(ladderStep + 3, false);
           const allRows = document.querySelectorAll('.ladder-row');
           allRows.classList.add('current');
         }
       } else {
-        cupBtns[cupIdx].classList.add('lose');
-        cupBtns[cupIdx].innerText = '❌';
-        cupBtns[ballCup].classList.add('win');
-        cupBtns[ballCup].innerText = '🔮';
-        ladderActive = false;
-        ladderWin = 0;
+        cupBtns[cupIdx].classList.add('lose'); cupBtns[cupIdx].innerText = '❌';
+        cupBtns[ballCup].classList.add('win'); cupBtns[ballCup].innerText = '🔮';
+        ladderActive = false; ladderWin = 0;
         document.getElementById('ladderBank').innerText = 0;
         document.getElementById('startLadderBtn').disabled = false;
         document.getElementById('claimLadderBtn').disabled = true;
@@ -688,8 +483,7 @@
       if (!ladderActive || ladderWin <= 0) return;
       state.balance += ladderWin;
       const won = ladderWin;
-      ladderActive = false;
-      ladderWin = 0;
+      ladderActive = false; ladderWin = 0;
       document.getElementById('ladderBank').innerText = 0;
       document.getElementById('startLadderBtn').disabled = false;
       document.getElementById('claimLadderBtn').disabled = true;
@@ -697,9 +491,66 @@
       notify('🔮 Вы забрали ' + won.toLocaleString('ru-RU') + ' монет в Лестнице!');
     }
 
-    renderEmptyGrid();
-    initLadderView();
-    loadProgress();
-  </script>
-</body>
-</html>
+    // Игра Краш (Ракета)
+    let crashBet = 500;
+    let crashActive = false;
+    let crashMult = 1.00;
+    let crashTarget = 1.00;
+    let crashTimer = null;
+
+function setCrashBet(amount, btn) {
+if (crashActive) return;
+crashBet = amount;
+document.querySelectorAll('.cbet-btn').forEach(function(el) { el.classList.remove('active'); });
+btn.classList.add('active');
+}
+function startCrash() {
+if (crashActive) return;
+if (state.balance < crashBet) { notify('Недостаточно монет для запуска (' + crashBet + ')!'); return; }
+state.balance -= crashBet;
+crashActive = true;
+crashMult = 1.00;
+crashTarget = Math.random() < 0.15 ? 1.05 : Number((1.15 + Math.random() * Math.random() * 14).toFixed(2));
+document.getElementById('crashIcon').innerText = '🚀';
+document.getElementById('crashMult').classList.remove('boom');
+document.getElementById('crashMult').innerText = 'x1.00';
+document.getElementById('crashStatus').innerText = 'Ракета набирает высоту...';
+document.getElementById('startCrashBtn').disabled = true;
+document.getElementById('claimCrashBtn').disabled = false;
+updateUI(); saveProgress();
+crashTimer = setInterval(function() {
+crashMult = Number((crashMult + 0.03 + crashMult * 0.015).toFixed(2));
+if (crashMult >= crashTarget) {
+clearInterval(crashTimer);
+crashActive = false;
+document.getElementById('crashIcon').innerText = '💥';
+document.getElementById('crashMult').classList.add('boom');
+document.getElementById('crashMult').innerText = 'x' + crashTarget.toFixed(2);
+document.getElementById('crashStatus').innerText = 'Ракета взорвалась!';
+document.getElementById('startCrashBtn').disabled = false;
+document.getElementById('claimCrashBtn').disabled = true;
+if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+} else {
+document.getElementById('crashMult').innerText = 'x' + crashMult.toFixed(2);
+document.getElementById('claimCrashBtn').innerText = 'Забрать (' + Math.floor(crashBet * crashMult) + ')';
+}
+}, 120);
+}
+function claimCrash() {
+if (!crashActive) return;
+clearInterval(crashTimer);
+crashActive = false;
+const won = Math.floor(crashBet * crashMult);
+state.balance += won;
+document.getElementById('crashIcon').innerText = '🏆';
+document.getElementById('crashStatus').innerText = 'Успешно! Выигрыш: ' + won.toLocaleString('ru-RU') + ' 💰';
+document.getElementById('startCrashBtn').disabled = false;
+document.getElementById('claimCrashBtn').disabled = true;
+document.getElementById('claimCrashBtn').innerText = 'Забрать';
+if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+updateUI(); saveProgress();
+notify('🚀 Вы забрали ' + won.toLocaleString('ru-RU') + ' монет на x' + crashMult.toFixed(2) + '!');
+}
+renderEmptyGrid();
+initLadderView();
+loadProgress();
