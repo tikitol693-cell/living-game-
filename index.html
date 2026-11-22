@@ -27,8 +27,6 @@
       font-size: 22px; font-weight: bold; cursor: pointer; transition: transform 0.06s;
     }
     .tap-circle:active { transform: scale(0.93); }
-    
-    /* Карточки прокачки */
     .upgrade-card {
       background: #1e1e26; border: 1px solid #333; border-radius: 14px;
       padding: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; text-align: left;
@@ -40,8 +38,6 @@
       border-radius: 10px; font-weight: bold; font-size: 14px; cursor: pointer; min-width: 90px;
     }
     .buy-btn:disabled { background: #333; color: #777; }
-
-    /* Колесо фортуны */
     .wheel-wrap { position: relative; width: 220px; height: 220px; margin: 20px auto; }
     .wheel {
       width: 100%; height: 100%; border-radius: 50%; border: 5px solid #ffd600;
@@ -52,8 +48,6 @@
     .action-btn { background: #ffab00; color: #000; border: none; padding: 12px 24px; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
     .action-btn:disabled { background: #444; color: #888; }
     .full-btn { width: 100%; }
-
-    /* Сапер */
     .mines-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 300px; margin: 16px auto; }
     .mine-cell {
       aspect-ratio: 1; background: #252530; border: 2px solid #383848; border-radius: 12px;
@@ -63,8 +57,6 @@
     .mine-cell.bomb { background: #b71c1c; border-color: #ff5252; }
     .mines-controls { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
     .claim-btn { background: #00e676; color: #000; }
-
-    /* Капча */
     .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.9); z-index: 99; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
     .modal-box { background: #1e1e26; padding: 24px; border-radius: 16px; border: 1px solid #444; width: 100%; max-width: 300px; }
     .modal-box p { margin-top: 10px; color: #ccc; }
@@ -88,7 +80,6 @@
     <button class="tab-btn" onclick="switchTab('minesTab', this)">💣 Сапер</button>
   </div>
 
-  <!-- Вкладка 1: Тап -->
   <div id="tapTab" class="section active">
     <div class="tap-circle" id="tapBtn" onclick="handleTap()">
       <span style="font-size: 42px;">🐆🔥</span>
@@ -96,10 +87,8 @@
     </div>
   </div>
 
-  <!-- Вкладка 2: Прокачка -->
   <div id="upgradeTab" class="section">
     <h3 style="margin-bottom: 12px;">Прокачка за монеты</h3>
-    
     <div class="upgrade-card">
       <div class="upgrade-info">
         <h4>⚡ Сила тапа (+2)</h4>
@@ -107,7 +96,6 @@
       </div>
       <button class="buy-btn" id="buyTapBtn" onclick="buyTapUpgrade()">200 💰</button>
     </div>
-
     <div class="upgrade-card">
       <div class="upgrade-info">
         <h4>🔥 Мега-тап (+10)</h4>
@@ -117,7 +105,6 @@
     </div>
   </div>
 
-  <!-- Вкладка 3: Колесо фортуны -->
   <div id="wheelTab" class="section">
     <h3>Колесо Фортуны</h3>
     <p class="sub-text">Выиграй от +100 до +2000 монет!</p>
@@ -128,7 +115,6 @@
     <button class="action-btn" id="spinBtn" onclick="spinWheel()">Крутить (Бесплатно)</button>
   </div>
 
-  <!-- Вкладка 4: Сапер -->
   <div id="minesTab" class="section">
     <h3>Сапер: Гараж</h3>
     <p class="sub-text">12 ячеек • 3 бомбы • Ставка: 100</p>
@@ -140,7 +126,6 @@
     </div>
   </div>
 
-  <!-- Капча -->
   <div class="modal" id="captchaModal">
     <div class="modal-box">
       <h3>Проверка на бота 🤖</h3>
@@ -149,7 +134,6 @@
       <button class="action-btn full-btn" onclick="verifyCaptcha()">Продолжить</button>
     </div>
   </div>
-
   <script>
     const tg = window.Telegram ? window.Telegram.WebApp : null;
     if (tg) {
@@ -177,19 +161,19 @@
     }
 
     function loadProgress() {
-      const localData = localStorage.getItem('tma_game_save_v2');
+      const localData = localStorage.getItem('tma_game_save_v3');
       if (localData) {
-        try { state = { ...state, ...JSON.parse(localData) }; } catch (e) {}
+        try { state = Object.assign(state, JSON.parse(localData)); } catch (e) {}
       }
       updateUI();
 
       if (tg && tg.CloudStorage) {
-        tg.CloudStorage.getItem('game_state_v2', (err, value) => {
+        tg.CloudStorage.getItem('game_state_v3', function(err, value) {
           if (!err && value) {
             try {
               const cloudState = JSON.parse(value);
               if (cloudState.balance >= state.balance) {
-                state = { ...state, ...cloudState };
+                state = Object.assign(state, cloudState);
                 updateUI();
               }
             } catch (e) {}
@@ -199,12 +183,12 @@
     }
 
     function saveProgress() {
-      localStorage.setItem('tma_game_save_v2', JSON.stringify(state));
+      localStorage.setItem('tma_game_save_v3', JSON.stringify(state));
       document.getElementById('saveStatus').innerText = '⏳ Сохранение...';
       clearTimeout(saveTimeout);
-      saveTimeout = setTimeout(() => {
+      saveTimeout = setTimeout(function() {
         if (tg && tg.CloudStorage) {
-          tg.CloudStorage.setItem('game_state_v2', JSON.stringify(state), (err) => {
+          tg.CloudStorage.setItem('game_state_v3', JSON.stringify(state), function(err) {
             document.getElementById('saveStatus').innerText = err ? '⚠️ Локально' : '☁️ Сохранено';
           });
         } else {
@@ -229,167 +213,187 @@
       document.getElementById('level').innerText = lvl;
     }
 
-function switchTab(tabId, btn) {
-document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
-document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-document.getElementById(tabId).classList.add('active');
-btn.classList.add('active');
-}
-// ЛОГИКА ТАПА И КАПЧИ
-function handleTap() {
-if (state.tapsToCaptcha <= 0) {
-openCaptcha();
-return;
-}
-state.balance += state.tapPower;
-state.tapsToCaptcha--;
-if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-updateUI();
-saveProgress();
-if (state.tapsToCaptcha === 0) openCaptcha();
-}
-function openCaptcha() {
-const a = Math.floor(Math.random() * 9) + 2;
-const b = Math.floor(Math.random() * 9) + 2;
-captchaResult = a + b;
-document.getElementById('captchaTask').innerText = Решите пример: ${a} + ${b} = ?;
-document.getElementById('captchaInput').value = '';
-document.getElementById('captchaModal').style.display = 'flex';
-}
-function verifyCaptcha() {
-const userAns = Number(document.getElementById('captchaInput').value);
-if (userAns === captchaResult) {
-state.tapsToCaptcha = 100;
-document.getElementById('captchaModal').style.display = 'none';
-updateUI();
-saveProgress();
-} else {
-notify('Неправильный ответ! Попробуйте снова.');
-}
-}
-// ПРОКАЧКА ЗА МОНЕТЫ
-function buyTapUpgrade() {
-if (state.balance < state.tapCost) return;
-state.balance -= state.tapCost;
-state.tapPower += 2;
-state.tapCost = Math.floor(state.tapCost * 1.5);
-if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-updateUI();
-saveProgress();
-}
-function buyMegaTapUpgrade() {
-if (state.balance < state.megaTapCost) return;
-state.balance -= state.megaTapCost;
-state.tapPower += 10;
-state.megaTapCost = Math.floor(state.megaTapCost * 1.6);
-if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-updateUI();
-saveProgress();
-}
-// КОЛЕСО ФОРТУНЫ (исправлен массив призов!)
-let currentRotation = 0;
-let isSpinning = false;
-const wheelPrizes =;
-function spinWheel() {
-if (isSpinning) return;
-isSpinning = true;
-const spinBtn = document.getElementById('spinBtn');
-spinBtn.disabled = true;
-const prizeIndex = Math.floor(Math.random() * wheelPrizes.length);
-const sliceAngle = 360 / wheelPrizes.length;
-const extraSpins = 360 * 5;
-const targetAngle = extraSpins + (360 - prizeIndex * sliceAngle - sliceAngle / 2);
-currentRotation += targetAngle;
-document.getElementById('wheel').style.transform = rotate(${currentRotation}deg);
-setTimeout(() => {
-const won = wheelPrizes[prizeIndex];
-state.balance += won;
-updateUI();
-saveProgress();
-notify(🎉 Вы выиграли ${won} монет!);
-isSpinning = false;
-spinBtn.disabled = false;
-}, 3100);
-}
-// САПЕР (12 ЯЧЕЕК, 3 БОМБЫ)
-let mineBombs = [];
-let mineActive = false;
-let roundBank = 0;
-const betAmount = 100;
-function renderEmptyGrid() {
-const grid = document.getElementById('minesGrid');
-grid.innerHTML = '';
-for (let i = 0; i < 12; i++) {
-const cell = document.createElement('div');
-cell.className = 'mine-cell';
-cell.innerText = '🚪';
-cell.onclick = () => clickMineCell(i, cell);
-grid.appendChild(cell);
-}
-}
-function startMines() {
-if (mineActive) return;
-if (state.balance < betAmount) {
-notify('Недостаточно монет для ставки (нужно 100)!');
-return;
-}
-state.balance -= betAmount;
-roundBank = betAmount;
-mineActive = true;
-mineBombs = [];
-while (mineBombs.length < 3) {
-const r = Math.floor(Math.random() * 12);
-if (!mineBombs.includes(r)) mineBombs.push(r);
-}
-document.getElementById('roundBank').innerText = roundBank;
-document.getElementById('startMinesBtn').disabled = true;
-document.getElementById('claimMinesBtn').disabled = true;
-renderEmptyGrid();
-updateUI();
-saveProgress();
-}
-function clickMineCell(index, cellEl) {
-if (!mineActive || cellEl.classList.contains('opened')) return;
-cellEl.classList.add('opened');
-if (mineBombs.includes(index)) {
-cellEl.classList.add('bomb');
-cellEl.innerText = '💣';
-mineActive = false;
-roundBank = 0;
-document.getElementById('roundBank').innerText = 0;
-document.getElementById('startMinesBtn').disabled = false;
-document.getElementById('claimMinesBtn').disabled = true;
-revealAllBombs();
-if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
-} else {
-cellEl.classList.add('safe');
-cellEl.innerText = '🚗';
-roundBank = Math.floor(roundBank * 1.35);
-document.getElementById('roundBank').innerText = roundBank;
-document.getElementById('claimMinesBtn').disabled = false;
-if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-}
-}
-function revealAllBombs() {
-const cells = document.querySelectorAll('.mine-cell');
-mineBombs.forEach(idx => {
-cells[idx].classList.add('bomb');
-cells[idx].innerText = '💣';
-});
-}
-function claimMines() {
-if (!mineActive || roundBank <= 0) return;
-state.balance += roundBank;
-mineActive = false;
-const won = roundBank;
-roundBank = 0;
-document.getElementById('roundBank').innerText = 0;
-document.getElementById('startMinesBtn').disabled = false;
-document.getElementById('claimMinesBtn').disabled = true;
-revealAllBombs();
-updateUI();
-saveProgress();
-notify(💰 Вы забрали ${won} монет!);
-}
-renderEmptyGrid();
-loadProgress();
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.section').forEach(function(el) { el.classList.remove('active'); });
+      document.querySelectorAll('.tab-btn').forEach(function(el) { el.classList.remove('active'); });
+      document.getElementById(tabId).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    function handleTap() {
+      if (state.tapsToCaptcha <= 0) {
+        openCaptcha();
+        return;
+      }
+      state.balance += state.tapPower;
+      state.tapsToCaptcha--;
+      if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+      updateUI();
+      saveProgress();
+      if (state.tapsToCaptcha === 0) openCaptcha();
+    }
+
+    function openCaptcha() {
+      const a = Math.floor(Math.random() * 9) + 2;
+      const b = Math.floor(Math.random() * 9) + 2;
+      captchaResult = a + b;
+      document.getElementById('captchaTask').innerText = 'Решите пример: ' + a + ' + ' + b + ' = ?';
+      document.getElementById('captchaInput').value = '';
+      document.getElementById('captchaModal').style.display = 'flex';
+    }
+
+    function verifyCaptcha() {
+      const userAns = Number(document.getElementById('captchaInput').value);
+      if (userAns === captchaResult) {
+        state.tapsToCaptcha = 100;
+        document.getElementById('captchaModal').style.display = 'none';
+        updateUI();
+        saveProgress();
+      } else {
+        notify('Неправильный ответ! Попробуйте снова.');
+      }
+    }
+    function buyTapUpgrade() {
+      if (state.balance < state.tapCost) return;
+      state.balance -= state.tapCost;
+      state.tapPower += 2;
+      state.tapCost = Math.floor(state.tapCost * 1.5);
+      if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+      updateUI();
+      saveProgress();
+    }
+
+    function buyMegaTapUpgrade() {
+      if (state.balance < state.megaTapCost) return;
+      state.balance -= state.megaTapCost;
+      state.tapPower += 10;
+      state.megaTapCost = Math.floor(state.megaTapCost * 1.6);
+      if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+      updateUI();
+      saveProgress();
+    }
+
+    let currentRotation = 0;
+    let isSpinning = false;
+    const wheelPrizes = new Array(100, 250, 500, 1000, 150, 2000);
+
+    function spinWheel() {
+      if (isSpinning) return;
+      isSpinning = true;
+      const spinBtn = document.getElementById('spinBtn');
+      spinBtn.disabled = true;
+
+      const prizeIndex = Math.floor(Math.random() * wheelPrizes.length);
+      const sliceAngle = 360 / wheelPrizes.length;
+      const extraSpins = 360 * 5;
+      const targetAngle = extraSpins + (360 - prizeIndex * sliceAngle - sliceAngle / 2);
+
+      currentRotation += targetAngle;
+      document.getElementById('wheel').style.transform = 'rotate(' + currentRotation + 'deg)';
+
+      setTimeout(function() {
+        const won = wheelPrizes[prizeIndex];
+        state.balance += won;
+        updateUI();
+        saveProgress();
+        notify('🎉 Вы выиграли ' + won + ' монет!');
+        isSpinning = false;
+        spinBtn.disabled = false;
+      }, 3100);
+    }
+
+    let mineBombs = new Array();
+    let mineActive = false;
+    let roundBank = 0;
+    const betAmount = 100;
+
+    function renderEmptyGrid() {
+      const grid = document.getElementById('minesGrid');
+      grid.innerHTML = '';
+      for (let i = 0; i < 12; i++) {
+        (function(idx) {
+          const cell = document.createElement('div');
+          cell.className = 'mine-cell';
+          cell.innerText = '🚪';
+          cell.onclick = function() { clickMineCell(idx, cell); };
+          grid.appendChild(cell);
+        })(i);
+      }
+    }
+
+    function startMines() {
+      if (mineActive) return;
+      if (state.balance < betAmount) {
+        notify('Недостаточно монет для ставки (нужно 100)!');
+        return;
+      }
+      state.balance -= betAmount;
+      roundBank = betAmount;
+      mineActive = true;
+      mineBombs = new Array();
+
+      while (mineBombs.length < 3) {
+        const r = Math.floor(Math.random() * 12);
+        if (mineBombs.indexOf(r) === -1) mineBombs.push(r);
+      }
+
+      document.getElementById('roundBank').innerText = roundBank;
+      document.getElementById('startMinesBtn').disabled = true;
+      document.getElementById('claimMinesBtn').disabled = true;
+      renderEmptyGrid();
+      updateUI();
+      saveProgress();
+    }
+
+    function clickMineCell(index, cellEl) {
+      if (!mineActive || cellEl.classList.contains('opened')) return;
+      cellEl.classList.add('opened');
+
+      if (mineBombs.indexOf(index) !== -1) {
+        cellEl.classList.add('bomb');
+        cellEl.innerText = '💣';
+        mineActive = false;
+        roundBank = 0;
+        document.getElementById('roundBank').innerText = 0;
+        document.getElementById('startMinesBtn').disabled = false;
+        document.getElementById('claimMinesBtn').disabled = true;
+        revealAllBombs();
+        if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+      } else {
+        cellEl.classList.add('safe');
+        cellEl.innerText = '🚗';
+        roundBank = Math.floor(roundBank * 1.35);
+        document.getElementById('roundBank').innerText = roundBank;
+        document.getElementById('claimMinesBtn').disabled = false;
+        if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+      }
+    }
+
+    function revealAllBombs() {
+      const cells = document.querySelectorAll('.mine-cell');
+      mineBombs.forEach(function(idx) {
+        cells[idx].classList.add('bomb');
+        cells[idx].innerText = '💣';
+      });
+    }
+
+    function claimMines() {
+      if (!mineActive || roundBank <= 0) return;
+      state.balance += roundBank;
+      mineActive = false;
+      const won = roundBank;
+      roundBank = 0;
+      document.getElementById('roundBank').innerText = 0;
+      document.getElementById('startMinesBtn').disabled = false;
+      document.getElementById('claimMinesBtn').disabled = true;
+      revealAllBombs();
+      updateUI();
+      saveProgress();
+      notify('💰 Вы забрали ' + won + ' монет!');
+    }
+
+    renderEmptyGrid();
+    loadProgress();
+  </script>
+</body>
+</html>
