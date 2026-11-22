@@ -39,13 +39,17 @@ body{display:flex;flex-direction:column;justify-content:space-between;align-item
 .db.dn{border-color:#00e676;background:rgba(0,230,118,.15)}
 .db.cr{border-color:#ffd700}
 .mine-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:100%;margin:8px 0}
-.mcell{height:52px;background:#1e232d;border:1px solid #4a5262;border-radius:10px;font-size:20px;font-weight:900;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.mcell{height:50px;background:#1e232d;border:1px solid #4a5262;border-radius:10px;font-size:20px;font-weight:900;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .mcell.safe{background:rgba(0,230,118,.25);border-color:#00e676}
 .mcell.boom{background:rgba(255,42,85,.35);border-color:#ff2a55}
 .inp{width:100%;padding:9px;border-radius:8px;border:1px solid #555;background:#14171d;color:#fff;font-size:13px;margin-top:6px;user-select:text;-webkit-user-select:text}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.88);display:none;justify-content:center;align-items:center;z-index:999;padding:20px}
+.modal.show{display:flex}
+.mbox{background:#181b22;border:2px solid #ffd700;border-radius:16px;padding:18px;width:100%;max-width:320px;text-align:center}
+.cap-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
 </style>
-</head>
-<body>
+</head> 
+  <body>
 <div class="bn">🏆 Кто первый дойдёт до 100 УР. — получит 150 ₽!</div>
 <div class="ti"><span>Уровень: <b id="lv">1 / 100</b></span><span>Создатель: <b>Степан Шаимов</b></span></div>
 <div><div class="sc" id="sc">0</div><div class="sb">Тап: +<b id="tp">1</b> • Пассив: +<b id="ps">0</b>/с</div></div>
@@ -72,17 +76,17 @@ body{display:flex;flex-direction:column;justify-content:space-between;align-item
 <div id="m" class="scr" style="justify-content:flex-start">
 <div class="cd" style="flex-direction:column;align-items:stretch;border-color:#00e676">
 <div style="display:flex;justify-content:space-between;align-items:center"><h4>💣 Мини-игра «Сапёр»</h4><span id="mineBank" style="font-size:12px;color:#00e676;font-weight:bold">Ставка: 1 000</span></div>
-<p>Открой клетки без мин (2 мины на поле) и забери куш!</p>
+<p id="mineMsg">Открой клетки без мин (2 мины) и забери куш!</p>
 <div class="mine-grid" id="mineGrid"></div>
 <div style="display:flex;gap:6px">
-<button class="ab" id="mineStart" style="flex:1">Начать (1 000 💰)</button>
-<button class="dbtn" id="mineTake" style="flex:1;display:none">Забрать выигрыш</button>
+<button class="ab" id="mineStart" style="flex:1;padding:10px">Играть (1 000 💰)</button>
+<button class="dbtn" id="mineTake" style="flex:1;padding:10px;display:none">Забрать куш</button>
 </div>
 </div>
 <div class="cd" style="flex-direction:column;align-items:stretch;border-color:#ffd700">
 <h4>🎰 Колесо Литвина</h4>
-<p>Испытай удачу за 2 500 💰: выиграй до 25 000 💰 или полную энергию!</p>
-<button class="dbtn" id="spinBtn" style="width:100%;margin-top:6px;padding:10px">Крутить колесо (2 500 💰)</button>
+<p id="spinRes">Ставка 2 500 💰 — выиграй до 20 000 💰 или энергию!</p>
+<button class="dbtn" id="spinBtn" style="width:100%;margin-top:6px;padding:11px">Крутить колесо (2 500 💰)</button>
 </div>
 </div>
 <div id="d" class="scr" style="justify-content:flex-start">
@@ -91,7 +95,7 @@ body{display:flex;flex-direction:column;justify-content:space-between;align-item
 <div class="cd" style="border-color:#ffd700"><div><h4>🔥 Пассив «Лайт»</h4><p>+25 монет/сек навсегда</p></div><button class="dbtn" data-d="Пассив +25/с за 79₽">79 ₽ / 40⭐</button></div>
 <div class="cd" style="border-color:#00e5ff"><div><h4 style="color:#00e5ff">👑 VIP-рамка + Реген</h4><p>Голубая аура + 2 энергии/сек</p></div><button class="dbtn" data-d="VIP-статус за 99₽">99 ₽ / 50⭐</button></div>
 <div class="cd" style="flex-direction:column;align-items:stretch">
-<h4>🔑 Ввести код после оплаты</h4><p>Получи код у @iosip6752 после перевода</p>
+<h4>🔑 Ввести код после оплаты</h4><p id="codeMsg">Получи код у @iosip6752 после перевода</p>
 <input class="inp" id="promoIn" placeholder="Введи секретный код...">
 <button class="ab" id="actCode" style="width:100%;margin-top:6px">Активировать код</button>
 </div>
@@ -108,8 +112,16 @@ body{display:flex;flex-direction:column;justify-content:space-between;align-item
 </div>
 <div id="s" class="scr" style="justify-content:flex-start">
 <div class="cd"><div><h4>🔊 Звук в игре</h4><p>Звуки кликов и мини-игр</p></div><button class="ab" id="st">ВКЛ</button></div>
-<div class="cd" style="flex-direction:column;align-items:flex-start"><h4>👑 Создатель: Степан Шаимов (@iosip6752)</h4><p>Прогресс сохраняется автоматически в облако Telegram.</p><button class="tg" id="askMsg">✉️ Связаться со Степаном (@iosip6752)</button></div>
+<div class="cd" style="flex-direction:column;align-items:flex-start"><h4>👑 Создатель: Степан Шаимов (@iosip6752)</h4><p id="saveStatus" style="color:#00e676">Прогресс защищён и сохранён</p><button class="tg" id="askMsg">✉️ Связаться со Степаном (@iosip6752)</button></div>
 <div class="cd" style="border-color:#ff4444"><div><h4 style="color:#ff4444">🗑 Сброс</h4><p>Начать заново с 0</p></div><button class="ab" id="rstBtn" style="background:#ff4444;color:#fff">Сброс</button></div>
+</div>
+<div class="modal" id="capModal">
+<div class="mbox">
+<h3 style="color:#ffd700">🛡 Проверка на автокликер</h3>
+<p style="font-size:13px;color:#ccc;margin-top:6px">Подтверди, что ты не робот! Реши пример:</p>
+<div id="capQ" style="font-size:28px;font-weight:900;color:#00e676;margin:12px 0">5 + 4 = ?</div>
+<div class="cap-btns" id="capOpts"></div>
+</div>
 </div>
 <script>
 const tg=window.Telegram?window.Telegram.WebApp:null;
@@ -117,19 +129,19 @@ try{if(tg){tg.ready();tg.expand()}}catch(e){}
 let ac=null;
 function bp(f,d){if(!s.sn)return;try{if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();let o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.setValueAtTime(f,ac.currentTime);g.gain.setValueAtTime(.08,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
 const rw=new Array(2500,10000,35000,90000,200000,500000);
-let s={sc:0,tp:1,gh:0,ps:0,en:1000,me:1000,rg:3,cg:150,ct:250,cp:1000,ce:800,cr:2000,ug:0,ut:0,up:0,ue:0,ur:0,sn:1,x2:0,cd:0,dd:0,ld:0,vip:0,used:''};
-const KEY='litvin_cloud_v11';
-function loadSave(){
-try{let d=localStorage.getItem(KEY);if(d)s=Object.assign(s,JSON.parse(d))}catch(e){}
-try{if(tg&&tg.CloudStorage){tg.CloudStorage.getItem(KEY,(err,val)=>{if(!err&&val){let c=JSON.parse(val);if(c.sc>s.sc)s=Object.assign(s,c);ui()}})}}catch(e){}
-}
-let saveTick=0;
-function sv(force){
+let s={sc:0,tp:1,gh:0,ps:0,en:1000,me:1000,rg:3,cg:150,ct:250,cp:1000,ce:800,cr:2000,ug:0,ut:0,up:0,ue:0,ur:0,sn:1,x2:0,cd:0,dd:0,ld:0,vip:0,used:'',taps:0};
+const KEY='litvin_save_v12';
+function sv(cloud){
 let str=JSON.stringify(s);
 try{localStorage.setItem(KEY,str)}catch(e){}
-saveTick++;
-if(force||saveTick%5===0){try{if(tg&&tg.CloudStorage)tg.CloudStorage.setItem(KEY,str)}catch(e){}}
+if(cloud){try{if(tg&&tg.CloudStorage)tg.CloudStorage.setItem(KEY,str)}catch(e){}}
 }
+function loadSave(){
+try{let d=localStorage.getItem(KEY);if(d)s=Object.assign(s,JSON.parse(d))}catch(e){}
+try{if(tg&&tg.CloudStorage){tg.CloudStorage.getItem(KEY,(err,val)=>{if(!err&&val){let c=JSON.parse(val);if(c.sc>=s.sc)s=Object.assign(s,c);ui()}})}}catch(e){}
+}
+window.addEventListener('visibilitychange',()=>{if(document.hidden)sv(true)});
+window.addEventListener('beforeunload',()=>sv(true));
 const $=id=>document.getElementById(id);
 function ui(){
 let m=s.x2>0?2:1,tot=(s.tp+s.gh)*m;
@@ -161,7 +173,27 @@ if(s.dd>=rw.length){db.innerText='Все получено!';db.style.background=
 else if(nw-s.ld>=dm){db.innerText='🎁 Забрать +'+rw[s.dd].toLocaleString('ru-RU');db.style.background='#00e676'}
 else{let h=Math.floor((dm-(nw-s.ld))/3600000),mn=Math.floor(((dm-(nw-s.ld))%3600000)/60000);db.innerText='⏳ Ждать '+h+'ч '+mn+'м';db.style.background='#444'}
 }
+let capLocked=false,lastGap=0,sameGaps=0,lastTapTime=0;
+function openCaptcha(){
+capLocked=true;
+let a=Math.floor(Math.random()*8)+2,b=Math.floor(Math.random()*8)+2,ans=a+b;
+$('capQ').innerText=a+' + '+b+' = ?';
+let opts=[ans,ans+1,ans-1].sort(()=>Math.random()-0.5);
+let box=$('capOpts');box.innerHTML='';
+opts.forEach(v=>{
+let btn=document.createElement('button');btn.className='ab';btn.style.padding='12px';btn.style.fontSize='16px';btn.innerText=v;
+btn.onclick=()=>{if(v===ans){capLocked=false;sameGaps=0;$('capModal').classList.remove('show');bp(800,.2)}else{bp(150,.3);openCaptcha()}};
+box.appendChild(btn);
+});
+$('capModal').classList.add('show');
+}
 function hit(cnt){
+if(capLocked)return;
+let now=Date.now(),gap=now-lastTapTime;
+if(lastTapTime>0&&Math.abs(gap-lastGap)<8&&gap<250){sameGaps++}else{sameGaps=Math.max(0,sameGaps-1)}
+lastGap=gap;lastTapTime=now;
+s.taps+=cnt;
+if(s.taps%300===0||sameGaps>=12){openCaptcha();return}
 let cost=s.tp+s.gh;
 for(let i=0;i<cnt;i++){if(s.en<cost)break;s.sc+=cost*(s.x2>0?2:1);s.en-=cost}
 $('tapBtn').classList.add('hit');setTimeout(()=>$('tapBtn').classList.remove('hit'),40);
@@ -184,28 +216,40 @@ for(let i=0;i<9;i++){
 let d=document.createElement('div');d.className='mcell';d.innerText='?';
 d.onclick=()=>{
 if(!mActive||d.classList.contains('safe'))return;
-if(mBombs.includes(i)){d.classList.add('boom');d.innerText='💥';mActive=false;mWin=0;$('mineTake').style.display='none';$('mineStart').style.display='block';$('mineBank').innerText='Бум! Сгорело';bp(180,.3)}
-else{d.classList.add('safe');d.innerText='💎';mWin=Math.floor(mWin*1.4);$('mineBank').innerText='Выигрыш: '+mWin+' 💰';bp(700,.08)}
+if(mBombs.includes(i)){d.classList.add('boom');d.innerText='💥';mActive=false;mWin=0;$('mineTake').style.display='none';$('mineStart').style.display='block';$('mineBank').innerText='Бум!';$('mineMsg').innerText='Попал на мину! Попробуй снова.';bp(180,.3)}
+else{d.classList.add('safe');d.innerText='💎';mWin=Math.floor(mWin*1.45);$('mineBank').innerText='Банк: '+mWin+' 💰';$('mineTake').innerText='Забрать '+mWin+' 💰';$('mineMsg').innerText='Отлично! Открывай ещё или забирай.';bp(700,.08)}
 };
 g.appendChild(d);
 }
 }
 $('mineStart').onclick=()=>{
-if(s.sc<1000)return alert('Нужно 1 000 💰!');
+if(s.sc<1000){$('mineMsg').innerText='Не хватает монет (нужно 1 000 💰)!';return}
 s.sc-=1000;mActive=true;mWin=1000;mBombs=[];
 while(mBombs.length<2){let r=Math.floor(Math.random()*9);if(!mBombs.includes(r))mBombs.push(r)}
-$('mineStart').style.display='none';$('mineTake').style.display='block';$('mineBank').innerText='Выигрыш: 1 000 💰';
+$('mineStart').style.display='none';$('mineTake').style.display='block';$('mineTake').innerText='Забрать 1 000 💰';$('mineBank').innerText='Банк: 1 000 💰';$('mineMsg').innerText='Игра идёт! Ищи алмазы 💎';
 drawMine();ui();sv(true);
 };
-$('mineTake').onclick=()=>{if(!mActive)return;s.sc+=mWin;mActive=false;$('mineTake').style.display='none';$('mineStart').style.display='block';$('mineBank').innerText='Забрано: +'+mWin+' 💰';bp(850,.2);ui();sv(true)};
+$('mineTake').onclick=()=>{
+if(!mActive)return;
+let prize=mWin;s.sc+=prize;mActive=false;
+$('mineTake').style.display='none';$('mineStart').style.display='block';
+$('mineBank').innerText='Забрано: +'+prize+' 💰';$('mineMsg').innerText='Выигрыш +'+prize+' 💰 зачислен на счёт!';
+bp(850,.2);ui();sv(true);
+};
+let spinning=false;
 $('spinBtn').onclick=()=>{
-if(s.sc<2500)return alert('Нужно 2 500 💰!');
-s.sc-=2500;let r=Math.random();
-if(r<0.35){s.sc+=5000;alert('🎉 Выигрыш: 5 000 💰!')}
-else if(r<0.65){s.en=s.me;alert('⚡ Полное восстановление энергии!')}
-else if(r<0.85){s.sc+=15000;alert('🔥 Джекпот: 15 000 💰!')}
-else{alert('💨 Пусто! Попробуй ещё раз')}
-bp(650,.2);ui();sv(true);
+if(spinning)return;
+if(s.sc<2500){$('spinRes').innerText='Не хватает монет (нужно 2 500 💰)!';return}
+s.sc-=2500;spinning=true;$('spinBtn').innerText='Крутится...';bp(500,.15);ui();
+setTimeout(()=>{
+spinning=false;$('spinBtn').innerText='Крутить колесо (2 500 💰)';
+let r=Math.random();
+if(r<0.35){s.sc+=5000;$('spinRes').innerText='🎉 Выигрыш: +5 000 💰 зачислено!'}
+else if(r<0.65){s.en=s.me;$('spinRes').innerText='⚡ Приз: Полное восстановление энергии!'}
+else if(r<0.85){s.sc+=15000;$('spinRes').innerText='🔥 ДЖЕКПОТ: +15 000 💰 на баланс!'}
+else{$('spinRes').innerText='💨 Выпало пусто! Попробуй ещё раз.'}
+bp(750,.2);ui();sv(true);
+},600);
 };
 document.querySelectorAll('.tbtn').forEach(b=>b.onclick=()=>{
 document.querySelectorAll('.scr').forEach(e=>e.classList.remove('on'));
@@ -216,21 +260,22 @@ const msg=t=>{let u="https://t.me"+encodeURIComponent(t);try{if(tg)tg.openTelegr
 document.querySelectorAll('.dbtn').forEach(b=>b.onclick=()=>msg('Привет! Хочу купить усиление: '+b.dataset.d));
 $('actCode').onclick=()=>{
 let c=$('promoIn').value.trim().toUpperCase();
-if(!c||s.used.includes('|'+c+'|'))return alert('Код неверный или уже использован!');
+if(!c||s.used.includes('|'+c+'|')){$('codeMsg').innerText='Код неверный или уже использован!';return}
 if(c==='LIT29'){s.en=s.me;s.sc+=10000}
 else if(c==='TAP49'){s.tp+=3}
 else if(c==='PAS79'){s.ps+=25}
 else if(c==='VIP99'){s.vip=1;s.rg+=2}
-else return alert('Неверный код!');
-s.used+='|'+c+'|';$('promoIn').value='';bp(850,.3);ui();sv(true);alert('Усиление активировано!');
+else{$('codeMsg').innerText='Неверный код!';return}
+s.used+='|'+c+'|';$('promoIn').value='';$('codeMsg').innerText='Усиление успешно активировано!';bp(850,.3);ui();sv(true);
 };
 $('cdb').onclick=()=>{let n=Date.now();if(s.dd<rw.length&&n-s.ld>=86400000){s.sc+=rw[s.dd];s.dd++;s.ld=n;bp(800,.25);ui();sv(true)}};
 $('st').onclick=()=>{s.sn=s.sn?0:1;if(s.sn)bp(550,.1);ui();sv(true)};
 $('winMsg').onclick=()=>msg('Привет! Я прошёл 100 уровень в Литвин Тапочке!');
 $('askMsg').onclick=()=>msg('Привет! Вопрос по игре Литвин Тапочка');
 $('rstBtn').onclick=()=>{if(confirm('Сбросить прогресс?')){localStorage.removeItem(KEY);try{if(tg&&tg.CloudStorage)tg.CloudStorage.removeItem(KEY)}catch(e){}location.reload()}};
-setInterval(()=>{if(s.ps>0)s.sc+=s.ps;if(s.en<s.me)s.en=Math.min(s.me,s.en+s.rg);if(s.x2>0)s.x2--;else if(s.cd>0)s.cd--;ui();sv(false)},1000);
+setInterval(()=>{if(s.ps>0)s.sc+=s.ps;if(s.en<s.me)s.en=Math.min(s.me,s.en+s.rg);if(s.x2>0)s.x2--;else if(s.cd>0)s.cd--;ui();sv(true)},1000);
 drawMine();loadSave();ui();
 </script>
 </body>
 </html>
+
