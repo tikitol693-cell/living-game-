@@ -11,16 +11,16 @@ body{margin:0;padding:12px;background:#111317;color:#fff;display:flex;flex-direc
 .top{width:100%;max-width:440px;display:flex;justify-content:space-between;gap:6px;margin-bottom:10px}
 .pill{background:#1b1e24;border:1px solid #333;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:bold}
 .gold{border-color:#f1c40f;color:#f1c40f}.green{border-color:#2ecc71;color:#2ecc71}
-.bal{font-size:36px;font-weight:900;text-align:center}.sub{font-size:12px;color:#8e9297;text-align:center;margin-bottom:10px}
-.tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;width:100%;max-width:440px;margin-bottom:12px}
-.tbtn{background:#1b1e24;border:1px solid #333;color:#fff;padding:8px 2px;border-radius:10px;font-size:11px;font-weight:bold;cursor:pointer}
+.bal{font-size:38px;font-weight:900;text-align:center}.sub{font-size:12px;color:#8e9297;text-align:center;margin-bottom:10px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:100%;max-width:440px;margin-bottom:12px}
+.tbtn{background:#1b1e24;border:1px solid #333;color:#fff;padding:9px 4px;border-radius:10px;font-size:12px;font-weight:bold;cursor:pointer}
 .tbtn.on{border-color:#f1c40f;background:#2a2718}
 .box{width:100%;max-width:440px;display:none}.box.on{display:block}
 .tap-wrap{display:flex;justify-content:center;margin:15px 0;position:relative;touch-action:manipulation}
-.tap-btn{width:190px;height:190px;border-radius:50%;background:#132a17;border:5px solid #2ecc71;box-shadow:0 0 20px rgba(46,204,113,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer}
+.tap-btn{width:195px;height:195px;border-radius:50%;background:#132a17;border:5px solid #2ecc71;box-shadow:0 0 20px rgba(46,204,113,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer}
 .tap-btn:active{transform:scale(.93)}
 .fly{position:absolute;font-size:22px;font-weight:900;color:#2ecc71;pointer-events:none;animation:up .6s ease-out forwards}
-@keyframes up{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-65px)}}
+@keyframes up{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-70px)}}
 .en-bg{width:100%;height:10px;background:#2c3036;border-radius:10px;overflow:hidden;margin:5px 0 12px}
 .en-fill{height:100%;background:#2ecc71;width:100%;transition:width .2s}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -41,16 +41,15 @@ input{width:100%;padding:10px;border-radius:8px;border:1px solid #444;background
 <body>
 <div class="top">
   <div class="pill gold">🪙 ПРИЗ: 150 ₽</div>
-  <div class="pill green">🏆 <span id="vipName">Новичок</span> (x<span id="multText">1</span>)</div>
+  <div class="pill green" onclick="toggleSound()" style="cursor:pointer">🔊 <span id="sndIcon">ВКЛ</span> • <span id="vipName">Новичок</span></div>
 </div>
 <div class="bal" id="balText">0</div>
-<div class="sub">Пассив: +<span id="pasText">0</span>/с • Тап: +<span id="tapText">1</span></div>
+<div class="sub">Сила тапа: +<span id="tapText">1</span> • Множитель: x<span id="multText">1</span></div>
 
 <div class="tabs">
   <button class="tbtn on" onclick="goTab('tap',this)">🔥 Тап</button>
   <button class="tbtn" onclick="goTab('mines',this)">💣 Сапёр</button>
   <button class="tbtn" onclick="goTab('ladder',this)">🪜 Лестница</button>
-  <button class="tbtn" onclick="goTab('crash',this)">🚀 Краш</button>
   <button class="tbtn" onclick="goTab('more',this)">🎁 Бонусы</button>
 </div>
 
@@ -62,22 +61,20 @@ input{width:100%;padding:10px;border-radius:8px;border:1px solid #444;background
     </button>
   </div>
   <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:bold">
-    <span>⚡ Энергия (+<span id="regenText">2</span>/с)</span>
-    <span><span id="enCur">1000</span> / <span id="enMax">1000</span></span>
+    <span>⚡ Энергия (+1/с)</span>
+    <span><span id="enCur">500</span> / <span id="enMax">500</span></span>
   </div>
   <div class="en-bg"><div class="en-fill" id="enBar"></div></div>
   <div class="g2">
-    <div class="card" onclick="buyUp('tap')"><b>🥫 Банка LIT</b><br><small style="color:#aaa">+<span id="gainTap">2</span> к тапу</small><br><b style="color:#f1c40f">💰 <span id="cTap">150</span></b></div>
-    <div class="card" onclick="buyUp('pas')"><b>🔥 Сжечь Акулу</b><br><small style="color:#aaa">+<span id="gainPas">5</span>/сек</small><br><b style="color:#f1c40f">💰 <span id="cPas">400</span></b></div>
-    <div class="card" onclick="buyUp('en')"><b>🔋 Запас сил</b><br><small style="color:#aaa">+500 энергии</small><br><b style="color:#f1c40f">💰 <span id="cEn">300</span></b></div>
-    <div class="card" onclick="freeRefill()"><b>🚀 Полный бак</b><br><small style="color:#aaa">100% энергии</small><br><b style="color:#2ecc71">БЕСПЛАТНО (<span id="refCnt">3</span>)</b></div>
+    <div class="card" onclick="buyUp('tap')"><b>🥫 Банка LIT</b><br><small style="color:#aaa">+1 к силе тапа</small><br><b style="color:#f1c40f">💰 <span id="cTap">250</span></b></div>
+    <div class="card" onclick="buyUp('en')"><b>🔋 Запас сил</b><br><small style="color:#aaa">+250 энергии</small><br><b style="color:#f1c40f">💰 <span id="cEn">400</span></b></div>
   </div>
 </div>
 
 <div id="tab-mines" class="box">
   <div class="panel">
-    <h3 style="margin:0 0 8px">💣 Сапёр (3 мины)</h3>
-    <input type="number" id="mBet" value="100" placeholder="Ставка (мин. 10)">
+    <h3 style="margin:0 0 6px">💣 Сапёр (Макс. ставка: 2 000)</h3>
+    <input type="number" id="mBet" value="100" placeholder="Ставка (10 - 2000)">
     <button class="btn" id="mBtnStart" onclick="startMines()">Играть</button>
     <button class="btn g" id="mBtnTake" style="display:none" onclick="takeMines()">Забрать: <span id="mWin">0</span> 🪙</button>
     <div class="m-grid" id="mGrid"></div>
@@ -86,28 +83,19 @@ input{width:100%;padding:10px;border-radius:8px;border:1px solid #444;background
 
 <div id="tab-ladder" class="box">
   <div class="panel">
-    <h3 style="margin:0 0 8px">🪜 Лестница удачи</h3>
-    <input type="number" id="lBet" value="100" placeholder="Ставка (мин. 10)">
+    <h3 style="margin:0 0 6px">🪜 Лестница (Макс. ставка: 2 000)</h3>
+    <input type="number" id="lBet" value="100" placeholder="Ставка (10 - 2000)">
     <button class="btn" id="lBtnStart" onclick="startLadder()">Начать подъем</button>
     <button class="btn g" id="lBtnTake" style="display:none" onclick="takeLadder()">Забрать: <span id="lWin">0</span> 🪙</button>
     <div id="lBoard" style="margin-top:10px"></div>
   </div>
 </div>
 
-<div id="tab-crash" class="box">
-  <div class="panel">
-    <h3 style="margin:0">🚀 Краш-ракета</h3>
-    <div id="cMult" style="font-size:38px;font-weight:900;color:#2ecc71;margin:12px 0">1.00x</div>
-    <input type="number" id="cBet" value="100" placeholder="Ставка (мин. 10)">
-    <button class="btn" id="cBtnStart" onclick="startCrash()">Поставить</button>
-    <button class="btn r" id="cBtnTake" style="display:none" onclick="takeCrash()">ЗАБРАТЬ (<span id="cWin">0</span> 🪙)</button>
-  </div>
-</div>
-
 <div id="tab-more" class="box">
   <div class="panel">
-    <h3 style="margin:0 0 6px">💸 Приз 150 ₽ (100 000 000 🪙)</h3>
-    <p style="font-size:12px;color:#ccc;margin:0 0 8px">Прогресс: <b id="prizeProg">0</b> / 100 000 000</p>
+    <h3 style="margin:0 0 6px">💸 Приз 150 ₽</h3>
+    <p style="font-size:12px;color:#ccc;margin:4px 0">Очки: <b id="prizeProg">0</b> / 150 000 000</p>
+    <p style="font-size:12px;color:#f1c40f;margin:4px 0 8px" id="daysLeftText">Стаж игры: 0 / 21 дн.</p>
     <button class="btn g" onclick="claim150()">Забрать 150 ₽</button>
     <div id="winBox" style="display:none;margin-top:10px;padding:10px;background:#0f1115;border-radius:8px;border:1px solid #2ecc71">
       <b style="color:#2ecc71">🎉 Код: <span id="winId"></span></b><br><small style="color:#aaa">Скинь скрин админу в ЛС для получения 150 ₽!</small>
@@ -120,10 +108,10 @@ input{width:100%;padding:10px;border-radius:8px;border:1px solid #444;background
   </div>
   <div class="panel">
     <h3 style="margin:0 0 6px">👑 Привилегии</h3>
-    <button class="btn" onclick="buyRank(25000,'Суетолог',1.5,4)">Суетолог (25k) — x1.5</button>
-    <button class="btn" onclick="buyRank(250000,'Поджигатель',2.2,6)">Поджигатель (250k) — x2.2</button>
-    <button class="btn g" onclick="buyRank(2500000,'Миллионер',3.5,10)">Миллионер (2.5M) — x3.5</button>
-    <button class="btn r" onclick="buyRank(15000000,'ЛЕГЕНДА',5,15)">ЛЕГЕНДА (15M) — x5.0</button>
+    <button class="btn" onclick="buyRank(100000,'Суетолог',1.3)">Суетолог (100k) — Тап x1.3</button>
+    <button class="btn" onclick="buyRank(2000000,'Поджигатель',1.7)">Поджигатель (2M) — Тап x1.7</button>
+    <button class="btn g" onclick="buyRank(20000000,'Миллионер',2.2)">Миллионер (20M) — Тап x2.2</button>
+    <button class="btn r" onclick="buyRank(70000000,'ЛЕГЕНДА',3)">ЛЕГЕНДА (70M) — Тап x3.0</button>
   </div>
 </div>
 
@@ -139,42 +127,80 @@ input{width:100%;padding:10px;border-radius:8px;border:1px solid #444;background
 const tg = window.Telegram ? window.Telegram.WebApp : null;
 if (tg) { try { tg.ready(); tg.expand(); } catch(e) {} }
 
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let actx = null;
+function playSnd(type) {
+  if (!d.snd) return;
+  try {
+    if (!actx) actx = new AudioCtx();
+    let osc = actx.createOscillator(), gain = actx.createGain();
+    osc.connect(gain); gain.connect(actx.destination);
+    let now = actx.currentTime;
+    if (type === 'tap') {
+      osc.frequency.setValueAtTime(320, now); osc.frequency.exponentialRampToValueAtTime(520, now + 0.06);
+      gain.gain.setValueAtTime(0.08, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+      osc.start(now); osc.stop(now + 0.06);
+    } else if (type === 'buy') {
+      osc.frequency.setValueAtTime(440, now); osc.frequency.setValueAtTime(660, now + 0.08);
+      gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+      osc.start(now); osc.stop(now + 0.18);
+    } else if (type === 'win') {
+      osc.frequency.setValueAtTime(523, now); osc.frequency.setValueAtTime(659, now + 0.08); osc.frequency.setValueAtTime(784, now + 0.16);
+      gain.gain.setValueAtTime(0.12, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+      osc.start(now); osc.stop(now + 0.3);
+    } else if (type === 'boom') {
+      osc.type = 'sawtooth'; osc.frequency.setValueAtTime(140, now); osc.frequency.exponentialRampToValueAtTime(40, now + 0.25);
+      gain.gain.setValueAtTime(0.15, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+      osc.start(now); osc.stop(now + 0.25);
+    }
+  } catch(e) {}
+}
+
 let d = {
-  bal: 0, tap: 1, pas: 0, en: 1000, maxEn: 1000, regen: 2,
-  cTap: 150, cPas: 400, cEn: 300, gTap: 2, gPas: 5,
-  ref: 3, rank: 'Новичок', mult: 1, taps: 0, promos: []
+  bal: 0, tap: 1, en: 500, maxEn: 500,
+  cTap: 250, cEn: 400, rank: 'Новичок', mult: 1,
+  taps: 0, promos: [], snd: 1,
+  firstJoin: Date.now(), bypassDays: false
 };
 try {
-  let s = JSON.parse(localStorage.getItem('litvin_v4'));
+  let s = JSON.parse(localStorage.getItem('litvin_hard_v1'));
   if (s) d = Object.assign(d, s);
 } catch(e) {}
 
 let capAns = 0, capCb = null;
 
+function getDaysPlayed() {
+  if (d.bypassDays) return 21;
+  return Math.floor((Date.now() - d.firstJoin) / (1000 * 60 * 60 * 24));
+}
+
 function save() {
-  try { localStorage.setItem('litvin_v4', JSON.stringify(d)); } catch(e) {}
+  try { localStorage.setItem('litvin_hard_v1', JSON.stringify(d)); } catch(e) {}
   document.getElementById('balText').innerText = Math.floor(d.bal).toLocaleString('ru-RU');
-  document.getElementById('pasText').innerText = Math.floor(d.pas * d.mult).toLocaleString('ru-RU');
   document.getElementById('tapText').innerText = Math.floor(d.tap * d.mult).toLocaleString('ru-RU');
+  document.getElementById('multText').innerText = d.mult;
   document.getElementById('enCur').innerText = Math.floor(d.en);
   document.getElementById('enMax').innerText = d.maxEn;
-  document.getElementById('regenText').innerText = d.regen;
   document.getElementById('enBar').style.width = (d.en / d.maxEn * 100) + '%';
   document.getElementById('cTap').innerText = Math.floor(d.cTap).toLocaleString('ru-RU');
-  document.getElementById('cPas').innerText = Math.floor(d.cPas).toLocaleString('ru-RU');
   document.getElementById('cEn').innerText = Math.floor(d.cEn).toLocaleString('ru-RU');
-  document.getElementById('gainTap').innerText = d.gTap;
-  document.getElementById('gainPas').innerText = d.gPas;
-  document.getElementById('refCnt').innerText = d.ref;
   document.getElementById('vipName').innerText = d.rank;
-  document.getElementById('multText').innerText = d.mult;
+  document.getElementById('sndIcon').innerText = d.snd ? 'ВКЛ' : 'ВЫКЛ';
   document.getElementById('prizeProg').innerText = Math.floor(d.bal).toLocaleString('ru-RU');
+  document.getElementById('daysLeftText').innerText = `Стаж игры: ${getDaysPlayed()} / 21 дн.`;
+}
+
+function toggleSound() {
+  d.snd = d.snd ? 0 : 1;
+  if (d.snd) playSnd('tap');
+  save();
 }
 
 function doTap(e) {
-  if (d.en < 1) return alert('Энергия на нуле! Жми «Полный бак» или подожди.');
+  if (d.en < 1) return alert('Энергия на нуле! Подожди, пока восстановится (+1/с).');
   let gain = Math.floor(d.tap * d.mult);
   d.bal += gain; d.en = Math.max(0, d.en - 1); d.taps++;
+  playSnd('tap');
 
   let num = document.createElement('div');
   num.className = 'fly';
@@ -187,7 +213,7 @@ function doTap(e) {
   document.getElementById('tapZone').appendChild(num);
   setTimeout(() => num.remove(), 600);
 
-  if (d.taps % 80 === 0) showCap(null);
+  if (d.taps % 90 === 0) showCap(null);
   if (tg && tg.HapticFeedback) { try { tg.HapticFeedback.impactOccurred('light'); } catch(err) {} }
   save();
 }
@@ -197,27 +223,15 @@ tapBtn.addEventListener('touchstart', (e) => { e.preventDefault(); doTap(e); }, 
 tapBtn.addEventListener('mousedown', (e) => { doTap(e); });
 
 setInterval(() => {
-  if (d.pas > 0) d.bal += Math.floor(d.pas * d.mult);
-  if (d.en < d.maxEn) d.en = Math.min(d.maxEn, d.en + d.regen);
-  save();
+  if (d.en < d.maxEn) { d.en = Math.min(d.maxEn, d.en + 1); save(); }
 }, 1000);
-
 function buyUp(t) {
   if (t === 'tap' && d.bal >= d.cTap) {
-    d.bal -= d.cTap; d.tap += d.gTap; d.cTap = Math.floor(d.cTap * 1.45);
-    d.gTap = Math.max(2, Math.floor(d.tap * 0.12));
-  } else if (t === 'pas' && d.bal >= d.cPas) {
-    d.bal -= d.cPas; d.pas += d.gPas; d.cPas = Math.floor(d.cPas * 1.5);
-    d.gPas = Math.max(5, Math.floor(d.pas * 0.15));
+    d.bal -= d.cTap; d.tap += 1; d.cTap = Math.floor(d.cTap * 1.65); playSnd('buy');
   } else if (t === 'en' && d.bal >= d.cEn) {
-    d.bal -= d.cEn; d.maxEn += 500; d.en = d.maxEn; d.cEn = Math.floor(d.cEn * 1.55);
+    d.bal -= d.cEn; d.maxEn += 250; d.en = d.maxEn; d.cEn = Math.floor(d.cEn * 1.7); playSnd('buy');
   } else return alert('Недостаточно очков!');
   save();
-}
-
-function freeRefill() {
-  if (d.ref > 0) { d.ref--; d.en = d.maxEn; save(); }
-  else alert('Бесплатные баки закончились!');
 }
 
 function goTab(id, btn) {
@@ -226,6 +240,7 @@ function goTab(id, btn) {
   document.getElementById('tab-' + id).classList.add('on');
   btn.classList.add('on');
 }
+
 function showCap(cb) {
   let a = Math.floor(Math.random() * 12) + 1, b = Math.floor(Math.random() * 12) + 1;
   capAns = a + b; capCb = cb;
@@ -236,29 +251,34 @@ function showCap(cb) {
 function verifyCap() {
   if (parseInt(document.getElementById('capIn').value) === capAns) {
     document.getElementById('capModal').style.display = 'none';
+    playSnd('win');
     if (capCb) capCb();
-  } else { alert('Неверно!'); showCap(capCb); }
+  } else { playSnd('boom'); alert('Неверно!'); showCap(capCb); }
 }
 
-const CODES = { 'START': 500, 'PANTERA': 2000, 'LITVIN': 5000, 'ADMIN777': 100000000 };
+const CODES = { 'START': 500, 'PANTERA': 1500, 'LITVIN': 3000, 'ADMIN777': 150000000 };
 function applyPromo() {
   let c = document.getElementById('promoCode').value.trim().toUpperCase();
   if (d.promos.includes(c)) return alert('Код уже использован!');
   if (CODES[c]) {
-    d.bal += CODES[c]; d.promos.push(c); save();
+    d.bal += CODES[c]; d.promos.push(c);
+    if (c === 'ADMIN777') d.bypassDays = true;
+    playSnd('win'); save();
     alert(`Начислено +${CODES[c].toLocaleString('ru-RU')} очков!`);
-  } else alert('Неверный код!');
+  } else { playSnd('boom'); alert('Неверный код!'); }
 }
 
-function buyRank(cost, title, m, reg) {
+function buyRank(cost, title, m) {
   if (d.bal < cost) return alert('Мало очков!');
   if (d.mult >= m) return alert('Статус уже активен!');
-  d.bal -= cost; d.rank = title; d.mult = m; d.regen = reg; save();
+  d.bal -= cost; d.rank = title; d.mult = m; playSnd('win'); save();
   alert(`Статус «${title}» активирован!`);
 }
 
 function claim150() {
-  if (d.bal < 100000000) return alert(`Нужно 100 000 000 очков! У тебя: ${Math.floor(d.bal).toLocaleString('ru-RU')}`);
+  let days = getDaysPlayed();
+  if (days < 21) return alert(`Приз доступен только через 21 день игры! Твой стаж: ${days} из 21 дн.`);
+  if (d.bal < 150000000) return alert(`Нужно 150 000 000 очков! У тебя: ${Math.floor(d.bal).toLocaleString('ru-RU')}`);
   showCap(() => {
     document.getElementById('winId').innerText = 'LIT150-' + Math.floor(1000 + Math.random() * 8999);
     document.getElementById('winBox').style.display = 'block';
@@ -268,9 +288,9 @@ function claim150() {
 let mOn = false, mWin = 0, mBombs = [];
 function startMines() {
   let b = parseInt(document.getElementById('mBet').value);
-  if (isNaN(b) || b < 10 || b > d.bal) return alert('Неверная ставка!');
+  if (isNaN(b) || b < 10 || b > 2000 || b > d.bal) return alert('Ставка от 10 до 2 000 (и не больше баланса)!');
   d.bal -= b; mWin = b; mOn = true; mBombs = []; save();
-  while (mBombs.length < 3) { let r = Math.floor(Math.random() * 25); if (!mBombs.includes(r)) mBombs.push(r); }
+  while (mBombs.length < 4) { let r = Math.floor(Math.random() * 25); if (!mBombs.includes(r)) mBombs.push(r); }
   document.getElementById('mBtnStart').style.display = 'none';
   document.getElementById('mBtnTake').style.display = 'block';
   document.getElementById('mWin').innerText = mWin.toLocaleString('ru-RU');
@@ -280,11 +300,11 @@ function startMines() {
     cell.onclick = () => {
       if (!mOn || cell.classList.contains('open')) return;
       if (mBombs.includes(i)) {
-        cell.classList.add('bomb'); cell.innerText = '💣'; mOn = false; alert('Бум! Мина!');
+        cell.classList.add('bomb'); cell.innerText = '💣'; mOn = false; playSnd('boom'); alert('Бум! Мина!');
         document.getElementById('mBtnStart').style.display = 'block';
         document.getElementById('mBtnTake').style.display = 'none';
       } else {
-        cell.classList.add('open'); cell.innerText = '💎';
+        cell.classList.add('open'); cell.innerText = '💎'; playSnd('tap');
         mWin = Math.floor(mWin * 1.25); document.getElementById('mWin').innerText = mWin.toLocaleString('ru-RU');
       }
     };
@@ -293,7 +313,7 @@ function startMines() {
 }
 function takeMines() {
   if (!mOn) return;
-  mOn = false; d.bal += mWin; save();
+  mOn = false; d.bal += mWin; playSnd('win'); save();
   document.getElementById('mBtnStart').style.display = 'block';
   document.getElementById('mBtnTake').style.display = 'none';
 }
@@ -302,7 +322,7 @@ let lOn = false, lBet = 0, lStep = 0;
 const lMults = [1.3, 1.7, 2.2, 3.0, 4.5];
 function startLadder() {
   lBet = parseInt(document.getElementById('lBet').value);
-  if (isNaN(lBet) || lBet < 10 || lBet > d.bal) return alert('Неверная ставка!');
+  if (isNaN(lBet) || lBet < 10 || lBet > 2000 || lBet > d.bal) return alert('Ставка от 10 до 2 000 (и не больше баланса)!');
   d.bal -= lBet; lStep = 0; lOn = true; save();
   document.getElementById('lBtnStart').style.display = 'none';
   document.getElementById('lBtnTake').style.display = 'block';
@@ -318,11 +338,11 @@ function drawLadder() {
       s.innerText = (r === lStep && lOn) ? '❓' : (r < lStep ? '✅' : '🔒');
       if (r === lStep && lOn) s.onclick = () => {
         if (c === Math.floor(Math.random() * 3)) {
-          lOn = false; alert('Ступенька сломалась!');
+          lOn = false; playSnd('boom'); alert('Ступенька сломалась!');
           document.getElementById('lBtnStart').style.display = 'block';
           document.getElementById('lBtnTake').style.display = 'none';
         } else {
-          lStep++; document.getElementById('lWin').innerText = Math.floor(lBet * lMults[lStep - 1]).toLocaleString('ru-RU');
+          lStep++; playSnd('tap'); document.getElementById('lWin').innerText = Math.floor(lBet * lMults[lStep - 1]).toLocaleString('ru-RU');
           if (lStep === 5) takeLadder();
         }
         drawLadder();
@@ -335,39 +355,10 @@ function drawLadder() {
 function takeLadder() {
   if (!lOn) return;
   let win = lStep === 0 ? lBet : Math.floor(lBet * lMults[lStep - 1]);
-  d.bal += win; lOn = false; save();
+  d.bal += win; lOn = false; playSnd('win'); save();
   document.getElementById('lBtnStart').style.display = 'block';
   document.getElementById('lBtnTake').style.display = 'none';
   drawLadder();
-}
-
-let cInt = null, cM = 1.0, cEnd = 1.0, cBet = 0;
-function startCrash() {
-  cBet = parseInt(document.getElementById('cBet').value);
-  if (isNaN(cBet) || cBet < 10 || cBet > d.bal) return alert('Неверная ставка!');
-  d.bal -= cBet; cM = 1.0; cEnd = +(Math.random() * 3.8 + 1.1).toFixed(2); save();
-  document.getElementById('cBtnStart').style.display = 'none';
-  document.getElementById('cBtnTake').style.display = 'block';
-  document.getElementById('cMult').style.color = '#2ecc71';
-  cInt = setInterval(() => {
-    cM = +(cM + 0.05).toFixed(2);
-    document.getElementById('cMult').innerText = cM.toFixed(2) + 'x';
-    document.getElementById('cWin').innerText = Math.floor(cBet * cM).toLocaleString('ru-RU');
-    if (cM >= cEnd) {
-      clearInterval(cInt); cInt = null;
-      document.getElementById('cMult').style.color = '#e74c3c';
-      document.getElementById('cMult').innerText = `💥 ${cEnd}x`;
-      document.getElementById('cBtnStart').style.display = 'block';
-      document.getElementById('cBtnTake').style.display = 'none';
-    }
-  }, 150);
-}
-function takeCrash() {
-  if (!cInt) return;
-  clearInterval(cInt); cInt = null;
-  d.bal += Math.floor(cBet * cM); save();
-  document.getElementById('cBtnStart').style.display = 'block';
-  document.getElementById('cBtnTake').style.display = 'none';
 }
 
 save();
